@@ -22,7 +22,6 @@ export default withAuth(
     })
 
     if (!matchedRoute) {
-      console.log('!matchedRoute')
       return NextResponse.redirect(new URL('/', req.url))
     }
 
