@@ -2,7 +2,7 @@
 
 import { Fragment } from 'react'
 import Image from 'next/image'
-import { signOut } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 import {
   Menu,
   Users,
@@ -24,30 +24,47 @@ export const sidebarLinks = [
     label: 'Início',
     icon: <PanelsTopLeft />,
     href: '/auth',
+    roles: ['PROFESSOR', 'STUDENT'],
   },
   {
     label: 'Turmas',
     icon: <Users />,
     href: '/auth/turmas',
+    roles: ['PROFESSOR'],
+  },
+  {
+    label: 'Minha turma',
+    icon: <Users />,
+    href: '/auth/turmas',
+    roles: ['STUDENT'],
   },
   {
     label: 'Atividades',
     icon: <NotebookPen />,
     href: '/auth/atividades',
+    roles: ['PROFESSOR', 'STUDENT'],
   },
   {
     label: 'Estudantes',
     icon: <GraduationCap />,
     href: '/auth/estudantes',
+    roles: ['PROFESSOR'],
   },
   {
     label: 'Ajuda',
     icon: <HeartHandshake />,
     href: '/auth/ajuda',
+    roles: ['PROFESSOR', 'STUDENT'],
   },
 ]
 
 export default function Header() {
+  const { data } = useSession()
+
+  if (!data) {
+    return null
+  }
+
   return (
     <>
       <header className="flex items-center justify-between bg-white p-4">
@@ -67,18 +84,20 @@ export default function Header() {
 
             <div className="flex h-full flex-col justify-between">
               <div className="space-y-2">
-                {sidebarLinks.map((item, index) => (
-                  <Fragment key={index}>
-                    <Link href={item.href}>
-                      {item.icon}
-                      {item.label}
-                    </Link>
-                  </Fragment>
-                ))}
+                {sidebarLinks
+                  .filter((item) => item.roles.includes(data.user.role))
+                  .map((item, index) => (
+                    <Fragment key={index}>
+                      <Link href={item.href}>
+                        {item.icon}
+                        {item.label}
+                      </Link>
+                    </Fragment>
+                  ))}
               </div>
 
               <Button onClick={() => signOut()} variant="destructive">
-                Sair
+                Desconectar
               </Button>
             </div>
           </Sheet.Content>

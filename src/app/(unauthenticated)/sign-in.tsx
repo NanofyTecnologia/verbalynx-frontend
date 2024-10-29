@@ -1,11 +1,12 @@
 'use client'
 
-import { useState } from 'react'
-import { signIn } from 'next-auth/react'
+import { useEffect, useState } from 'react'
+import { signIn, useSession } from 'next-auth/react'
 import { ThreeDots } from 'react-loader-spinner'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { AtSign } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { zodResolver } from '@hookform/resolvers/zod'
 
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -13,6 +14,8 @@ import { Button } from '@/components/ui/button'
 import { signInSchema, type SignInData } from './schema'
 
 export default function SignIn() {
+  const { data } = useSession()
+  const { replace } = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const {
@@ -34,6 +37,12 @@ export default function SignIn() {
 
     setIsSubmitting(false)
   }
+
+  useEffect(() => {
+    if (data?.user.id) {
+      replace('/auth')
+    }
+  }, [data, replace])
 
   return (
     <>
