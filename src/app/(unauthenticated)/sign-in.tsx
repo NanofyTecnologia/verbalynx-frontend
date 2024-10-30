@@ -84,7 +84,7 @@ export default function SignIn() {
               <ThreeDots
                 width={35}
                 height={35}
-                color="#000"
+                color="#fff"
                 visible={true}
                 ariaLabel="three-dots-loading"
               />

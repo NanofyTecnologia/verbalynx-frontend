@@ -20,6 +20,7 @@ model User {
   emailVerified DateTime?
   image         String?
   cpf           String?
+  classId       String?
   role          Role      @default(STUDENT)
   accounts      Account[]
   sessions      Session[]
@@ -28,6 +29,10 @@ model User {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  studentClasses Class[] @relation("StudentClasses")
+  teacherClasses Class[] @relation("TeacherClasses")
+  class          Class?  @relation(fields: [classId], references: [id])
 
   @@map("users")
 }
@@ -91,3 +96,19 @@ model Authenticator {
   @@map("authenticators")
 }
 
+model Class {
+  id             String @id @unique @default(cuid())
+  name           String
+  educationLevel String
+  period         String
+  teacherId      String
+
+  User     User[]
+  students User[] @relation("StudentClasses")
+  teacher  User?  @relation("TeacherClasses", fields: [teacherId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("classes")
+}

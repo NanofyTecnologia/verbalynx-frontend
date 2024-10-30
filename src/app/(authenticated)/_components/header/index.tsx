@@ -24,37 +24,37 @@ export const sidebarLinks = [
     label: 'Início',
     icon: <PanelsTopLeft />,
     href: '/auth',
-    roles: ['PROFESSOR', 'STUDENT'],
+    roles: ['PROFESSOR', 'STUDENT', 'ADMIN'],
   },
   {
     label: 'Turmas',
     icon: <Users />,
     href: '/auth/turmas',
-    roles: ['PROFESSOR'],
+    roles: ['PROFESSOR', 'ADMIN'],
   },
   {
     label: 'Minha turma',
     icon: <Users />,
     href: '/auth/turmas',
-    roles: ['STUDENT'],
+    roles: ['STUDENT', 'ADMIN'],
   },
   {
     label: 'Atividades',
     icon: <NotebookPen />,
     href: '/auth/atividades',
-    roles: ['PROFESSOR', 'STUDENT'],
+    roles: ['PROFESSOR', 'STUDENT', 'ADMIN'],
   },
   {
     label: 'Estudantes',
     icon: <GraduationCap />,
     href: '/auth/estudantes',
-    roles: ['PROFESSOR'],
+    roles: ['PROFESSOR', 'ADMIN'],
   },
   {
     label: 'Ajuda',
     icon: <HeartHandshake />,
     href: '/auth/ajuda',
-    roles: ['PROFESSOR', 'STUDENT'],
+    roles: ['PROFESSOR', 'STUDENT', 'ADMIN'],
   },
 ]
 
