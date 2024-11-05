@@ -14,12 +14,17 @@ export default withAuth(
     const allowedRolesForRoute: AllowedRoles = {
       '/auth': ['ADMIN', 'STUDENT', 'PROFESSOR'],
       '/auth/:path*': ['ADMIN', 'STUDENT', 'PROFESSOR'],
+      '/aguardando-aprovacao': ['PENDING_APPROVAL'],
     }
 
     const matchedRoute = Object.keys(allowedRolesForRoute).find((route) => {
       const routeRegex = new RegExp(`^${route.replace(/:[^/]+(\*)?/g, '.*')}$`)
       return routeRegex.test(req.nextUrl.pathname)
     })
+
+    if (userRole === 'PENDING_APPROVAL') {
+      return NextResponse.redirect(new URL('/aguardando-aprovacao', req.url))
+    }
 
     if (!matchedRoute) {
       return NextResponse.redirect(new URL('/', req.url))

@@ -11,7 +11,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 
-import { signInSchema, type SignInData } from './schema'
+import { signInSchema, type SignInData } from './_schema'
+import Link from 'next/link'
 
 export default function SignIn() {
   const { data } = useSession()
@@ -94,6 +95,10 @@ export default function SignIn() {
           </Button>
         </form>
       )}
+
+      <div className="mt-6">
+        <Link href="/cadastro">Criar uma conta</Link>
+      </div>
     </>
   )
 }

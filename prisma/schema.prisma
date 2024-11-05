@@ -11,6 +11,7 @@ enum Role {
   ADMIN
   STUDENT
   PROFESSOR
+  PENDING_APPROVAL
 }
 
 model User {
@@ -21,7 +22,8 @@ model User {
   image         String?
   cpf           String?
   classId       String?
-  role          Role      @default(STUDENT)
+  graduation    String?
+  role          Role      @default(PENDING_APPROVAL)
   accounts      Account[]
   sessions      Session[]
 
