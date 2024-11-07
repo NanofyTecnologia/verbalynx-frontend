@@ -1,4 +1,4 @@
-import { Class } from '@prisma/client'
+import { Class, User } from '@prisma/client'
 
 export type GetClassByIdParams = {
   id: string | undefined
@@ -9,6 +9,9 @@ export type GetClassResponse = {
   name: string
   period: string
   educationLevel: string
+  students: User[]
+  createdAt: string
+  updatedAt: string
 }
 
 export type CreateClassParams = Omit<

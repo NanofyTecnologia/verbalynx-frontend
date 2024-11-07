@@ -13,6 +13,14 @@ export const team = {
     return data
   },
 
+  async getById(params: GetClassByIdParams) {
+    const { data } = await axios.get<GetClassResponse>(
+      '/class/details/' + params.id,
+    )
+
+    return data
+  },
+
   async create(params: CreateClassParams) {
     const { data } = await axios.post<GetClassResponse>('/class', params)
 

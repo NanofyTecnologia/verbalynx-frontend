@@ -7,19 +7,14 @@ import { GraduationCap, SquarePlus } from 'lucide-react'
 
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
 
 import { useGetClassesById } from './_hooks/use-get-classes-by-id'
-
-function getRandomColor() {
-  const randomColor = Math.floor(Math.random() * 16777215).toString(16)
-
-  return `#${randomColor.padStart(6, '0')}`
-}
 
 export default function Content() {
   const { data } = useSession()
 
-  const { data: classes } = useGetClassesById({ id: data?.user.id })
+  const { data: classes, isLoading } = useGetClassesById({ id: data?.user.id })
 
   return (
     <>
@@ -29,7 +24,7 @@ export default function Content() {
 
       {data?.user.role === 'PROFESSOR' && (
         <div className="mt-6 text-end">
-          <Button className="h-10 shadow" asChild>
+          <Button className="shadow" asChild>
             <Link href="/auth/turmas/nova-turma">
               Nova turma <SquarePlus />
             </Link>
@@ -45,28 +40,37 @@ export default function Content() {
         <h3 className="font-semibold">Minhas turmas</h3>
 
         <div className="mt-2 space-y-4">
-          {classes?.map((item) => {
-            const color = getRandomColor()
+          {isLoading &&
+            Array.from({ length: 8 }).map((_, item) => (
+              <Fragment key={item}>
+                <div className="flex h-[66px] items-center gap-4 rounded-md">
+                  <Skeleton className="h-[66px] w-full" />
+                </div>
+              </Fragment>
+            ))}
 
-            return (
+          {!isLoading &&
+            classes?.map((item) => (
               <Fragment key={item.id}>
                 <Link
-                  href="#"
-                  style={{ borderColor: color }}
+                  href={`/auth/turmas/${item.id}`}
+                  style={{ borderColor: '#49BE25' }}
                   className="flex items-center gap-4 rounded-md border-s-4 bg-white px-4 py-2.5"
                 >
                   <span
-                    style={{ borderColor: color }}
+                    style={{ borderColor: '#49BE25' }}
                     className="rounded-full border p-3"
                   >
-                    <GraduationCap style={{ color }} className="size-5" />
+                    <GraduationCap
+                      style={{ color: '#49BE25' }}
+                      className="size-5"
+                    />
                   </span>
 
                   {item.name}
                 </Link>
               </Fragment>
-            )
-          })}
+            ))}
         </div>
       </div>
     </>

@@ -59,11 +59,7 @@ export const sidebarLinks = [
 ]
 
 export default function Header() {
-  const { data } = useSession()
-
-  if (!data) {
-    return null
-  }
+  const { data, update } = useSession()
 
   return (
     <>
@@ -84,16 +80,45 @@ export default function Header() {
 
             <div className="flex h-full flex-col justify-between">
               <div className="space-y-2">
-                {sidebarLinks
-                  .filter((item) => item.roles.includes(data.user.role))
-                  .map((item, index) => (
-                    <Fragment key={index}>
-                      <Link href={item.href}>
-                        {item.icon}
-                        {item.label}
-                      </Link>
-                    </Fragment>
-                  ))}
+                {data &&
+                  sidebarLinks
+                    .filter((item) => item.roles.includes(data.user.role))
+                    .map((item, index) => (
+                      <Fragment key={index}>
+                        <Link href={item.href}>
+                          {item.icon}
+                          {item.label}
+                        </Link>
+                      </Fragment>
+                    ))}
+
+                <Button
+                  className="w-full"
+                  onClick={() => update({ role: 'ADMIN' })}
+                >
+                  Admin
+                </Button>
+
+                <Button
+                  className="w-full"
+                  onClick={() => update({ role: 'PROFESSOR' })}
+                >
+                  Professor
+                </Button>
+
+                <Button
+                  className="w-full"
+                  onClick={() => update({ role: 'STUDENT' })}
+                >
+                  Estudante
+                </Button>
+
+                <Button
+                  className="w-full"
+                  onClick={() => update({ role: 'PENDING_APPROVAL' })}
+                >
+                  Aguardando Aprovação
+                </Button>
               </div>
 
               <Button onClick={() => signOut()} variant="destructive">

@@ -15,17 +15,19 @@ enum Role {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String    @unique
-  emailVerified DateTime?
-  image         String?
-  cpf           String?
-  classId       String?
-  graduation    String?
-  role          Role      @default(PENDING_APPROVAL)
-  accounts      Account[]
-  sessions      Session[]
+  id               String    @id @default(cuid())
+  name             String?
+  email            String    @unique
+  emailVerified    DateTime?
+  image            String?
+  cpf              String?
+  classId          String?
+  observation      String?
+  registrationCode String?   @unique @map("registration_code")
+  graduation       String?
+  role             Role      @default(PENDING_APPROVAL)
+  accounts         Account[]
+  sessions         Session[]
 
   Authenticator Authenticator[]
 

@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
+import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
@@ -10,7 +11,6 @@ import { Button } from '@/components/ui/button'
 import VerbalynxLogo from '@/assets/images/verbalynx-logo.png'
 
 import { useGetUserById } from './_hooks/use-get-user-by-id'
-import { useSession } from 'next-auth/react'
 
 export default function Page() {
   const { replace } = useRouter()
