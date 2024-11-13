@@ -8,7 +8,9 @@ import { getClassById } from './service'
 
 export async function GET(req: NextRequest, { params }: IParams) {
   try {
-    const classes = await getClassById(params.id)
+    const id = params.id
+
+    const classes = await getClassById(id)
 
     return NextResponse.json(classes, { status: HttpStatusCode.Ok })
   } catch (error) {

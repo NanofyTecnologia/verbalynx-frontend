@@ -6,7 +6,7 @@ import { Fragment, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { format } from 'date-fns'
-import { ChevronRight, HelpCircle, UserPlus } from 'lucide-react'
+import { ChevronRight, Dices, HelpCircle, UserPlus } from 'lucide-react'
 
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -20,6 +20,9 @@ import { useGetClassById } from '../_hooks/use-get-class-by-id'
 
 import { StudentData, studentSchema } from './_schema'
 import { RadioGroup } from '@/components/ui/radio-group'
+import { useCreateStudent } from './_hooks/use-create-student'
+import { generateRegistrationCode } from '@/utils/generate-student-code'
+import { toast } from 'react-toastify'
 
 export interface IParams {
   [key: string]: string[]
@@ -29,15 +32,32 @@ export default function Page() {
   const { slug } = useParams<IParams>()
   const { id } = normalizeSlug(slug)
 
-  const { data: team } = useGetClassById({ id })
+  const { data: team, refetch } = useGetClassById({ id })
+  const { mutate: handleCreateStudent } = useCreateStudent()
   const [showDialog, setShowDialog] = useState(false)
 
-  const { register, handleSubmit } = useForm<StudentData>({
+  const { register, handleSubmit, setValue } = useForm<StudentData>({
     resolver: zodResolver(studentSchema),
   })
 
   const onSubmit: SubmitHandler<StudentData> = (data) => {
-    console.log(data)
+    if (!team) return
+
+    handleCreateStudent(
+      {
+        ...data,
+        graduation: team.educationLevel,
+        classId: team.id,
+        role: 'STUDENT',
+      },
+      {
+        onSuccess: () => {
+          refetch()
+          setShowDialog(false)
+          toast.success('Estudante cadastrado com sucesso!')
+        },
+      },
+    )
   }
 
   if (!team) {
@@ -95,6 +115,7 @@ export default function Page() {
         <Dialog.Content>
           <Dialog.Header>
             <Dialog.Title>Cadastrar novo estudante na turma</Dialog.Title>
+            <Dialog.Description />
           </Dialog.Header>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -118,34 +139,58 @@ export default function Page() {
               </div>
 
               <div className="space-y-0.5">
-                <Label className="text-sm">Código da Matrícula</Label>
+                <Label>Nível de Ensino</Label>
 
-                <Input {...register('registrationCode')} />
+                <Input value={team.educationLevel} disabled />
               </div>
             </div>
 
-            <div className="space-y-0.5">
-              <Label>Pronomes</Label>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-0.5">
+                <Label className="text-sm">Código da Matrícula</Label>
 
-              <RadioGroup.Root className="flex items-center gap-6">
-                <div className="flex items-center gap-2">
-                  <RadioGroup.Item id="pronoun-1" value="ele/dele" />
+                <div className="relative flex items-center">
+                  <Input {...register('registrationCode')} />
 
-                  <Label htmlFor="pronoun-1">Ele / Dele</Label>
+                  <button
+                    type="button"
+                    className="absolute right-1"
+                    onClick={() =>
+                      setValue('registrationCode', generateRegistrationCode())
+                    }
+                  >
+                    <Dices className="size-4" />
+                  </button>
                 </div>
+              </div>
 
-                <div className="flex items-center gap-2">
-                  <RadioGroup.Item id="pronoun-2" value="ela/dela" />
+              <div className="space-y-0.5">
+                <Label>Pronomes</Label>
 
-                  <Label htmlFor="pronoun-2">Ela / Dela</Label>
-                </div>
-              </RadioGroup.Root>
+                <RadioGroup.Root className="flex h-9 items-center gap-4">
+                  <div className="flex items-center gap-2">
+                    <RadioGroup.Item id="pronoun-1" value="ele/dele" />
+
+                    <Label htmlFor="pronoun-1" className="text-xs">
+                      Ele / Dele
+                    </Label>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <RadioGroup.Item id="pronoun-2" value="ela/dela" />
+
+                    <Label htmlFor="pronoun-2" className="text-xs">
+                      Ela / Dela
+                    </Label>
+                  </div>
+                </RadioGroup.Root>
+              </div>
             </div>
 
             <div className="space-y-0.5">
               <Label className="text-sm">Observação</Label>
 
-              <Textarea {...register('registrationCode')} />
+              <Textarea {...register('observation')} />
             </div>
 
             <Dialog.Footer className="gap-4">
@@ -153,7 +198,7 @@ export default function Page() {
                 <Button variant="outline">Cancelar</Button>
               </Dialog.Close>
 
-              <Button>Salvar</Button>
+              <Button type="submit">Salvar</Button>
             </Dialog.Footer>
           </form>
         </Dialog.Content>

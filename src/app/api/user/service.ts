@@ -5,7 +5,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/next-auth'
 import { HttpError } from '@/helpers/http-error'
 
-import { create, findById } from './repository'
+import { create, findByEmail, findById } from './repository'
 
 export type CreateUserData = Omit<User, 'id' | 'createdAt' | 'updatedAt'>
 
@@ -22,7 +22,21 @@ async function getUserById() {
 }
 
 async function createUser(data: CreateUserData) {
-  await create({ ...data, role: 'PENDING_APPROVAL' })
+  const { email, classId } = data
+
+  await validateEmailExistsOrFail(email)
+
+  const user = await create({ ...data, role: data.role ?? 'PENDING_APPROVAL' })
+}
+
+async function insertUserOnClass(email: string, classId: string) {}
+
+async function validateEmailExistsOrFail(email: string) {
+  const user = await findByEmail(email)
+
+  if (user) {
+    throw new HttpError('CONFLICT', HttpStatusCode.Conflict)
+  }
 }
 
 export { createUser, getUserById }

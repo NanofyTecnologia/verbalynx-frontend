@@ -2,14 +2,15 @@ import { HttpStatusCode } from 'axios'
 import { NextResponse, type NextRequest } from 'next/server'
 
 import { HttpError } from '@/helpers/http-error'
-
 import { getClassesByUserId } from './service'
 
 import { IParams } from '../../types'
 
 export async function GET(req: NextRequest, { params }: IParams) {
   try {
-    const classes = await getClassesByUserId(params.id)
+    const id = params.id
+
+    const classes = await getClassesByUserId(id)
 
     return NextResponse.json(classes, { status: HttpStatusCode.Ok })
   } catch (error) {

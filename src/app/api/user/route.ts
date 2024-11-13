@@ -27,13 +27,13 @@ export async function POST(req: NextRequest) {
 
     await createUser(data)
 
-    return NextResponse.json(null, { status: HttpStatusCode.Ok })
+    return NextResponse.json('ok', { status: HttpStatusCode.Ok })
   } catch (error) {
     if (error instanceof HttpError) {
       return NextResponse.json(error.message, { status: error.status })
     }
 
-    return NextResponse.json('INTERNAL_SERVER_ERROR', {
+    return NextResponse.json(JSON.stringify(error), {
       status: HttpStatusCode.InternalServerError,
     })
   }

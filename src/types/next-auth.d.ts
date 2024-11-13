@@ -1,6 +1,7 @@
+import { User } from '@prisma/client'
 import { type DefaultSession } from 'next-auth'
 
-type Role = 'ADMIN' | 'STUDENT' | 'PROFESSOR' | 'PENDING_APPROVAL'
+type Role = Pick<User, 'role'>
 
 declare module 'next-auth' {
   interface Session {
