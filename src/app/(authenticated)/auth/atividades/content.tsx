@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useSession } from 'next-auth/react'
 import { SquarePlus } from 'lucide-react'
 
@@ -14,8 +15,10 @@ export default function Content() {
     <>
       {data?.user.role === 'PROFESSOR' && (
         <div className="mt-6 text-end">
-          <Button>
-            Nova atividade <SquarePlus />
+          <Button className="shadow" asChild>
+            <Link href="/auth/atividades/nova-atividade">
+              Nova atividade <SquarePlus />
+            </Link>
           </Button>
         </div>
       )}

@@ -1,12 +1,18 @@
 'use client'
 
 import Link from 'next/link'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { Fragment, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { format } from 'date-fns'
-import { ChevronRight, Dices, HelpCircle, UserPlus } from 'lucide-react'
+import {
+  ChevronRight,
+  ChevronLeft,
+  Dices,
+  HelpCircle,
+  UserPlus,
+} from 'lucide-react'
 
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -29,12 +35,14 @@ export interface IParams {
 }
 
 export default function Page() {
+  const { back } = useRouter()
   const { slug } = useParams<IParams>()
   const { id } = normalizeSlug(slug)
 
   const { data: team, refetch } = useGetClassById({ id })
   const { mutate: handleCreateStudent } = useCreateStudent()
   const [showDialog, setShowDialog] = useState(false)
+  const [showDialogHelp, setShowDialogHelp] = useState(false)
 
   const { register, handleSubmit, setValue } = useForm<StudentData>({
     resolver: zodResolver(studentSchema),
@@ -67,22 +75,63 @@ export default function Page() {
   return (
     <>
       <div className="flex items-center justify-between">
+        <Button size="icon" onClick={() => back()}>
+          <ChevronLeft className="size-5" />
+        </Button>
+
         <h2 className="text-lg font-semibold">Detalhes da turma</h2>
 
-        <HelpCircle className="text-zinc-500" />
+        <button onClick={() => setShowDialogHelp(true)}>
+          <HelpCircle className="text-zinc-500" />
+        </button>
       </div>
 
-      <div className="mt-4 flex justify-between">
+      <Dialog.Root open={showDialogHelp} onOpenChange={setShowDialogHelp}>
+        <Dialog.Content>
+          <Dialog.Header>
+            <Dialog.Title>Ajuda - Detalhes da turma</Dialog.Title>
+          </Dialog.Header>
+
+          <div className="text-sm">
+            Esta página mostra todos os detalhes da turma em questão, incluindo
+            a lista de alunos, número de alunos, data de criação e filtro de
+            busca.
+          </div>
+
+          <div className="text-sm">
+            <li>
+              <span className="font-semibold">Filtro de busca:</span> Utilize o
+              filtro para encontrar um aluno específico.
+            </li>
+            <li>
+              <span className="font-semibold">Deletar turma:</span> Clique sobre
+              o botão para realizar a exclusão. Ao confirmar o pedido, a turma
+              será excluída.
+            </li>
+          </div>
+          <Dialog.Footer>
+            <Link href={'/auth/ajuda'}>
+              <Button type="submit">Ver tutoriais</Button>
+            </Link>
+          </Dialog.Footer>
+        </Dialog.Content>
+      </Dialog.Root>
+
+      <div className="mt-6 flex flex-col justify-between md:flex-row">
         <p className="text-sm">
-          Data de criação:{' '}
-          <span className="font-semibold">
-            {format(team?.createdAt, 'dd/MM/yyy')}
-          </span>
+          Nome da turma: <span className="font-semibold">{team?.name}</span>
         </p>
 
         <p>
           Nº Estudantes:{' '}
           <span className="font-semibold">{team.students.length}</span>
+        </p>
+
+        <p className="text-sm">
+          Data de criação:{' '}
+          <span className="font-semibold">
+            {format(team?.createdAt, 'dd/MM/yyy')}
+          </span>
         </p>
       </div>
 

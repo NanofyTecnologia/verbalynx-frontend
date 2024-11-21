@@ -11,42 +11,37 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { Select } from '@/components/ui/select'
 import { Dialog } from '@/components/ui/dialog'
 
-import { ClassData, classSchema } from './schema'
-import { useCreateClass } from './_hooks/use-create-class'
+import { ActivityData, activitySchema } from './schema'
+import { useCreateActivity } from './_hooks/use-create-activity'
 import { useState } from 'react'
 
 export default function Content() {
   const { back, replace } = useRouter()
 
   const {
-    watch,
-    setValue,
     register,
     handleSubmit,
     formState: { isSubmitting },
-  } = useForm<ClassData>({
-    resolver: zodResolver(classSchema),
+  } = useForm<ActivityData>({
+    resolver: zodResolver(activitySchema),
   })
 
-  const { mutate: handleCreateClass } = useCreateClass()
+  const { mutate: handleCreateActivity } = useCreateActivity()
   const [showDialog, setShowDialog] = useState(false)
 
-  const onSubmit: SubmitHandler<ClassData> = (data) => {
-    handleCreateClass(
+  const onSubmit: SubmitHandler<ActivityData> = (data) => {
+    handleCreateActivity(
       { ...data },
       {
         onSuccess: () => {
-          toast.success('Turma adicionada com sucesso!')
-          replace('/auth/turmas')
+          toast.success('Atividade adicionada com sucesso!')
+          replace('/auth/atividades')
         },
       },
     )
   }
-
-  const { period, educationLevel } = watch()
 
   return (
     <>
@@ -55,7 +50,7 @@ export default function Content() {
           <ChevronLeft className="size-5" />
         </Button>
 
-        <h2 className="text-lg font-semibold">Nova Turma</h2>
+        <h2 className="text-lg font-semibold">Nova Atividade</h2>
 
         <button onClick={() => setShowDialog(true)}>
           <Info className="text-zinc-500" />
@@ -65,12 +60,14 @@ export default function Content() {
       <Dialog.Root open={showDialog} onOpenChange={setShowDialog}>
         <Dialog.Content>
           <Dialog.Header>
-            <Dialog.Title>Info - Nova Turma</Dialog.Title>
+            <Dialog.Title>Ajuda - Nova atividade</Dialog.Title>
           </Dialog.Header>
 
           <div className="text-sm">
-            Crie novas turmas e organize seu ambiente de ensino. Informe o nome
-            da turma, o período letivo e o nível de ensino.
+            Crie atividades personalizadas para cada turma, escolhendo um nome
+            que identifique a atividade, selecionando a rubrica de avaliação,
+            definindo os níveis de desempenho e descrevendo o objetivo geral da
+            aprendizagem.
           </div>
 
           <Dialog.Footer>
@@ -84,56 +81,26 @@ export default function Content() {
       <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-6">
         <div className="space-y-0.5">
           <Label>Nome</Label>
-
           <Input
             {...register('name')}
-            placeholder="Ex: Turma 8ºB"
+            placeholder="Ex: Atividade Didática XX.X"
             disabled={isSubmitting}
           />
         </div>
 
         <div className="space-y-0.5">
-          <Label>Período</Label>
-
-          <Select.Root
-            value={period}
-            onValueChange={(value) => setValue('period', value)}
-          >
-            <Select.Trigger disabled={isSubmitting}>
-              <Select.Value placeholder="Selecione o período" />
-            </Select.Trigger>
-            <Select.Content>
-              <Select.Item value="Manhã">Manhã</Select.Item>
-
-              <Select.Item value="Tarde">Tarde</Select.Item>
-
-              <Select.Item value="Noite">Noite</Select.Item>
-            </Select.Content>
-          </Select.Root>
+          <Label>Rubrica</Label>
+          <Input {...register('rubric')} disabled={isSubmitting} />
         </div>
 
         <div className="space-y-0.5">
-          <Label>Ensino </Label>
+          <Label>Nível</Label>
+          <Input {...register('rubricLevel')} disabled={isSubmitting} />
+        </div>
 
-          <Select.Root
-            value={educationLevel}
-            onValueChange={(value) => setValue('educationLevel', value)}
-          >
-            <Select.Trigger disabled={isSubmitting}>
-              <Select.Value placeholder="Selecione o ensino" />
-            </Select.Trigger>
-            <Select.Content>
-              <Select.Item value="Ensino Fundamental">
-                Ensino Fundamental
-              </Select.Item>
-
-              <Select.Item value="Ensino Superior">Ensino Superior</Select.Item>
-
-              <Select.Item value="Ensino Médio">Ensino Fundamental</Select.Item>
-
-              <Select.Item value="Outro">Outro</Select.Item>
-            </Select.Content>
-          </Select.Root>
+        <div className="space-y-0.5">
+          <Label>Objetivo Geral</Label>
+          <Input {...register('generalObjective')} disabled={isSubmitting} />
         </div>
 
         <Button type="submit" className="w-full" disabled={isSubmitting}>
