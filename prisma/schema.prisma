@@ -37,6 +37,10 @@ model User {
   studentClasses Class[] @relation("StudentClasses")
   teacherClasses Class[] @relation("TeacherClasses")
   class          Class?  @relation(fields: [classId], references: [id])
+  studentTasks   Task[]  @relation("StudentTasks")
+  teacherTasks   Task[]  @relation("TeacherTasks")
+
+  taskId String?
 
   @@map("users")
 }
@@ -61,6 +65,25 @@ model Account {
 
   @@id([provider, providerAccountId])
   @@map("accounts")
+}
+
+model Task {
+  id          String   @id @default(cuid())
+  name        String
+  openingDate DateTime @map("opening_date")
+  closingDate DateTime @map("closing_date")
+  rubric      String
+  level       String
+  objective   String
+  teacherId      String   @map("teacher_id")
+
+  students User[] @relation("StudentTasks")
+  teacher  User   @relation("TeacherTasks", fields: [teacherId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("tasks")
 }
 
 model Session {
