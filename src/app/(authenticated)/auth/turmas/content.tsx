@@ -18,10 +18,6 @@ export default function Content() {
 
   return (
     <>
-      <div className="text-center">
-        <h2 className="text-lg font-semibold">Turmas</h2>
-      </div>
-
       {data?.user.role === 'PROFESSOR' && (
         <div className="mt-6 text-end">
           <Button className="shadow" asChild>
