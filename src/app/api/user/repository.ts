@@ -4,7 +4,14 @@ import { CreateUserData } from './service'
 
 function create(data: CreateUserData) {
   return prisma.user.create({
-    data,
+    data: {
+      ...data,
+      studentClasses: {
+        connect: {
+          id: data.classId,
+        },
+      },
+    },
   })
 }
 

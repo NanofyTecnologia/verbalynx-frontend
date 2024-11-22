@@ -1,11 +1,13 @@
 'use client'
 
-import { Fragment } from 'react'
 import Image from 'next/image'
+import { Fragment, useState } from 'react'
 import { signOut, useSession } from 'next-auth/react'
 import {
+  User,
   Menu,
   Users,
+  CircleAlert,
   NotebookPen,
   PanelsTopLeft,
   GraduationCap,
@@ -18,6 +20,7 @@ import { Button } from '@/components/ui/button'
 import Logo from '@/assets/images/verbalynx-logo.png'
 
 import Link from './link'
+import { Tooltip } from '@/components/ui/tooltip'
 
 export const sidebarLinks = [
   {
@@ -61,6 +64,8 @@ export const sidebarLinks = [
 export default function Header() {
   const { data, update } = useSession()
 
+  const [tooltipOpen, setTooltipOpen] = useState(false)
+
   return (
     <>
       <header className="flex items-center justify-between bg-white p-4">
@@ -82,7 +87,9 @@ export default function Header() {
               <div className="space-y-2">
                 {data &&
                   sidebarLinks
-                    .filter((item) => item.roles.includes(data.user.role))
+                    .filter((item) =>
+                      item.roles.includes(String(data.user.role)),
+                    )
                     .map((item, index) => (
                       <Fragment key={index}>
                         <Link href={item.href}>
@@ -121,9 +128,40 @@ export default function Header() {
                 </Button>
               </div>
 
-              <Button onClick={() => signOut()} variant="destructive">
-                Desconectar
-              </Button>
+              <div className="mt-auto w-full space-y-2">
+                <div className="flex">
+                  <Link href="/auth/perfil" className="relative">
+                    <User />
+                    Meu Perfil
+                  </Link>
+
+                  <Tooltip.Provider disableHoverableContent>
+                    <Tooltip.Root
+                      open={tooltipOpen}
+                      onOpenChange={setTooltipOpen}
+                    >
+                      <Tooltip.Trigger
+                        className="ms-auto"
+                        onClick={() => setTooltipOpen(!tooltipOpen)}
+                      >
+                        <CircleAlert className="size-4 text-destructive" />
+                      </Tooltip.Trigger>
+
+                      <Tooltip.Content>
+                        Seu perfil não está completo!
+                      </Tooltip.Content>
+                    </Tooltip.Root>
+                  </Tooltip.Provider>
+                </div>
+
+                <Button
+                  className="w-full"
+                  variant="destructive"
+                  onClick={() => signOut()}
+                >
+                  Desconectar
+                </Button>
+              </div>
             </div>
           </Sheet.Content>
         </Sheet.Root>
