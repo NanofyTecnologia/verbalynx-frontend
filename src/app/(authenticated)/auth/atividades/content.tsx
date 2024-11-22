@@ -6,10 +6,17 @@ import { SquarePlus } from 'lucide-react'
 
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+
 import { NanoEye } from '@/assets/svgs'
+
+import { useGetTasks } from './_hooks/use-get-tasks'
 
 export default function Content() {
   const { data } = useSession()
+
+  const { data: tasks } = useGetTasks()
+
+  console.log(tasks)
 
   return (
     <>
