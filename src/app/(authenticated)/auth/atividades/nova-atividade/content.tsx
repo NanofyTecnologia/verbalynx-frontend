@@ -13,8 +13,8 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Dialog } from '@/components/ui/dialog'
 
-import { ActivityData, activitySchema } from './schema'
-import { useCreateActivity } from './_hooks/use-create-activity'
+import { TaskData, taskSchema } from './schema'
+import { useCreateTask } from './_hooks/use-create-task'
 import { useState } from 'react'
 
 export default function Content() {
@@ -24,15 +24,16 @@ export default function Content() {
     register,
     handleSubmit,
     formState: { isSubmitting },
-  } = useForm<ActivityData>({
-    resolver: zodResolver(activitySchema),
+  } = useForm<TaskData>({
+    resolver: zodResolver(taskSchema),
   })
 
-  const { mutate: handleCreateActivity } = useCreateActivity()
+  const { mutate: handleCreateTask } = useCreateTask()
   const [showDialog, setShowDialog] = useState(false)
 
-  const onSubmit: SubmitHandler<ActivityData> = (data) => {
-    handleCreateActivity(
+  const onSubmit: SubmitHandler<TaskData> = (data) => {
+    console.log('enviando...')
+    handleCreateTask(
       { ...data },
       {
         onSuccess: () => {
@@ -95,12 +96,32 @@ export default function Content() {
 
         <div className="space-y-0.5">
           <Label>Nível</Label>
-          <Input {...register('rubricLevel')} disabled={isSubmitting} />
+          <Input {...register('level')} disabled={isSubmitting} />
+        </div>
+
+        <div className="space-y-6 md:flex md:gap-5 md:space-y-0">
+          <div className="flex flex-col">
+            <Label>Data de abertura</Label>
+            <Input
+              {...register('openingDate')}
+              type="datetime-local"
+              disabled={isSubmitting}
+            />
+          </div>
+
+          <div className="flex flex-col">
+            <Label>Data de fechamento</Label>
+            <Input
+              {...register('closingDate')}
+              type="datetime-local"
+              disabled={isSubmitting}
+            />
+          </div>
         </div>
 
         <div className="space-y-0.5">
           <Label>Objetivo Geral</Label>
-          <Input {...register('generalObjective')} disabled={isSubmitting} />
+          <Input {...register('objective')} disabled={isSubmitting} />
         </div>
 
         <Button type="submit" className="w-full" disabled={isSubmitting}>
@@ -113,7 +134,7 @@ export default function Content() {
               ariaLabel="three-dots-loading"
             />
           ) : (
-            'Salvar'
+            'Criar atividade'
           )}
         </Button>
       </form>
