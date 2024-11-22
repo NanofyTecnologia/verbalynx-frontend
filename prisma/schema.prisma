@@ -75,8 +75,10 @@ model Task {
   rubric      String
   level       String
   objective   String
-  teacherId      String   @map("teacher_id")
+  teacherId   String   @map("teacher_id")
+  classId     String?  @map("class_id")
 
+  class    Class? @relation(fields: [classId], references: [id])
   students User[] @relation("StudentTasks")
   teacher  User   @relation("TeacherTasks", fields: [teacherId], references: [id], onDelete: Cascade)
 
@@ -87,7 +89,7 @@ model Task {
 }
 
 model Session {
-  sessionToken String   @unique
+  sessionToken String   @unique @map("session_token")
   userId       String   @map("user_id")
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -126,11 +128,12 @@ model Authenticator {
 model Class {
   id             String @id @unique @default(cuid())
   name           String
-  educationLevel String
+  educationLevel String @map("education_level")
   period         String
-  teacherId      String
+  teacherId      String @map("teacher_id")
 
-  User     User[]
+  tasks    Task[]
+  user     User[]
   students User[] @relation("StudentClasses")
   teacher  User?  @relation("TeacherClasses", fields: [teacherId], references: [id])
 
