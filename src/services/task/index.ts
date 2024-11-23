@@ -15,8 +15,8 @@ export const task = {
     return data
   },
 
-  async getByTeacher() {
-    const { data } = await axios.get<GetTaskResponse[]>('/task/teacher')
+  async getByUser() {
+    const { data } = await axios.get<GetTaskResponse[]>('/task')
 
     return data
   },

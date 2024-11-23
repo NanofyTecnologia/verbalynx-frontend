@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from 'next/server'
 
 import { HttpError } from '@/helpers/http-error'
 
-import { createTask } from './service'
+import { createTask, getTaskByUser } from './service'
 
 export async function POST(req: NextRequest) {
   try {
@@ -12,6 +12,22 @@ export async function POST(req: NextRequest) {
     const createdTask = await createTask(data)
 
     return NextResponse.json(createdTask, { status: HttpStatusCode.Ok })
+  } catch (error) {
+    if (error instanceof HttpError) {
+      return NextResponse.json(error.message, { status: error.status })
+    }
+
+    return NextResponse.json('INTERNAL_SERVER_ERROR', {
+      status: HttpStatusCode.InternalServerError,
+    })
+  }
+}
+
+export async function GET() {
+  try {
+    const tasks = await getTaskByUser()
+
+    return NextResponse.json(tasks, { status: HttpStatusCode.Ok })
   } catch (error) {
     if (error instanceof HttpError) {
       return NextResponse.json(error.message, { status: error.status })

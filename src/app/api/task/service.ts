@@ -9,6 +9,8 @@ import {
   create,
   createStudentTasks,
   findAllStudentsByClassId,
+  findByStudent,
+  findByTeacher,
 } from './repository'
 
 export type CreateTaskData = Omit<Task, 'id' | 'createdAt' | 'updatedAt'>
@@ -20,11 +22,11 @@ async function createTask(data: CreateTaskData) {
     throw new HttpError('UNAUTHORIZED', HttpStatusCode.Unauthorized)
   }
 
-  const allStudents = await findAllStudentsByClassId(data.classId)
+  const team = await findAllStudentsByClassId(data.classId)
 
   const createdTask = await create({ ...data, teacherId: session.user.id })
 
-  allStudents.forEach(async (item) => {
+  team?.students.forEach(async (item) => {
     return await createStudentTasks(item.id, createdTask.id)
   })
 
@@ -37,5 +39,23 @@ async function createTask(data: CreateTaskData) {
 
   return createdTask
 }
+
+async function getTaskByUser() {
+  const session = await getServerSession(authOptions)
+
+  if (!session?.user.id) {
+    throw new HttpError('UNAUTHORIZED', HttpStatusCode.Unauthorized)
+  }
+
+  if (session.user.role === 'PROFESSOR') {
+    return await findByTeacher(session.user.id)
+  } else {
+    const user = await findByStudent(session.user.id)
+
+    return user?.studentTasks
+  }
+}
+
+export { getTaskByUser }
 
 export { createTask }

@@ -6,7 +6,7 @@ import { task } from '@/services/task'
 export function useGetTasks() {
   const query = createQuery({
     queryKey: ['get-tasks'],
-    fetcher: task.getByTeacher,
+    fetcher: task.getByUser,
     placeholderData: keepPreviousData,
   })
 

@@ -9,9 +9,12 @@ function create(data: CreateTaskData) {
 }
 
 function findAllStudentsByClassId(id: string) {
-  return prisma.user.findMany({
+  return prisma.class.findUnique({
     where: {
-      classId: id,
+      id,
+    },
+    select: {
+      students: true,
     },
   })
 }
@@ -31,4 +34,29 @@ function createStudentTasks(id: string, taskId: string) {
   })
 }
 
-export { create, findAllStudentsByClassId, createStudentTasks }
+function findByTeacher(id: string) {
+  return prisma.task.findMany({
+    where: {
+      teacherId: id,
+    },
+  })
+}
+
+function findByStudent(id: string) {
+  return prisma.user.findUnique({
+    where: {
+      id,
+    },
+    select: {
+      studentTasks: true,
+    },
+  })
+}
+
+export {
+  create,
+  findAllStudentsByClassId,
+  findByTeacher,
+  findByStudent,
+  createStudentTasks,
+}
