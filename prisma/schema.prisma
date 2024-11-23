@@ -142,3 +142,38 @@ model Class {
 
   @@map("classes")
 }
+
+model Rubric {
+  id String @id @unique @default(cuid())
+
+  evaluation Evaluation[]
+
+  @@map("rubrics")
+}
+
+model Evaluation {
+  id   String @id @unique @default(cuid())
+  name String
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  level    Level[]
+  rubric   Rubric? @relation(fields: [rubricId], references: [id])
+  rubricId String?
+
+  @@map("evaluations")
+}
+
+model Level {
+  id   String @id @unique @default(cuid())
+  name Int    @default(autoincrement())
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  evaluation   Evaluation? @relation(fields: [evaluationId], references: [id])
+  evaluationId String?
+
+  @@map("levels")
+}
