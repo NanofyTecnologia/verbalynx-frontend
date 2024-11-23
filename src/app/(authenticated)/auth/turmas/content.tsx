@@ -1,20 +1,27 @@
 'use client'
 
 import Link from 'next/link'
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 import { useSession } from 'next-auth/react'
-import { GraduationCap, SquarePlus } from 'lucide-react'
+import { GraduationCap, SquarePlus, Search } from 'lucide-react'
 
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 
 import { useGetClassesById } from '@/hooks/services/use-get-classes-by-id'
+import { normalize } from '@/utils/normalize'
+import { Highlight } from '@/utils/highlight'
 
 export default function Content() {
   const { data } = useSession()
+  const [search, setSearch] = useState('')
 
   const { data: classes, isLoading } = useGetClassesById()
+
+  const filteredData = classes?.filter((item) =>
+    normalize(item.name).includes(normalize(search)),
+  )
 
   return (
     <>
@@ -29,7 +36,17 @@ export default function Content() {
       )}
 
       <div className="mt-6">
-        <Input className="bg-white" placeholder="Pesquisar..." />
+        <div className="flex items-center gap-4">
+          <div className="relative flex flex-1 items-center">
+            <Search className="absolute left-2 size-4" />
+
+            <Input
+              placeholder="Pesquisar..."
+              className="h-10 bg-white ps-8"
+              onChange={(e) => setSearch(e.currentTarget.value)}
+            />
+          </div>
+        </div>
       </div>
 
       <div className="mt-6">
@@ -46,7 +63,7 @@ export default function Content() {
             ))}
 
           {!isLoading &&
-            classes?.map((item) => (
+            filteredData?.map((item) => (
               <Fragment key={item.id}>
                 <Link
                   href={`/auth/turmas/${item.id}`}
@@ -63,7 +80,9 @@ export default function Content() {
                     />
                   </span>
 
-                  {item.name}
+                  <p>
+                    <Highlight text={item.name} search={search} />
+                  </p>
                 </Link>
               </Fragment>
             ))}

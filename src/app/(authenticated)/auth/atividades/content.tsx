@@ -1,9 +1,9 @@
 'use client'
 
 import Link from 'next/link'
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 import { useSession } from 'next-auth/react'
-import { SquarePlus } from 'lucide-react'
+import { SquarePlus, Search } from 'lucide-react'
 import { NanoEye } from '@/assets/svgs'
 
 import { Input } from '@/components/ui/input'
@@ -12,11 +12,18 @@ import { Skeleton } from '@/components/ui/skeleton'
 
 import { useGetTasks } from './_hooks/use-get-tasks'
 import { format } from 'date-fns'
+import { normalize } from '@/utils/normalize'
+import { Highlight } from '@/utils/highlight'
 
 export default function Content() {
   const { data } = useSession()
+  const [search, setSearch] = useState('')
 
   const { data: tasks, isLoading } = useGetTasks()
+
+  const filteredData = tasks?.filter((item) =>
+    normalize(item.name).includes(normalize(search)),
+  )
 
   return (
     <>
@@ -31,7 +38,17 @@ export default function Content() {
       )}
 
       <div className="mt-6">
-        <Input className="bg-white" placeholder="Pesquisar..." />
+        <div className="flex items-center gap-4">
+          <div className="relative flex flex-1 items-center">
+            <Search className="absolute left-2 size-4" />
+
+            <Input
+              placeholder="Pesquisar..."
+              className="h-10 bg-white ps-8"
+              onChange={(e) => setSearch(e.currentTarget.value)}
+            />
+          </div>
+        </div>
       </div>
 
       <div className="mt-6">
@@ -46,7 +63,7 @@ export default function Content() {
             ))}
 
           {!isLoading &&
-            tasks?.map((item) => (
+            filteredData?.map((item) => (
               <Fragment key={item.id}>
                 <Link href={`/auth/atividades/${item.id}`}>
                   <div className="rounded-md border bg-white p-4">
@@ -56,7 +73,9 @@ export default function Content() {
                       <div className="space-y-1">
                         <p>
                           Atividade:{' '}
-                          <span className="font-semibold">{item.name}</span>
+                          <span className="font-semibold">
+                            <Highlight text={item.name} search={search} />
+                          </span>
                         </p>
 
                         <p>

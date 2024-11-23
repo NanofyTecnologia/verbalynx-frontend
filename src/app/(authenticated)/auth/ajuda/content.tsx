@@ -10,13 +10,14 @@ import { Button } from '@/components/ui/button'
 
 import Logo from '@/assets/svgs/icon.svg'
 import { normalize } from '@/utils/normalize'
+import { Highlight } from '@/utils/highlight'
 
 const videos = [
   {
-    title: 'Como inserir estudantes',
+    name: 'Como inserir estudantes',
   },
   {
-    title: 'Como inserir atividades',
+    name: 'Como inserir atividades',
   },
 ]
 
@@ -24,44 +25,9 @@ export default function Content() {
   const { data } = useSession()
   const [search, setSearch] = useState('')
 
-  const filteredVideos = videos.filter((video) =>
-    normalize(video.title).includes(normalize(search)),
+  const filteredData = videos.filter((item) =>
+    normalize(item.name).includes(normalize(search)),
   )
-
-  function highLight(text: string, search: string) {
-    if (!search.length) return <>{text}</>
-
-    const normalizeTitle = normalize(text)
-    const normalizeSearch = normalize(search)
-
-    if (!normalizeTitle.includes(normalizeSearch)) return <>{text}</>
-
-    const split = normalizeTitle.split(normalizeSearch)
-    let cursor = 0
-
-    return split.map((sl, index) => {
-      const fragment = text.substring(cursor, cursor + sl.length)
-
-      if (index !== split.length - 1) {
-        cursor += sl.length
-
-        const final = (
-          <Fragment key={Date.now().toString() + index}>
-            {fragment}
-
-            <span className="rounded-md bg-[#8ABF3B]/50">
-              {text.substring(cursor, cursor + normalizeSearch.length)}
-            </span>
-          </Fragment>
-        )
-
-        cursor += normalizeSearch.length
-        return final
-      }
-
-      return fragment
-    })
-  }
 
   return (
     <>
@@ -84,7 +50,7 @@ export default function Content() {
           )}
         </div>
 
-        {filteredVideos.map((video, index) => (
+        {filteredData.map((item, index) => (
           <Fragment key={index}>
             <div className="rounded-md bg-white p-4 shadow">
               <div className="flex justify-center rounded-md bg-[#8ABF3B]/30 py-6">
@@ -92,7 +58,7 @@ export default function Content() {
               </div>
 
               <h2 className="mt-4 font-semibold uppercase">
-                {highLight(video.title, search)}
+                <Highlight text={item.name} search={search} />
               </h2>
             </div>
           </Fragment>
