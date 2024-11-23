@@ -7,6 +7,24 @@ function findById(id: string) {
     where: {
       id,
     },
+    select: {
+      id: true,
+      name: true,
+      openingDate: true,
+      closingDate: true,
+      rubric: true,
+      level: true,
+      objective: true,
+      teacherId: true,
+      classId: true,
+      createdAt: true,
+      updatedAt: true,
+      class: {
+        select: {
+          name: true,
+        },
+      },
+    },
   })
 }
 
