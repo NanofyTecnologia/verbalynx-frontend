@@ -1,7 +1,9 @@
 'use client'
 
+import { Fragment, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { ChevronLeft, Info } from 'lucide-react'
 import { ThreeDots } from 'react-loader-spinner'
@@ -12,21 +14,30 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Dialog } from '@/components/ui/dialog'
+import { Select } from '@/components/ui/select'
 
-import { TaskData, taskSchema } from './schema'
+import { useGetClassesById } from '@/hooks/services/use-get-classes-by-id'
+
+import { TaskData, taskSchema } from './_schema'
 import { useCreateTask } from './_hooks/use-create-task'
-import { useState } from 'react'
 
 export default function Content() {
+  const { data } = useSession()
+
   const { back, replace } = useRouter()
+  const { data: teams } = useGetClassesById({ id: data?.user.id })
 
   const {
+    watch,
     register,
+    setValue,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = useForm<TaskData>({
     resolver: zodResolver(taskSchema),
   })
+
+  console.log(errors)
 
   const { mutate: handleCreateTask } = useCreateTask()
   const [showDialog, setShowDialog] = useState(false)
@@ -43,6 +54,8 @@ export default function Content() {
       },
     )
   }
+
+  console.log(watch('openingDate'))
 
   return (
     <>
@@ -80,6 +93,23 @@ export default function Content() {
       </Dialog.Root>
 
       <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-6">
+        <div className="space-y-0.5">
+          <Label>Turma</Label>
+
+          <Select.Root onValueChange={(value) => setValue('classId', value)}>
+            <Select.Trigger>
+              <Select.Value placeholder="Seleciona a turma" />
+            </Select.Trigger>
+            <Select.Content>
+              {teams?.map((team) => (
+                <Fragment key={team.id}>
+                  <Select.Item value={team.id}>{team.name}</Select.Item>
+                </Fragment>
+              ))}
+            </Select.Content>
+          </Select.Root>
+        </div>
+
         <div className="space-y-0.5">
           <Label>Nome</Label>
           <Input

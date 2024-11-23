@@ -7,8 +7,8 @@ import type {
 } from './types'
 
 export const team = {
-  async getByUserId(params: GetClassByIdParams) {
-    const { data } = await axios.get<GetClassResponse[]>('/class/' + params.id)
+  async getByUserId() {
+    const { data } = await axios.get<GetClassResponse[]>('/class')
 
     return data
   },

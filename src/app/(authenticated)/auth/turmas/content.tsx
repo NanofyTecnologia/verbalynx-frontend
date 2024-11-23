@@ -9,12 +9,12 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 
-import { useGetClassesById } from './_hooks/use-get-classes-by-id'
+import { useGetClassesById } from '@/hooks/services/use-get-classes-by-id'
 
 export default function Content() {
   const { data } = useSession()
 
-  const { data: classes, isLoading } = useGetClassesById({ id: data?.user.id })
+  const { data: classes, isLoading } = useGetClassesById()
 
   return (
     <>

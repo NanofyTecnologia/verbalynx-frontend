@@ -8,4 +8,23 @@ function create(data: CreateClassData) {
   })
 }
 
-export { create }
+function getByTeacher(id: string) {
+  return prisma.class.findMany({
+    where: {
+      teacherId: id,
+    },
+  })
+}
+
+function getByStudent(id: string) {
+  return prisma.user.findMany({
+    where: {
+      id,
+    },
+    select: {
+      studentClasses: true,
+    },
+  })
+}
+
+export { create, getByTeacher, getByStudent }

@@ -2,15 +2,13 @@ import { createQuery } from 'react-query-kit'
 
 import { team } from '@/services/class'
 
-import { IProps } from './types'
-
-export function useGetClassesById({ id }: IProps) {
+export function useGetClassesById() {
   const query = createQuery({
     queryKey: ['get-classes-by-id'],
     fetcher: team.getByUserId,
   })
 
-  const queryResponse = query({ variables: { id } })
+  const queryResponse = query()
 
   return {
     ...queryResponse,

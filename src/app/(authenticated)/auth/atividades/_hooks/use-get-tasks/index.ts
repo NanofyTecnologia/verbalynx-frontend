@@ -1,12 +1,12 @@
 import { createQuery } from 'react-query-kit'
 import { keepPreviousData } from '@tanstack/react-query'
 
-import { user } from '@/services/user'
+import { task } from '@/services/task'
 
 export function useGetTasks() {
   const query = createQuery({
     queryKey: ['get-tasks'],
-    fetcher: user.getTasks,
+    fetcher: task.getByTeacher,
     placeholderData: keepPreviousData,
   })
 

@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 
 import { useGetTasks } from './_hooks/use-get-tasks'
+import { format } from 'date-fns'
 
 export default function Content() {
   const { data } = useSession()
@@ -47,11 +48,7 @@ export default function Content() {
           {!isLoading &&
             tasks?.map((item) => (
               <Fragment key={item.id}>
-                <Link
-                  href={`/auth/turmas/${item.id}`}
-                  style={{ borderColor: '#49BE25' }}
-                  className="flex items-center gap-4 rounded-md border-s-4 bg-white px-4 py-2.5"
-                >
+                <Link href={`/auth/atividades/${item.id}`}>
                   <div className="rounded-md border bg-white p-4">
                     <div className="flex items-start gap-2">
                       <span className="size-8 rounded-full border-2"></span>
@@ -66,19 +63,19 @@ export default function Content() {
                           Turma: <span className="font-semibold">XX.X</span>
                         </p>
 
-                        {/* <p>
+                        <p>
                           Abertura:{' '}
-                          <span className="font-semibold">
-                            {item.openingDate}
+                          <span className="text-xs font-semibold">
+                            {format(item.openingDate, 'dd/MM/yyyy - HH:mm')}
                           </span>
                         </p>
 
                         <p>
                           Fechamento:{' '}
-                          <span className="font-semibold">
-                            {item.closingDate}
+                          <span className="text-xs font-semibold">
+                            {format(item.closingDate, 'dd/MM/yyyy - HH:mm')}
                           </span>
-                        </p> */}
+                        </p>
                       </div>
 
                       <div className="ms-auto">

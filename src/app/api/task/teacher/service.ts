@@ -4,16 +4,18 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/next-auth'
 import { HttpError } from '@/helpers/http-error'
 
-import { getByUserId } from './repository'
+import { findByTeacher } from './repository'
 
-async function getClassesByUserId(id: string) {
+async function getTaskByTeacher() {
   const session = await getServerSession(authOptions)
 
-  if (!session?.user.id) {
+  if (!session?.user.id || session.user.role !== 'PROFESSOR') {
     throw new HttpError('UNAUTHORIZED', HttpStatusCode.Unauthorized)
   }
 
-  return await getByUserId(id)
+  const tasks = await findByTeacher(session.user.id)
+
+  return tasks
 }
 
-export { getClassesByUserId }
+export { getTaskByTeacher }

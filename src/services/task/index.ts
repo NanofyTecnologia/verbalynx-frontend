@@ -15,6 +15,12 @@ export const task = {
     return data
   },
 
+  async getByTeacher() {
+    const { data } = await axios.get<GetTaskResponse[]>('/task/teacher')
+
+    return data
+  },
+
   // async getById(params: GetTaskByIdParams) {
   //   const { data } = await axios.get<GetTaskResponse>(
   //     'user/task/details/' + params.id,
@@ -24,7 +30,7 @@ export const task = {
   // },
 
   async create(params: CreateTaskParams) {
-    const { data } = await axios.post<GetTaskResponse>('user/task', params)
+    const { data } = await axios.post<GetTaskResponse>('/task', params)
 
     return data
   },
