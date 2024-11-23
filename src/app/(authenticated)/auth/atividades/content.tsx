@@ -21,6 +21,8 @@ export default function Content() {
 
   const { data: tasks, isLoading } = useGetTasks()
 
+  console.log(tasks)
+
   const filteredData = tasks?.filter((item) =>
     normalize(item.name).includes(normalize(search)),
   )
@@ -43,7 +45,7 @@ export default function Content() {
             <Search className="absolute left-2 size-4" />
 
             <Input
-              placeholder="Pesquisar..."
+              placeholder="Pesquisar nome da atividade..."
               className="h-10 bg-white ps-8"
               onChange={(e) => setSearch(e.currentTarget.value)}
             />
@@ -79,7 +81,10 @@ export default function Content() {
                         </p>
 
                         <p>
-                          Turma: <span className="font-semibold">XX.X</span>
+                          Turma:{' '}
+                          <span className="font-semibold">
+                            {item.class.name}
+                          </span>
                         </p>
 
                         <p>

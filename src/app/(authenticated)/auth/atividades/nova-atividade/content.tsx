@@ -3,7 +3,6 @@
 import { Fragment, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useSession } from 'next-auth/react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { ChevronLeft, Info } from 'lucide-react'
 import { ThreeDots } from 'react-loader-spinner'
@@ -22,28 +21,23 @@ import { TaskData, taskSchema } from './_schema'
 import { useCreateTask } from './_hooks/use-create-task'
 
 export default function Content() {
-  const { data } = useSession()
-
   const { back, replace } = useRouter()
-  const { data: teams } = useGetClassesById({ id: data?.user.id })
+  const { data: teams } = useGetClassesById()
 
   const {
     watch,
     register,
     setValue,
     handleSubmit,
-    formState: { isSubmitting, errors },
+    formState: { isSubmitting },
   } = useForm<TaskData>({
     resolver: zodResolver(taskSchema),
   })
-
-  console.log(errors)
 
   const { mutate: handleCreateTask } = useCreateTask()
   const [showDialog, setShowDialog] = useState(false)
 
   const onSubmit: SubmitHandler<TaskData> = (data) => {
-    console.log('enviando...')
     handleCreateTask(
       { ...data },
       {

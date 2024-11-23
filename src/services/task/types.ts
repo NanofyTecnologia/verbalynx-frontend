@@ -10,7 +10,7 @@ export type GetTaskResponse = {
   openingDate: Date
   closingDate: Date
   rubric: string
-  level: string
+  levels: number
   objective: string
   teacherId: string
   classId: string
