@@ -2,6 +2,14 @@ import { prisma } from '@/config/prisma'
 
 import { UpdateTaskData } from './service'
 
+function findById(id: string) {
+  return prisma.task.findUnique({
+    where: {
+      id,
+    },
+  })
+}
+
 function update(id: string, data: UpdateTaskData) {
   return prisma.task.update({
     where: {
@@ -11,4 +19,4 @@ function update(id: string, data: UpdateTaskData) {
   })
 }
 
-export { update }
+export { update, findById }

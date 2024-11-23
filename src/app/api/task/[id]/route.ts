@@ -3,9 +3,27 @@ import { NextRequest, NextResponse } from 'next/server'
 
 import { HttpError } from '@/helpers/http-error'
 
-import { updateTask } from './service'
+import { getTaskById, updateTask } from './service'
 
 import { IParams } from '../../types'
+
+export async function GET(req: NextRequest, { params }: IParams) {
+  try {
+    const id = params.id
+
+    const task = await getTaskById(id)
+
+    return NextResponse.json(task, { status: HttpStatusCode.Ok })
+  } catch (error) {
+    if (error instanceof HttpError) {
+      return NextResponse.json(error.message, { status: error.status })
+    }
+
+    return NextResponse.json('INTERNAL_SERVER_ERROR', {
+      status: HttpStatusCode.InternalServerError,
+    })
+  }
+}
 
 export async function PUT(req: NextRequest, { params }: IParams) {
   try {
