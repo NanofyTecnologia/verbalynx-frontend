@@ -3,6 +3,8 @@ import axios from '@/lib/axios'
 import type {
   CreateUserParams,
   CreateUserResponse,
+  GetTaskByStudentIdResponse,
+  GetTasksByStudentId,
   GetUserByIdResponse,
   UpdateUserParams,
 } from './types'
@@ -10,6 +12,14 @@ import type {
 export const user = {
   async getById() {
     const { data } = await axios.get<GetUserByIdResponse>('/user')
+
+    return data
+  },
+
+  async getTasksById(params: GetTasksByStudentId) {
+    const { data } = await axios.get<GetTaskByStudentIdResponse>(
+      '/user/task/' + params.id,
+    )
 
     return data
   },

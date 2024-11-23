@@ -79,6 +79,8 @@ model Task {
   teacherId   String   @map("teacher_id")
   classId     String?  @map("class_id")
 
+  Rubric Rubric?
+
   class    Class? @relation(fields: [classId], references: [id])
   students User[] @relation("StudentTasks")
   teacher  User   @relation("TeacherTasks", fields: [teacherId], references: [id], onDelete: Cascade)
@@ -90,9 +92,9 @@ model Task {
 }
 
 model Videos {
-  id        String   @id @default(cuid())
-  title     String
-  url       String
+  id    String @id @default(cuid())
+  title String
+  url   String
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -156,7 +158,11 @@ model Class {
 }
 
 model Rubric {
-  id String @id @unique @default(cuid())
+  id     String @id @unique @default(cuid())
+  name   String
+  taskId String @unique
+
+  task Task @relation(fields: [taskId], references: [id])
 
   evaluation Evaluation[]
 
@@ -170,22 +176,11 @@ model Evaluation {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  level    Level[]
+  level Int
+  score Int[]
+
   rubric   Rubric? @relation(fields: [rubricId], references: [id])
   rubricId String?
 
   @@map("evaluations")
-}
-
-model Level {
-  id   String @id @unique @default(cuid())
-  name Int    @default(autoincrement())
-
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  evaluation   Evaluation? @relation(fields: [evaluationId], references: [id])
-  evaluationId String?
-
-  @@map("levels")
 }

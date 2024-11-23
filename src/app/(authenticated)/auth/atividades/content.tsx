@@ -4,16 +4,17 @@ import Link from 'next/link'
 import { Fragment, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { SquarePlus, Search } from 'lucide-react'
-import { NanoEye } from '@/assets/svgs'
+import { format } from 'date-fns'
 
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 
-import { useGetTasks } from './_hooks/use-get-tasks'
-import { format } from 'date-fns'
+import { NanoEye } from '@/assets/svgs'
 import { normalize } from '@/utils/normalize'
 import { Highlight } from '@/utils/highlight'
+
+import { useGetTasks } from './_hooks/use-get-tasks'
 
 export default function Content() {
   const { data } = useSession()
@@ -24,6 +25,8 @@ export default function Content() {
   const filteredData = tasks?.filter((item) =>
     normalize(item.name).includes(normalize(search)),
   )
+
+  console.log(tasks)
 
   return (
     <>
@@ -79,7 +82,10 @@ export default function Content() {
                         </p>
 
                         <p>
-                          Turma: <span className="font-semibold">XX.X</span>
+                          Turma:
+                          <span className="font-semibold">
+                            {item.class.name}
+                          </span>
                         </p>
 
                         <p>

@@ -4,6 +4,7 @@ import type {
   GetClassResponse,
   CreateClassParams,
   GetClassByIdParams,
+  GetStundentsByClassIdResponse,
 } from './types'
 
 export const team = {
@@ -23,6 +24,14 @@ export const team = {
 
   async create(params: CreateClassParams) {
     const { data } = await axios.post<GetClassResponse>('/class', params)
+
+    return data
+  },
+
+  async getStudentsById(params: GetClassByIdParams) {
+    const { data } = await axios.get<GetStundentsByClassIdResponse>(
+      '/class/students/' + params.id,
+    )
 
     return data
   },

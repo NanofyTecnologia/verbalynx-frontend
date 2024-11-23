@@ -32,4 +32,10 @@ export const task = {
 
     return data
   },
+
+  async getRubric(params: GetTaskByIdParams) {
+    const { data } = await axios.get(`/task/${params}/rubric`)
+
+    return data
+  },
 }

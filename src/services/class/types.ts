@@ -18,3 +18,8 @@ export type CreateClassParams = Omit<
   Class,
   'id' | 'createdAt' | 'updatedAt' | 'teacherId'
 >
+
+export type GetStundentsByClassIdResponse = {
+  id: string
+  name: string
+}[]

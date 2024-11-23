@@ -1,5 +1,14 @@
 import { User } from '@prisma/client'
 
+export type GetTasksByStudentId = {
+  id: string
+}
+
+export type GetTaskByStudentIdResponse = {
+  id: string
+  name: string
+}[]
+
 export type CreateUserParams = Partial<
   Pick<User, 'email' | 'graduation' | 'name' | 'classId' | 'role'>
 >
