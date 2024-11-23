@@ -10,7 +10,7 @@ export interface InputProps
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, error, type, ...props }, ref) => {
     return (
-      <div className="space-y-0.5">
+      <div className="w-full space-y-0.5">
         <input
           type={type}
           data-error={!!error}
