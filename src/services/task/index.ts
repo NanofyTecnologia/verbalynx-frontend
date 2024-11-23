@@ -21,13 +21,11 @@ export const task = {
     return data
   },
 
-  // async getById(params: GetTaskByIdParams) {
-  //   const { data } = await axios.get<GetTaskResponse>(
-  //     'user/task/details/' + params.id,
-  //   )
+  async getById(params: GetTaskByIdParams) {
+    const { data } = await axios.get<GetTaskResponse>('/task/' + params.id)
 
-  //   return data
-  // },
+    return data
+  },
 
   async create(params: CreateTaskParams) {
     const { data } = await axios.post<GetTaskResponse>('/task', params)

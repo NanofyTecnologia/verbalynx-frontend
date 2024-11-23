@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 import { HttpError } from '@/helpers/http-error'
 
-import { createUser, getUserById } from './service'
+import { createUser, getUserById, updateUser } from './service'
 
 export async function GET() {
   try {
@@ -28,6 +28,24 @@ export async function POST(req: NextRequest) {
     await createUser(data)
 
     return NextResponse.json('ok', { status: HttpStatusCode.Ok })
+  } catch (error) {
+    if (error instanceof HttpError) {
+      return NextResponse.json(error.message, { status: error.status })
+    }
+
+    return NextResponse.json(JSON.stringify(error), {
+      status: HttpStatusCode.InternalServerError,
+    })
+  }
+}
+
+export async function PUT(req: NextRequest) {
+  try {
+    const data = await req.json()
+
+    await updateUser(data)
+
+    return NextResponse.json(true, { status: HttpStatusCode.Ok })
   } catch (error) {
     if (error instanceof HttpError) {
       return NextResponse.json(error.message, { status: error.status })

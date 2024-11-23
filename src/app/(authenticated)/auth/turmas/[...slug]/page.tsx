@@ -13,22 +13,22 @@ import {
   HelpCircle,
   UserPlus,
 } from 'lucide-react'
+import { toast } from 'react-toastify'
 
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Dialog } from '@/components/ui/dialog'
 import { Textarea } from '@/components/ui/textarea'
+import { RadioGroup } from '@/components/ui/radio-group'
 
 import { normalizeSlug } from '@/utils/normalize-slug'
 
 import { useGetClassById } from '../_hooks/use-get-class-by-id'
 
 import { StudentData, studentSchema } from './_schema'
-import { RadioGroup } from '@/components/ui/radio-group'
 import { useCreateStudent } from './_hooks/use-create-student'
 import { generateRegistrationCode } from '@/utils/generate-student-code'
-import { toast } from 'react-toastify'
 
 export interface IParams {
   [key: string]: string[]

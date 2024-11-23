@@ -16,11 +16,12 @@ import {
 
 import { Sheet } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
+import { Tooltip } from '@/components/ui/tooltip'
 
 import Logo from '@/assets/images/verbalynx-logo.png'
+import { useGetUser } from '@/hooks/services/use-get-user'
 
 import Link from './link'
-import { Tooltip } from '@/components/ui/tooltip'
 
 export const sidebarLinks = [
   {
@@ -63,6 +64,19 @@ export const sidebarLinks = [
 
 export default function Header() {
   const { data, update } = useSession()
+  const { data: user } = useGetUser()
+
+  const userDataIsCompleted = () => {
+    if (!user) {
+      return
+    }
+
+    const { name, cpf, email, pronoun } = user
+
+    if (!name || !cpf || !email || !pronoun) return false
+
+    return true
+  }
 
   const [tooltipOpen, setTooltipOpen] = useState(false)
 
@@ -129,29 +143,31 @@ export default function Header() {
               </div>
 
               <div className="mt-auto w-full space-y-2">
-                <div className="flex">
-                  <Link href="/auth/perfil" className="relative">
+                <div className="relative flex items-center">
+                  <Link href="/auth/perfil" className="relative w-full">
                     <User />
                     Meu Perfil
                   </Link>
 
-                  <Tooltip.Provider disableHoverableContent>
-                    <Tooltip.Root
-                      open={tooltipOpen}
-                      onOpenChange={setTooltipOpen}
-                    >
-                      <Tooltip.Trigger
-                        className="ms-auto"
-                        onClick={() => setTooltipOpen(!tooltipOpen)}
+                  {!userDataIsCompleted() && (
+                    <Tooltip.Provider disableHoverableContent>
+                      <Tooltip.Root
+                        open={tooltipOpen}
+                        onOpenChange={setTooltipOpen}
                       >
-                        <CircleAlert className="size-4 text-destructive" />
-                      </Tooltip.Trigger>
+                        <Tooltip.Trigger
+                          className="absolute right-2 ms-auto"
+                          onClick={() => setTooltipOpen(!tooltipOpen)}
+                        >
+                          <CircleAlert className="size-4 text-destructive" />
+                        </Tooltip.Trigger>
 
-                      <Tooltip.Content>
-                        Seu perfil não está completo!
-                      </Tooltip.Content>
-                    </Tooltip.Root>
-                  </Tooltip.Provider>
+                        <Tooltip.Content>
+                          Seu perfil não está completo!
+                        </Tooltip.Content>
+                      </Tooltip.Root>
+                    </Tooltip.Provider>
+                  )}
                 </div>
 
                 <Button

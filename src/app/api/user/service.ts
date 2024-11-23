@@ -5,7 +5,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/next-auth'
 import { HttpError } from '@/helpers/http-error'
 
-import { create, findByEmail, findById } from './repository'
+import { create, findByEmail, findById, update } from './repository'
 
 export type CreateUserData = Omit<User, 'id' | 'createdAt' | 'updatedAt'> & {
   classId: string
@@ -18,9 +18,17 @@ async function getUserById() {
     throw new HttpError('UNAUTHORIZED', HttpStatusCode.Unauthorized)
   }
 
-  const user = await findById(session.user.id)
+  return await findById(session.user.id)
+}
 
-  return user
+async function updateUser(data: Partial<CreateUserData>) {
+  const session = await getServerSession(authOptions)
+
+  if (!session?.user.id) {
+    throw new HttpError('UNAUTHORIZED', HttpStatusCode.Unauthorized)
+  }
+
+  await update(session.user.id, data)
 }
 
 async function createUser(data: CreateUserData) {
@@ -39,4 +47,4 @@ async function validateEmailExistsOrFail(email: string) {
   }
 }
 
-export { createUser, getUserById }
+export { createUser, updateUser, getUserById }

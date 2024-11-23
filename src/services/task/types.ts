@@ -16,6 +16,9 @@ export type GetTaskResponse = {
   classId: string
   createdAt: string
   updatedAt: string
+  class: {
+    name: string
+  }
 }
 
 export type CreateTaskParams = Omit<

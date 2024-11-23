@@ -15,6 +15,15 @@ function create(data: CreateUserData) {
   })
 }
 
+function update(id: string, data: Partial<CreateUserData>) {
+  return prisma.user.update({
+    where: {
+      id,
+    },
+    data,
+  })
+}
+
 function findById(id: string) {
   return prisma.user.findUnique({
     where: {
@@ -31,4 +40,4 @@ function findByEmail(email: string) {
   })
 }
 
-export { create, findById, findByEmail }
+export { update, create, findById, findByEmail }

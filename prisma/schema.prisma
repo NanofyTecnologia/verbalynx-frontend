@@ -22,6 +22,7 @@ model User {
   image            String?
   cpf              String?
   classId          String?
+  pronoun          String?
   observation      String?
   registrationCode String?   @unique @map("registration_code")
   graduation       String?
