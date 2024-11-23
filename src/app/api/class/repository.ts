@@ -17,7 +17,7 @@ function getByTeacher(id: string) {
 }
 
 function getByStudent(id: string) {
-  return prisma.user.findMany({
+  return prisma.user.findUnique({
     where: {
       id,
     },

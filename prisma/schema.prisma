@@ -89,6 +89,17 @@ model Task {
   @@map("tasks")
 }
 
+model Videos {
+  id        String   @id @default(cuid())
+  title     String
+  url       String
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("videos")
+}
+
 model Session {
   sessionToken String   @unique @map("session_token")
   userId       String   @map("user_id")

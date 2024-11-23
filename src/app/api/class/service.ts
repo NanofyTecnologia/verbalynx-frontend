@@ -40,7 +40,7 @@ async function getClassesByUserId() {
   } else {
     const user = await getByStudent(session?.user.id)
 
-    return user[0].studentClasses
+    return user?.studentClasses
   }
 }
 
