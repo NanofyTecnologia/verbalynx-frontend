@@ -7,7 +7,8 @@ import { getTaskById, updateTask } from './service'
 
 import { IParams } from '../../types'
 
-export async function GET(req: NextRequest, { params }: IParams) {
+export async function GET(req: NextRequest, props: IParams) {
+  const params = await props.params
   try {
     const id = params.id
 
@@ -25,7 +26,8 @@ export async function GET(req: NextRequest, { params }: IParams) {
   }
 }
 
-export async function PUT(req: NextRequest, { params }: IParams) {
+export async function PUT(req: NextRequest, props: IParams) {
+  const params = await props.params
   try {
     const id = params.id
     const data = await req.json()

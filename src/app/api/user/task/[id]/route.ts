@@ -6,7 +6,8 @@ import { HttpError } from '@/helpers/http-error'
 import { getTasks } from './service'
 import { IParams } from '@/app/api/types'
 
-export async function GET(req: NextRequest, { params }: IParams) {
+export async function GET(req: NextRequest, props: IParams) {
+  const params = await props.params
   try {
     const id = params.id
     const classId = req.nextUrl.searchParams.get('classId')

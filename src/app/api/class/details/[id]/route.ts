@@ -6,7 +6,8 @@ import { HttpError } from '@/helpers/http-error'
 
 import { getClassById } from './service'
 
-export async function GET(req: NextRequest, { params }: IParams) {
+export async function GET(req: NextRequest, props: IParams) {
+  const params = await props.params
   try {
     const id = params.id
 
