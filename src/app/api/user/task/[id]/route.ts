@@ -14,7 +14,6 @@ export async function GET(req: NextRequest, { params }: IParams) {
 
     return NextResponse.json(tasks, { status: HttpStatusCode.Ok })
   } catch (error) {
-    console.log(error)
     if (error instanceof HttpError) {
       return NextResponse.json(error.message, { status: error.status })
     }
