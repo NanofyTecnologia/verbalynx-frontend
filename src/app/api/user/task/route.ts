@@ -11,7 +11,6 @@ export async function GET() {
 
     return NextResponse.json(tasks, { status: HttpStatusCode.Ok })
   } catch (error) {
-    console.log(error)
     if (error instanceof HttpError) {
       return NextResponse.json(error.message, { status: error.status })
     }

@@ -90,7 +90,7 @@ export default function Content() {
   }
 
   const addCriterion = () => {
-    if (criteria.length < 3) {
+    if (criteria.length < 30) {
       setCriteria((prev) => [
         ...prev,
         { name: '', description: '', level: 1, score: [] },
@@ -302,7 +302,7 @@ export default function Content() {
           ))}
 
           {/* Botão Adicionar Critério */}
-          {criteria.length < 3 && (
+          {criteria.length < 30 && (
             <button
               onClick={(e) => {
                 e.preventDefault()
