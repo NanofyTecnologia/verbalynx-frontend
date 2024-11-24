@@ -71,6 +71,8 @@ export default function Content() {
     { name: '', description: '', level: 1, score: [] },
   ])
 
+  console.log(criteria)
+
   const onSubmit: SubmitHandler<TaskData> = (data) => {
     handleCreateTask(
       {

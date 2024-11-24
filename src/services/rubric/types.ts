@@ -5,11 +5,11 @@ export type CreateRubricParams = {
     description: string
     level: number
     score: number[]
-  }
+  }[]
 }
 
 export type GetRubricByIdParams = {
-  id: string
+  id: string | undefined
 }
 export type GetRubricByIdResponse = {
   id: string

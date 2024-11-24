@@ -11,6 +11,7 @@ import { Dialog } from '@/components/ui/dialog'
 import { normalizeSlug } from '@/utils/normalize-slug'
 
 import { useGetTaskById } from '../../_hooks/use-get-tasks-by-id'
+import { useGetRubric } from '../_hooks/use-get-rubrics-by-id'
 
 export interface IParams {
   [key: string]: string[]
@@ -22,11 +23,21 @@ export default function Page() {
   const { id } = normalizeSlug(slug)
 
   const { data: tasks } = useGetTaskById({ id })
+  const { data: rubrics } = useGetRubric({ id })
   const [showDialogHelp, setShowDialogHelp] = useState(false)
 
-  if (!tasks) {
+  console.log('retorno rubricas: ', rubrics)
+
+  if (!tasks || !rubrics) {
     return null
   }
+
+  const mapped = rubrics.map((item) => ({
+    ...item,
+    totalScore: item.score.reduce((acc, curr) => acc + curr, 0),
+  }))
+
+  const maxLevel = Math.max(...mapped.map((item) => item.level))
 
   return (
     <>
@@ -72,9 +83,37 @@ export default function Page() {
         </p>
       </div>
 
-      <div className="mt-12 flex items-center justify-center">
-        Tela de Rubricas da Atividade:
-        <span className="font-semibold"> {id}</span>
+      <div className="mt-12">
+        <table className="w-full border-2 border-black text-center">
+          <thead className="border-b-2 border-black bg-[#73D997]">
+            <tr>
+              <th className="border-r-2 border-black"></th>
+              {rubrics.map((item) => (
+                <th
+                  className="border-r-2 border-black font-semibold"
+                  key={item.name}
+                >
+                  {item.name}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {Array.from({ length: maxLevel }, (_, level) => (
+              <tr className="border-b-2 border-black" key={level + 1}>
+                <td className="border-r-2 border-black bg-[#73D997] font-semibold">
+                  Nível {level + 1}
+                </td>
+                {rubrics.map((item) => (
+                  <td className="border-r-2 border-black" key={item.name}>
+                    {item.score[level] !== undefined ? item.score[level] : 0}{' '}
+                    pontos
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </>
   )

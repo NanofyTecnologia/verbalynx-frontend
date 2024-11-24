@@ -6,7 +6,16 @@ function findByTaskId(id: string) {
       taskId: id,
     },
     select: {
-      evaluation: true,
+      id: true,
+      name: true,
+      evaluation: {
+        select: {
+          name: true,
+          description: true,
+          level: true,
+          score: true,
+        },
+      },
     },
   })
 }
