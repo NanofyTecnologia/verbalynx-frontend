@@ -87,7 +87,7 @@ export default function Content() {
                           </p>
 
                           <p>
-                            Turma:
+                            Turma:{' '}
                             <span className="font-semibold">
                               {item.class.name}
                             </span>
