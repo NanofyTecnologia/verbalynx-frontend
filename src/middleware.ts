@@ -13,6 +13,7 @@ export default withAuth(
 
     const allowedRolesForRoute: AllowedRoles = {
       '/auth': ['ADMIN', 'STUDENT', 'PROFESSOR'],
+      '/auth/atividades/ver-rubricas/:path*': ['PROFESSOR'],
       '/auth/:path*': ['ADMIN', 'STUDENT', 'PROFESSOR'],
       '/aguardando-aprovacao': ['PENDING_APPROVAL'],
     }
@@ -31,6 +32,10 @@ export default withAuth(
     }
 
     if (!allowedRolesForRoute[matchedRoute]?.includes(userRole)) {
+      if (token?.id) {
+        return NextResponse.redirect(new URL('/auth', req.url))
+      }
+
       return NextResponse.redirect(new URL('/', req.url))
     }
 

@@ -6,11 +6,11 @@ import { useFormContext } from 'react-hook-form'
 import { ChevronLeft, CircleHelp } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
+import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
+import { Select } from '@/components/ui/select'
 
 import { SearchData } from '../_schema'
-import { Select } from '@/components/ui/select'
-import { Label } from '@/components/ui/label'
 
 export default function Content() {
   const { replace, back } = useRouter()
@@ -77,7 +77,7 @@ export default function Content() {
 
             <Select.Root>
               <Select.Trigger>
-                <Select.Value />
+                <Select.Value placeholder="Selecione o critério" />
               </Select.Trigger>
               <Select.Content>
                 <Select.Item value="1"></Select.Item>

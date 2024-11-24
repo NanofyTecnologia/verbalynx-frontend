@@ -59,12 +59,10 @@ export default function Content() {
     register,
     setValue,
     handleSubmit,
-    formState: { isSubmitting, errors },
+    formState: { isSubmitting },
   } = useForm<TaskData>({
     resolver: zodResolver(taskSchema),
   })
-
-  console.log(errors)
 
   const { mutate: handleCreateTask } = useCreateTask()
   const [showDialog, setShowDialog] = useState(false)

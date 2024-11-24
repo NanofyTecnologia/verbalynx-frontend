@@ -7,3 +7,7 @@ export type CreateRubricParams = {
     score: number[]
   }
 }
+
+export type GetRubricByIdParams = {
+  id: string
+}
