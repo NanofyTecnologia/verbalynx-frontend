@@ -21,6 +21,7 @@ import { Button } from '@/components/ui/button'
 import { Dialog } from '@/components/ui/dialog'
 import { Textarea } from '@/components/ui/textarea'
 import { RadioGroup } from '@/components/ui/radio-group'
+import { Badge } from '@/components/ui/badge'
 
 import { normalizeSlug } from '@/utils/normalize-slug'
 
@@ -117,22 +118,45 @@ export default function Page() {
         </Dialog.Content>
       </Dialog.Root>
 
-      <div className="mt-6 flex flex-col justify-between md:flex-row">
-        <p className="text-sm">
-          Nome da turma: <span className="font-semibold">{team?.name}</span>
-        </p>
+      <div className="mt-6 flex flex-col space-y-4 md:flex-row md:space-y-0">
+        <div className="flex w-full items-center gap-2 md:justify-start">
+          <Badge className="w-full max-w-36 justify-center p-1.5">
+            Nome da turma:
+          </Badge>
 
-        <p>
-          Nº Estudantes:{' '}
-          <span className="font-semibold">{team.students.length}</span>
-        </p>
+          <Badge
+            variant="outline"
+            className="w-full bg-white p-1.5 md:max-w-60"
+          >
+            {team.name}
+          </Badge>
+        </div>
 
-        <p className="text-sm">
-          Data de criação:{' '}
-          <span className="font-semibold">
+        <div className="flex w-full items-center gap-2 md:justify-center">
+          <Badge className="w-full max-w-36 justify-center p-1.5">
+            Nº Estudantes:
+          </Badge>
+
+          <Badge
+            variant="outline"
+            className="w-full bg-white p-1.5 md:max-w-60"
+          >
+            {team.students.length}
+          </Badge>
+        </div>
+
+        <div className="flex w-full items-center gap-2 md:justify-end">
+          <Badge className="w-full max-w-36 justify-center p-1.5">
+            Data de criação:
+          </Badge>
+
+          <Badge
+            variant="outline"
+            className="w-full bg-white p-1.5 md:max-w-60"
+          >
             {format(team?.createdAt, 'dd/MM/yyy')}
-          </span>
-        </p>
+          </Badge>
+        </div>
       </div>
 
       <div className="mt-4 rounded-lg bg-white p-4">

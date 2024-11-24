@@ -54,7 +54,7 @@ export default function Content() {
       </div>
 
       <div className="mt-6">
-        <div className="mt-2 space-y-4">
+        <div className="mt-2 flex flex-col space-y-2">
           {isLoading &&
             Array.from({ length: 8 }).map((_, item) => (
               <Fragment key={item}>

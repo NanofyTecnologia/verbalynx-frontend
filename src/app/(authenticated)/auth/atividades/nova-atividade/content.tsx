@@ -155,7 +155,10 @@ export default function Content() {
         <div className="space-y-0.5">
           <Label>Turma</Label>
 
-          <Select.Root onValueChange={(value) => setValue('classId', value)}>
+          <Select.Root
+            onValueChange={(value) => setValue('classId', value)}
+            disabled={isSubmitting}
+          >
             <Select.Trigger>
               <Select.Value placeholder="Seleciona a turma" />
             </Select.Trigger>
@@ -218,7 +221,12 @@ export default function Content() {
             <div key={index} className="relative space-y-4 border-b pb-4">
               {/* Botão de Exclusão */}
               {index > 0 && (
-                <Button onClick={() => removeCriterion(index)}>Excluir</Button>
+                <Button
+                  onClick={() => removeCriterion(index)}
+                  disabled={isSubmitting}
+                >
+                  Excluir
+                </Button>
               )}
 
               {/* Nome do Critério */}
@@ -230,6 +238,7 @@ export default function Content() {
                   onChange={(e) =>
                     updateCriterion(index, 'name', e.target.value)
                   }
+                  disabled={isSubmitting}
                 />
               </div>
 
@@ -240,6 +249,7 @@ export default function Content() {
                   onChange={(e) =>
                     updateCriterion(index, 'description', e.target.value)
                   }
+                  disabled={isSubmitting}
                 />
               </div>
 
@@ -250,6 +260,7 @@ export default function Content() {
                   onValueChange={(value) => {
                     updateCriterion(index, 'level', Number(value))
                   }}
+                  disabled={isSubmitting}
                 >
                   <Select.Trigger>
                     <Select.Value placeholder={`${criterion.level}`} />
@@ -279,6 +290,7 @@ export default function Content() {
                         updatedScores[levelIndex] = Number(value)
                         updateCriterion(index, 'score', updatedScores)
                       }}
+                      disabled={isSubmitting}
                     >
                       <Select.Trigger>
                         <Select.Value
@@ -311,6 +323,7 @@ export default function Content() {
                 addCriterion()
               }}
               className="flex w-full items-center justify-center rounded-md border-2 border-dashed py-2 text-black/50"
+              disabled={isSubmitting}
             >
               <span>Adicionar Critério</span>
               <CirclePlus className="ml-1" size={20} />

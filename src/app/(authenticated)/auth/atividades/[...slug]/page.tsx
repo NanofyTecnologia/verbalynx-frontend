@@ -9,6 +9,7 @@ import { ChevronLeft, HelpCircle, PencilLine } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Dialog } from '@/components/ui/dialog'
+import { Badge } from '@/components/ui/badge'
 
 import { normalizeSlug } from '@/utils/normalize-slug'
 
@@ -76,53 +77,73 @@ export default function Page() {
         </Dialog.Content>
       </Dialog.Root>
 
-      <div className="mt-6 flex flex-col text-sm md:flex-row md:justify-between">
-        <div className="space-y-2">
-          <p>
-            Nome da atividade:{' '}
-            <span className="font-semibold">{tasks.name}</span>
-          </p>
+      <div className="mt-6">
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <Badge className="w-full max-w-36 justify-center p-1.5">
+              Nome da atividade:
+            </Badge>
 
-          <p>
-            Turma: <span className="font-semibold">{tasks.class.name}</span>
-          </p>
-        </div>
+            <Badge variant="outline" className="w-full bg-white p-1.5">
+              {tasks.name}
+            </Badge>
+          </div>
 
-        <div className="mt-2 space-y-2 md:mt-0 md:text-right">
-          <p>
-            Data de abertura:{' '}
-            <span className="font-semibold">
+          <div className="flex items-center gap-2">
+            <Badge className="w-full max-w-36 justify-center p-1.5">
+              Turma:
+            </Badge>
+
+            <Badge variant="outline" className="w-full bg-white p-1.5">
+              {tasks.class.name}
+            </Badge>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Badge className="w-full max-w-36 justify-center p-1.5">
+              Objetivo:
+            </Badge>
+
+            <Badge variant="outline" className="w-full bg-white p-1.5">
+              {tasks.objective}
+            </Badge>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Badge className="w-full max-w-36 justify-center p-1.5">
+              Data de abertura:
+            </Badge>
+
+            <Badge variant="outline" className="w-full bg-white p-1.5">
               {format(tasks.openingDate, 'dd/MM/yyyy - HH:mm')}
-            </span>
-          </p>
+            </Badge>
+          </div>
 
-          <p className="">
-            Data de fechamento:{' '}
-            {(() => {
-              const isBeforeClosingDate =
-                compareDateWithToday(
-                  format(tasks.closingDate, 'dd/MM/yyyy - HH:mm'),
-                ) === true
+          <div className="flex items-center gap-2">
+            <Badge className="w-full max-w-36 justify-center p-1.5">
+              Data de fechamento:
+            </Badge>
 
-              return (
-                <span
-                  className={`font-semibold ${
-                    isBeforeClosingDate ? '' : 'text-[#FF6B6B]' // Cor diferente para datas que já passaram
-                  }`}
-                >
-                  {format(tasks.closingDate, 'dd/MM/yyyy - HH:mm')}
-                </span>
-              )
-            })()}
-          </p>
+            <Badge variant="outline" className="w-full bg-white p-1.5">
+              {(() => {
+                const isBeforeClosingDate =
+                  compareDateWithToday(
+                    format(tasks.closingDate, 'dd/MM/yyyy - HH:mm'),
+                  ) === true
+
+                return (
+                  <span
+                    className={`${
+                      isBeforeClosingDate ? '' : 'text-[#FF6B6B]' // Cor diferente para datas que já passaram
+                    }`}
+                  >
+                    {format(tasks.closingDate, 'dd/MM/yyyy - HH:mm')}
+                  </span>
+                )
+              })()}
+            </Badge>
+          </div>
         </div>
-      </div>
-
-      <div className="mt-2 text-sm">
-        <p className="">
-          Objetivo Geral:{' '}
-          <span className="font-semibold">{tasks.objective}</span>
-        </p>
       </div>
     </>
   )
