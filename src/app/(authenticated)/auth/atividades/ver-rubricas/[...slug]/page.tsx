@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { ChevronLeft, HelpCircle, SquarePlus } from 'lucide-react'
+import { ChevronLeft, HelpCircle } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Dialog } from '@/components/ui/dialog'
@@ -40,14 +40,6 @@ export default function Page() {
         <button onClick={() => setShowDialogHelp(true)}>
           <HelpCircle className="text-zinc-500" />
         </button>
-      </div>
-
-      <div className="mt-6 text-end">
-        <Button className="shadow" asChild>
-          <Link href={`/auth/atividades/rubricas/nova-rubrica/${id}`}>
-            Nova rubrica <SquarePlus size={20} />
-          </Link>
-        </Button>
       </div>
 
       <Dialog.Root open={showDialogHelp} onOpenChange={setShowDialogHelp}>

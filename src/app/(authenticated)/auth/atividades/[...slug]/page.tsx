@@ -48,7 +48,7 @@ export default function Page() {
       {data?.user.role === 'PROFESSOR' && (
         <div className="mt-6 text-end">
           <Button className="shadow" asChild>
-            <Link href={`/auth/atividades/rubricas/${id}`}>
+            <Link href={`/auth/atividades/ver-rubricas/${id}`}>
               Ver rubricas <PencilLine size={20} />
             </Link>
           </Button>
