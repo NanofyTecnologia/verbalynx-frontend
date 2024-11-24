@@ -25,7 +25,10 @@ export default function Content() {
 
   const { data: teams } = useGetClassesById()
   const { data: students } = useGetStudentsByClassId({ id: team?.id ?? '' })
-  const { data: tasks } = useGetTasksByStudentId({ id: student?.id ?? '' })
+  const { data: tasks } = useGetTasksByStudentId({
+    id: student?.id ?? '',
+    classId: team?.id ?? '',
+  })
 
   return (
     <>

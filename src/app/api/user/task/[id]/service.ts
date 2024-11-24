@@ -6,14 +6,14 @@ import { HttpError } from '@/helpers/http-error'
 
 import { findTasks } from './repository'
 
-async function getTasks(id: string) {
+async function getTasks(id: string, classId: string | null) {
   const session = await getServerSession(authOptions)
 
-  if (!session?.user.id) {
+  if (!session?.user.id || !classId) {
     throw new HttpError('UNAUTHORIZED', HttpStatusCode.Unauthorized)
   }
 
-  const tasks = await findTasks(id)
+  const tasks = await findTasks(id, classId)
 
   return tasks?.studentTasks
 }

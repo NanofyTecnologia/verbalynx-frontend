@@ -19,6 +19,11 @@ export const user = {
   async getTasksById(params: GetTasksByStudentId) {
     const { data } = await axios.get<GetTaskByStudentIdResponse>(
       '/user/task/' + params.id,
+      {
+        params: {
+          classId: params.classId,
+        },
+      },
     )
 
     return data

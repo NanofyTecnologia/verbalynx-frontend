@@ -2,6 +2,7 @@ import { User } from '@prisma/client'
 
 export type GetTasksByStudentId = {
   id: string
+  classId: string
 }
 
 export type GetTaskByStudentIdResponse = {

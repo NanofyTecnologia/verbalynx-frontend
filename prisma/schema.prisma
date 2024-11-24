@@ -73,9 +73,9 @@ model Task {
   name        String
   openingDate DateTime @map("opening_date")
   closingDate DateTime @map("closing_date")
-  objective String
-  teacherId String  @map("teacher_id")
-  classId   String? @map("class_id")
+  objective   String
+  teacherId   String   @map("teacher_id")
+  classId     String?  @map("class_id")
 
   rubric Rubric?
 
@@ -83,8 +83,9 @@ model Task {
   students User[] @relation("StudentTasks")
   teacher  User   @relation("TeacherTasks", fields: [teacherId], references: [id], onDelete: Cascade)
 
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
+  Feedback  Feedback[]
 
   @@map("tasks")
 }
@@ -178,8 +179,23 @@ model Evaluation {
   level Int
   score Int[]
 
-  rubric   Rubric? @relation(fields: [rubricId], references: [id])
   rubricId String?
+  rubric   Rubric?    @relation(fields: [rubricId], references: [id])
+  feedback Feedback[]
 
   @@map("evaluations")
+}
+
+model Feedback {
+  id      String   @id @unique @default(cuid())
+  comment String
+  tips    String[]
+  taskId  String
+  level   Int
+
+  task Task @relation(fields: [taskId], references: [id])
+
+  evaluation Evaluation[]
+
+  @@map("feedbacks")
 }

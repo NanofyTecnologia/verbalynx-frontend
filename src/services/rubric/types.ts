@@ -11,3 +11,10 @@ export type CreateRubricParams = {
 export type GetRubricByIdParams = {
   id: string
 }
+export type GetRubricByIdResponse = {
+  id: string
+  name: string
+  description: string
+  level: number
+  score: number[]
+}[]

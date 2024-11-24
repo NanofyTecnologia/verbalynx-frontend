@@ -1,12 +1,16 @@
 import { prisma } from '@/config/prisma'
 
-function findTasks(id: string) {
+function findTasks(id: string, classId: string) {
   return prisma.user.findUnique({
     where: {
       id,
     },
     select: {
-      studentTasks: true,
+      studentTasks: {
+        where: {
+          classId,
+        },
+      },
     },
   })
 }

@@ -6,7 +6,7 @@ import { user } from '@/services/user'
 import { IProps } from './types'
 
 export function useGetTasksByStudentId(props: IProps) {
-  const { id } = props
+  const { id, classId } = props
 
   const query = createQuery({
     queryKey: ['get-tasks-by-student-id'],
@@ -14,7 +14,7 @@ export function useGetTasksByStudentId(props: IProps) {
     placeholderData: keepPreviousData,
   })
 
-  const queryResponse = query({ variables: { id } })
+  const queryResponse = query({ variables: { id, classId } })
 
   return {
     ...queryResponse,
