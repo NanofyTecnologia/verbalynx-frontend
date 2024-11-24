@@ -3,8 +3,22 @@ import { prisma } from '@/config/prisma'
 import { CreateTaskData } from './service'
 
 function create(data: CreateTaskData) {
+  const { rubric, ...restData } = data
+
   return prisma.task.create({
-    data,
+    data: {
+      ...restData,
+      rubric: {
+        create: {
+          name: rubric.name,
+          evaluation: {
+            create: rubric.evaluation.map((item) => ({
+              ...item,
+            })),
+          },
+        },
+      },
+    },
   })
 }
 
@@ -72,7 +86,6 @@ function findByStudent(id: string) {
           openingDate: true,
           closingDate: true,
           rubric: true,
-          level: true,
           objective: true,
           teacherId: true,
           classId: true,

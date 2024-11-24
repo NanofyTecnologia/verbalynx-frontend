@@ -31,4 +31,14 @@ export type GetTaskResponse = {
 export type CreateTaskParams = Omit<
   Task,
   'id' | 'createdAt' | 'updatedAt' | 'teacherId'
->
+> & {
+  rubric: {
+    name: string
+    evaluation: {
+      name: string
+      description: string
+      level: number
+      score: number[]
+    }[]
+  }
+}

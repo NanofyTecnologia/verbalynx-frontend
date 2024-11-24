@@ -48,7 +48,7 @@ interface Criterion {
   name: string
   description: string
   level: number
-  scores: number[]
+  score: number[]
 }
 
 export default function Content() {
@@ -59,17 +59,29 @@ export default function Content() {
     register,
     setValue,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = useForm<TaskData>({
     resolver: zodResolver(taskSchema),
   })
 
+  console.log(errors)
+
   const { mutate: handleCreateTask } = useCreateTask()
   const [showDialog, setShowDialog] = useState(false)
 
+  const [criteria, setCriteria] = useState<Criterion[]>([
+    { name: '', description: '', level: 1, score: [] },
+  ])
+
   const onSubmit: SubmitHandler<TaskData> = (data) => {
     handleCreateTask(
-      { ...data },
+      {
+        ...data,
+        rubric: {
+          ...data.rubric,
+          evaluation: criteria,
+        },
+      },
       {
         onSuccess: () => {
           toast.success('Atividade adicionada com sucesso!')
@@ -79,15 +91,11 @@ export default function Content() {
     )
   }
 
-  const [criteria, setCriteria] = useState<Criterion[]>([
-    { name: '', description: '', level: 1, scores: [] },
-  ])
-
   const addCriterion = () => {
     if (criteria.length < 3) {
       setCriteria((prev) => [
         ...prev,
-        { name: '', description: '', level: 1, scores: [] },
+        { name: '', description: '', level: 1, score: [] },
       ])
     }
   }
@@ -217,7 +225,6 @@ export default function Content() {
               <div className="space-y-0.5">
                 <Label>Critério {index + 1}</Label>
                 <Input
-                  {...register('rubric.evaluation.name')}
                   placeholder="Insira um nome para o critério..."
                   value={criterion.name}
                   onChange={(e) =>
@@ -229,8 +236,10 @@ export default function Content() {
               <div className="space-y-0.5">
                 <Label>Descrição do Critério {index + 1}</Label>
                 <Input
-                  {...register('rubric.evaluation.description')}
                   placeholder="Ex: Este critério tem por finalidade..."
+                  onChange={(e) =>
+                    updateCriterion(index, 'description', e.target.value)
+                  }
                 />
               </div>
 
@@ -240,7 +249,6 @@ export default function Content() {
                 <Select.Root
                   onValueChange={(value) => {
                     updateCriterion(index, 'level', Number(value))
-                    setValue('rubric.evaluation.level', Number(value))
                   }}
                 >
                   <Select.Trigger>
@@ -267,17 +275,16 @@ export default function Content() {
                     />
                     <Select.Root
                       onValueChange={(value) => {
-                        const updatedScores = [...criterion.scores]
+                        const updatedScores = [...criterion.score]
                         updatedScores[levelIndex] = Number(value)
-                        updateCriterion(index, 'scores', updatedScores)
-                        setValue('rubric.evaluation.score', [Number(value)])
+                        updateCriterion(index, 'score', updatedScores)
                       }}
                     >
                       <Select.Trigger>
                         <Select.Value
                           placeholder={
-                            criterion.scores[levelIndex]
-                              ? `${criterion.scores[levelIndex]} pontos`
+                            criterion.score[levelIndex]
+                              ? `${criterion.score[levelIndex]} pontos`
                               : '0 pontos'
                           }
                         />

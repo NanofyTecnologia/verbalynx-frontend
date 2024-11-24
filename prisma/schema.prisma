@@ -73,8 +73,6 @@ model Task {
   name        String
   openingDate DateTime @map("opening_date")
   closingDate DateTime @map("closing_date")
-
-  level     String
   objective String
   teacherId String  @map("teacher_id")
   classId   String? @map("class_id")

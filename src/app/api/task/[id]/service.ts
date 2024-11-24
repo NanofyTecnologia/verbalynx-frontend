@@ -8,7 +8,7 @@ import { findById } from './repository'
 
 import { CreateTaskData } from '../service'
 
-export type UpdateTaskData = Partial<CreateTaskData>
+export type UpdateTaskData = Omit<CreateTaskData, 'rubric'>
 
 async function getTaskById(id: string) {
   const session = await getServerSession(authOptions)

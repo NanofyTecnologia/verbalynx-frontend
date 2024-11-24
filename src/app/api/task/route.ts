@@ -9,10 +9,13 @@ export async function POST(req: NextRequest) {
   try {
     const data = await req.json()
 
+    console.log('Passou')
+
     const createdTask = await createTask(data)
 
     return NextResponse.json(createdTask, { status: HttpStatusCode.Ok })
   } catch (error) {
+    console.log(error)
     if (error instanceof HttpError) {
       return NextResponse.json(error.message, { status: error.status })
     }

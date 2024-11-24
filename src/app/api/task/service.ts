@@ -1,6 +1,6 @@
 import { HttpStatusCode } from 'axios'
 import { getServerSession } from 'next-auth'
-import { Task } from '@prisma/client'
+import { Evaluation, Rubric, Task } from '@prisma/client'
 
 import { authOptions } from '@/lib/next-auth'
 import { HttpError } from '@/helpers/http-error'
@@ -13,7 +13,11 @@ import {
   findByTeacher,
 } from './repository'
 
-export type CreateTaskData = Omit<Task, 'id' | 'createdAt' | 'updatedAt'>
+export type CreateTaskData = Omit<Task, 'id' | 'createdAt' | 'updatedAt'> & {
+  rubric: Rubric & {
+    evaluation: Evaluation[]
+  }
+}
 
 async function createTask(data: CreateTaskData) {
   const session = await getServerSession(authOptions)
