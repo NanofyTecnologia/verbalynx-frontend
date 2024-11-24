@@ -13,6 +13,7 @@ import { Dialog } from '@/components/ui/dialog'
 import { normalizeSlug } from '@/utils/normalize-slug'
 
 import { useGetTaskById } from '../_hooks/use-get-tasks-by-id'
+import { compareDateWithToday } from '@/utils/compareDateWithToday'
 
 export interface IParams {
   [key: string]: string[]
@@ -97,9 +98,22 @@ export default function Page() {
 
           <p className="">
             Data de fechamento:{' '}
-            <span className="font-semibold">
-              {format(tasks.closingDate, 'dd/MM/yyyy - HH:mm')}
-            </span>
+            {(() => {
+              const isBeforeClosingDate =
+                compareDateWithToday(
+                  format(tasks.closingDate, 'dd/MM/yyyy - HH:mm'),
+                ) === true
+
+              return (
+                <span
+                  className={`font-semibold ${
+                    isBeforeClosingDate ? '' : 'text-[#FF6B6B]' // Cor diferente para datas que já passaram
+                  }`}
+                >
+                  {format(tasks.closingDate, 'dd/MM/yyyy - HH:mm')}
+                </span>
+              )
+            })()}
           </p>
         </div>
       </div>
