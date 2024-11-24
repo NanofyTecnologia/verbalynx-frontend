@@ -83,14 +83,21 @@ export default function Page() {
         </p>
       </div>
 
-      <div className="mt-12">
+      <div className="mt-12 text-center">
+        <p>
+          Informações da rubrica:{' '}
+          <span className="font-semibold">{tasks.rubric.name}</span>
+        </p>
+      </div>
+
+      <div className="mx-auto mt-4 overflow-scroll">
         <table className="w-full border-2 border-black text-center">
-          <thead className="border-b-2 border-black bg-[#73D997]">
+          <thead className="text-nowrap border-b-2 border-black bg-[#73D997]">
             <tr>
               <th className="border-r-2 border-black"></th>
               {rubrics.map((item) => (
                 <th
-                  className="border-r-2 border-black font-semibold"
+                  className="border-r-2 border-black px-3 font-semibold"
                   key={item.name}
                 >
                   {item.name}
@@ -101,7 +108,7 @@ export default function Page() {
           <tbody>
             {Array.from({ length: maxLevel }, (_, level) => (
               <tr className="border-b-2 border-black" key={level + 1}>
-                <td className="border-r-2 border-black bg-[#73D997] font-semibold">
+                <td className="text-nowrap border-r-2 border-black bg-[#73D997] px-3 font-semibold">
                   Nível {level + 1}
                 </td>
                 {rubrics.map((item) => (
