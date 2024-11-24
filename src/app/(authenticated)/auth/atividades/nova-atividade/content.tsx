@@ -4,7 +4,7 @@ import { Fragment, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { ChevronLeft, Info } from 'lucide-react'
+import { ChevronLeft, Info, CirclePlus } from 'lucide-react'
 import { ThreeDots } from 'react-loader-spinner'
 import { toast } from 'react-toastify'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -20,12 +20,42 @@ import { useGetClassesById } from '@/hooks/services/use-get-classes-by-id'
 import { TaskData, taskSchema } from './_schema'
 import { useCreateTask } from './_hooks/use-create-task'
 
+const points = [
+  '0',
+  '5',
+  '10',
+  '15',
+  '20',
+  '25',
+  '30',
+  '35',
+  '40',
+  '45',
+  '50',
+  '55',
+  '60',
+  '65',
+  '70',
+  '75',
+  '80',
+  '85',
+  '90',
+  '95',
+  '100',
+]
+
+interface Criterion {
+  name: string
+  description: string
+  level: number
+  scores: number[]
+}
+
 export default function Content() {
   const { back, replace } = useRouter()
   const { data: teams } = useGetClassesById()
 
   const {
-    watch,
     register,
     setValue,
     handleSubmit,
@@ -49,7 +79,34 @@ export default function Content() {
     )
   }
 
-  console.log(watch('openingDate'))
+  const [criteria, setCriteria] = useState<Criterion[]>([
+    { name: '', description: '', level: 1, scores: [] },
+  ])
+
+  const addCriterion = () => {
+    if (criteria.length < 3) {
+      setCriteria((prev) => [
+        ...prev,
+        { name: '', description: '', level: 1, scores: [] },
+      ])
+    }
+  }
+
+  const removeCriterion = (index: number) => {
+    setCriteria((prev) => prev.filter((_, i) => i !== index))
+  }
+
+  const updateCriterion = (
+    index: number,
+    key: keyof Criterion,
+    value: string | number | number[],
+  ) => {
+    setCriteria((prev) =>
+      prev.map((criterion, i) =>
+        i === index ? { ...criterion, [key]: value } : criterion,
+      ),
+    )
+  }
 
   return (
     <>
@@ -105,22 +162,12 @@ export default function Content() {
         </div>
 
         <div className="space-y-0.5">
-          <Label>Nome</Label>
+          <Label>Nome da Atividade</Label>
           <Input
             {...register('name')}
             placeholder="Ex: Atividade Didática XX.X"
             disabled={isSubmitting}
           />
-        </div>
-
-        <div className="space-y-0.5">
-          <Label>Rubrica</Label>
-          <Input {...register('rubric')} disabled={isSubmitting} />
-        </div>
-
-        <div className="space-y-0.5">
-          <Label>Nível</Label>
-          <Input {...register('level')} disabled={isSubmitting} />
         </div>
 
         <div className="space-y-6 md:flex md:gap-5 md:space-y-0">
@@ -144,8 +191,124 @@ export default function Content() {
         </div>
 
         <div className="space-y-0.5">
-          <Label>Objetivo Geral</Label>
+          <Label>Objetivo Geral da Atividade</Label>
           <Input {...register('objective')} disabled={isSubmitting} />
+        </div>
+
+        <div className="space-y-0.5">
+          <Label>Nome da Rubrica</Label>
+          <Input
+            {...register('rubric.name')}
+            placeholder="Ex: Atividade Didática XX.X"
+            disabled={isSubmitting}
+          />
+        </div>
+
+        <div className="space-y-6">
+          {/* Mapeamento da quantidade de critérios */}
+          {criteria.map((criterion, index) => (
+            <div key={index} className="relative space-y-4 border-b pb-4">
+              {/* Botão de Exclusão */}
+              {index > 0 && (
+                <Button onClick={() => removeCriterion(index)}>Excluir</Button>
+              )}
+
+              {/* Nome do Critério */}
+              <div className="space-y-0.5">
+                <Label>Critério {index + 1}</Label>
+                <Input
+                  {...register('rubric.evaluation.name')}
+                  placeholder="Insira um nome para o critério..."
+                  value={criterion.name}
+                  onChange={(e) =>
+                    updateCriterion(index, 'name', e.target.value)
+                  }
+                />
+              </div>
+
+              <div className="space-y-0.5">
+                <Label>Descrição do Critério {index + 1}</Label>
+                <Input
+                  {...register('rubric.evaluation.description')}
+                  placeholder="Ex: Este critério tem por finalidade..."
+                />
+              </div>
+
+              {/* Seleção do Número de Níveis */}
+              <div className="space-y-0.5">
+                <Label>N° de níveis</Label>
+                <Select.Root
+                  onValueChange={(value) => {
+                    updateCriterion(index, 'level', Number(value))
+                    setValue('rubric.evaluation.level', Number(value))
+                  }}
+                >
+                  <Select.Trigger>
+                    <Select.Value placeholder={`${criterion.level}`} />
+                  </Select.Trigger>
+                  <Select.Content>
+                    {['1', '2', '3', '4', '5', '6'].map((num) => (
+                      <Select.Item key={num} value={num}>
+                        {num}
+                      </Select.Item>
+                    ))}
+                  </Select.Content>
+                </Select.Root>
+              </div>
+
+              {/* Níveis e Pontuações */}
+              <div className="space-y-2">
+                {Array.from({ length: criterion.level }, (_, levelIndex) => (
+                  <div key={levelIndex} className="flex items-center gap-2">
+                    <Input
+                      type="text"
+                      placeholder={`Nível ${levelIndex + 1}`}
+                      disabled
+                    />
+                    <Select.Root
+                      onValueChange={(value) => {
+                        const updatedScores = [...criterion.scores]
+                        updatedScores[levelIndex] = Number(value)
+                        updateCriterion(index, 'scores', updatedScores)
+                        setValue('rubric.evaluation.score', [Number(value)])
+                      }}
+                    >
+                      <Select.Trigger>
+                        <Select.Value
+                          placeholder={
+                            criterion.scores[levelIndex]
+                              ? `${criterion.scores[levelIndex]} pontos`
+                              : '0 pontos'
+                          }
+                        />
+                      </Select.Trigger>
+                      <Select.Content>
+                        {points.map((num) => (
+                          <Select.Item key={num} value={num}>
+                            {num} pontos
+                          </Select.Item>
+                        ))}
+                      </Select.Content>
+                    </Select.Root>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+
+          {/* Botão Adicionar Critério */}
+          {criteria.length < 3 && (
+            <button
+              onClick={(e) => {
+                e.preventDefault()
+                addCriterion()
+              }}
+              className="flex w-full items-center justify-center rounded-md border-2 border-dashed py-2 text-black/50"
+            >
+              <span>Adicionar Critério</span>
+              <CirclePlus className="ml-1" size={20} />
+            </button>
+          )}
         </div>
 
         <Button type="submit" className="w-full" disabled={isSubmitting}>
