@@ -1,4 +1,5 @@
 import { Task } from '@prisma/client'
+import type { GetRubricParams } from '../rubric/types'
 
 export type GetTaskByIdParams = {
   id: string | undefined
@@ -9,8 +10,7 @@ export type GetTaskResponse = {
   name: string
   openingDate: Date
   closingDate: Date
-  rubric: string
-  levels: number
+  rubric: GetRubricParams
   objective: string
   teacherId: string
   classId: string

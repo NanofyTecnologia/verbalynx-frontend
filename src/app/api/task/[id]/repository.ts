@@ -13,7 +13,6 @@ function findById(id: string) {
       openingDate: true,
       closingDate: true,
       rubric: true,
-      level: true,
       objective: true,
       teacherId: true,
       classId: true,

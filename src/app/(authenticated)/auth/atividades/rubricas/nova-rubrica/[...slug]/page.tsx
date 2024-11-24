@@ -41,7 +41,8 @@ const points = [
 
 interface Criterion {
   name: string
-  levels: number
+  description: string
+  level: number
   scores: number[]
 }
 
@@ -58,12 +59,15 @@ export default function Page() {
   const [showDialogHelp, setShowDialogHelp] = useState(false)
 
   const [criteria, setCriteria] = useState<Criterion[]>([
-    { name: '', levels: 1, scores: [] },
+    { name: '', description: '', level: 1, scores: [] },
   ])
 
   const addCriterion = () => {
     if (criteria.length < 3) {
-      setCriteria((prev) => [...prev, { name: '', levels: 1, scores: [] }])
+      setCriteria((prev) => [
+        ...prev,
+        { name: '', description: '', level: 1, scores: [] },
+      ])
     }
   }
 
@@ -141,11 +145,6 @@ export default function Page() {
           <Input placeholder="Ex: Avaliar conhecimento" />
         </div>
 
-        <div className="space-y-0.5">
-          <Label>Descrição</Label>
-          <Input placeholder="Ex: Esta rubrica tem por finalidade..." />
-        </div>
-
         <div className="space-y-6">
           {/* Mapeamento da quantidade de critérios */}
           {criteria.map((criterion, index) => (
@@ -167,16 +166,21 @@ export default function Page() {
                 />
               </div>
 
+              <div className="space-y-0.5">
+                <Label>Descrição do Critério {index + 1}</Label>
+                <Input placeholder="Ex: Este critério tem por finalidade..." />
+              </div>
+
               {/* Seleção do Número de Níveis */}
               <div className="space-y-0.5">
                 <Label>N° de níveis</Label>
                 <Select.Root
                   onValueChange={(value) =>
-                    updateCriterion(index, 'levels', Number(value))
+                    updateCriterion(index, 'level', Number(value))
                   }
                 >
                   <Select.Trigger>
-                    <Select.Value placeholder={`${criterion.levels}`} />
+                    <Select.Value placeholder={`${criterion.level}`} />
                   </Select.Trigger>
                   <Select.Content>
                     {['1', '2', '3', '4', '5', '6'].map((num) => (
@@ -190,7 +194,7 @@ export default function Page() {
 
               {/* Níveis e Pontuações */}
               <div className="space-y-2">
-                {Array.from({ length: criterion.levels }, (_, levelIndex) => (
+                {Array.from({ length: criterion.level }, (_, levelIndex) => (
                   <div key={levelIndex} className="flex items-center gap-2">
                     <Input
                       type="text"
@@ -240,7 +244,6 @@ export default function Page() {
               <CirclePlus className="ml-1" size={20} />
             </button>
           )}
-          <Button onClick={() => console.log(criteria)}>Enviar</Button>
         </div>
       </form>
     </>

@@ -156,7 +156,8 @@ model Class {
 }
 
 model Rubric {
-  id String @id @unique @default(cuid())
+  id   String @id @unique @default(cuid())
+  name String
 
   evaluation Evaluation[]
 
