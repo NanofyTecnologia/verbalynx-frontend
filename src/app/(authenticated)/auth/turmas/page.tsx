@@ -1,0 +1,19 @@
+import { type Metadata } from 'next'
+
+import Content from './content'
+
+export const metadata: Metadata = {
+  title: 'Turmas',
+}
+
+export default function Page() {
+  return (
+    <>
+      <div className="text-center">
+        <h2 className="text-lg font-semibold">Turmas</h2>
+      </div>
+
+      <Content />
+    </>
+  )
+}

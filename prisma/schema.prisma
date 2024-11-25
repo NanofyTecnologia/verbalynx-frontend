@@ -11,23 +11,37 @@ enum Role {
   ADMIN
   STUDENT
   PROFESSOR
+  PENDING_APPROVAL
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String    @unique
-  emailVerified DateTime?
-  image         String?
-  cpf           String?
-  role          Role      @default(STUDENT)
-  accounts      Account[]
-  sessions      Session[]
+  id               String    @id @default(cuid())
+  name             String?
+  email            String    @unique
+  emailVerified    DateTime?
+  image            String?
+  cpf              String?
+  classId          String?
+  pronoun          String?
+  observation      String?
+  registrationCode String?   @unique @map("registration_code")
+  graduation       String?
+  role             Role      @default(PENDING_APPROVAL)
+  accounts         Account[]
+  sessions         Session[]
 
   Authenticator Authenticator[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  studentClasses Class[] @relation("StudentClasses")
+  teacherClasses Class[] @relation("TeacherClasses")
+  class          Class?  @relation(fields: [classId], references: [id])
+  studentTasks   Task[]  @relation("StudentTasks")
+  teacherTasks   Task[]  @relation("TeacherTasks")
+
+  taskId String?
 
   @@map("users")
 }
@@ -54,8 +68,41 @@ model Account {
   @@map("accounts")
 }
 
+model Task {
+  id          String   @id @default(cuid())
+  name        String
+  openingDate DateTime @map("opening_date")
+  closingDate DateTime @map("closing_date")
+  objective   String
+  teacherId   String   @map("teacher_id")
+  classId     String?  @map("class_id")
+
+  rubric Rubric?
+
+  class    Class? @relation(fields: [classId], references: [id])
+  students User[] @relation("StudentTasks")
+  teacher  User   @relation("TeacherTasks", fields: [teacherId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
+  Feedback  Feedback[]
+
+  @@map("tasks")
+}
+
+model Videos {
+  id    String @id @default(cuid())
+  title String
+  url   String
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("videos")
+}
+
 model Session {
-  sessionToken String   @unique
+  sessionToken String   @unique @map("session_token")
   userId       String   @map("user_id")
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -91,3 +138,64 @@ model Authenticator {
   @@map("authenticators")
 }
 
+model Class {
+  id             String @id @unique @default(cuid())
+  name           String
+  educationLevel String @map("education_level")
+  period         String
+  teacherId      String @map("teacher_id")
+
+  tasks    Task[]
+  user     User[]
+  students User[] @relation("StudentClasses")
+  teacher  User?  @relation("TeacherClasses", fields: [teacherId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("classes")
+}
+
+model Rubric {
+  id     String @id @unique @default(cuid())
+  name   String
+  taskId String @unique
+
+  task Task @relation(fields: [taskId], references: [id])
+
+  evaluation Evaluation[]
+
+  @@map("rubrics")
+}
+
+model Evaluation {
+  id          String @id @unique @default(cuid())
+  name        String
+  description String
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  level Int
+  score Int[]
+
+  rubricId String?
+  rubric   Rubric?    @relation(fields: [rubricId], references: [id])
+  feedback Feedback[]
+
+  @@map("evaluations")
+}
+
+model Feedback {
+  id      String   @id @unique @default(cuid())
+  comment String
+  tips    String[]
+  taskId  String
+  level   Int
+
+  task Task @relation(fields: [taskId], references: [id])
+
+  evaluation Evaluation[]
+
+  @@map("feedbacks")
+}
