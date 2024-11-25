@@ -20,8 +20,15 @@ export const searchSchema = z.object({
     level: z.number(),
     score: z.array(z.number()),
   }),
-  level: z.number(),
-  comment: z.string(),
+  feedback: z.array(
+    z.object({
+      criterionId: z.string(),
+      level: z.number(),
+      score: z.number(),
+      tips: z.array(z.string()),
+      comment: z.string().min(1, 'Insira o comentário de feedback'),
+    }),
+  ),
 })
 
 export type SearchData = z.infer<typeof searchSchema>

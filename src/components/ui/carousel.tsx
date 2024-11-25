@@ -4,9 +4,10 @@ import * as React from 'react'
 import useEmblaCarousel, {
   type UseEmblaCarouselType,
 } from 'embla-carousel-react'
+import { Slot } from '@radix-ui/react-slot'
+import { ArrowLeftIcon, ArrowRightIcon } from '@radix-ui/react-icons'
 import { cn } from '@/lib/shadcn'
 import { Button } from '@/components/ui/button'
-import { ArrowLeftIcon, ArrowRightIcon } from '@radix-ui/react-icons'
 
 export type CarouselApi = UseEmblaCarouselType[1]
 type UseCarouselParameters = Parameters<typeof useEmblaCarousel>
@@ -196,6 +197,27 @@ Item.displayName = 'CarouselItem'
 const Previous = React.forwardRef<
   HTMLButtonElement,
   React.ComponentProps<typeof Button>
+>(({ className, asChild = false, ...props }, ref) => {
+  const { scrollPrev, canScrollPrev } = useCarousel()
+
+  const Comp = asChild ? Slot : 'button'
+
+  return (
+    <Comp
+      type="button"
+      onClick={scrollPrev}
+      disabled={!canScrollPrev}
+      className={cn(className)}
+      ref={ref}
+      {...props}
+    />
+  )
+})
+Previous.displayName = 'CarouselPrevious'
+
+const DefaultPrevious = React.forwardRef<
+  HTMLButtonElement,
+  React.ComponentProps<typeof Button>
 >(({ className, variant = 'outline', size = 'icon', ...props }, ref) => {
   const { orientation, scrollPrev, canScrollPrev } = useCarousel()
 
@@ -220,9 +242,30 @@ const Previous = React.forwardRef<
     </Button>
   )
 })
-Previous.displayName = 'CarouselPrevious'
+DefaultPrevious.displayName = 'CarouselDefaultPrevious'
 
 const Next = React.forwardRef<
+  HTMLButtonElement,
+  React.ComponentProps<typeof Button>
+>(({ className, asChild = false, ...props }, ref) => {
+  const { scrollNext, canScrollNext } = useCarousel()
+
+  const Comp = asChild ? Slot : 'button'
+
+  return (
+    <Comp
+      type="button"
+      onClick={scrollNext}
+      disabled={!canScrollNext}
+      className={cn(className)}
+      ref={ref}
+      {...props}
+    />
+  )
+})
+Next.displayName = 'CarouselNext'
+
+const DefaultNext = React.forwardRef<
   HTMLButtonElement,
   React.ComponentProps<typeof Button>
 >(({ className, variant = 'outline', size = 'icon', ...props }, ref) => {
@@ -249,12 +292,14 @@ const Next = React.forwardRef<
     </Button>
   )
 })
-Next.displayName = 'CarouselNext'
+DefaultNext.displayName = 'CarouselDefaultNext'
 
 export const Carousel = {
   Root,
   Content,
   Item,
-  Previous,
   Next,
+  Previous,
+  DefaultNext,
+  DefaultPrevious,
 }
