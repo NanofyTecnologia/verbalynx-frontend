@@ -35,11 +35,12 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  studentClasses Class[] @relation("StudentClasses")
-  teacherClasses Class[] @relation("TeacherClasses")
-  class          Class?  @relation(fields: [classId], references: [id])
-  studentTasks   Task[]  @relation("StudentTasks")
-  teacherTasks   Task[]  @relation("TeacherTasks")
+  studentFeedback Feedback[] @relation("StudentFeedback")
+  studentClasses  Class[]    @relation("StudentClasses")
+  teacherClasses  Class[]    @relation("TeacherClasses")
+  class           Class?     @relation(fields: [classId], references: [id])
+  studentTasks    Task[]     @relation("StudentTasks")
+  teacherTasks    Task[]     @relation("TeacherTasks")
 
   taskId String?
 
@@ -145,10 +146,11 @@ model Class {
   period         String
   teacherId      String @map("teacher_id")
 
-  tasks    Task[]
-  user     User[]
-  students User[] @relation("StudentClasses")
-  teacher  User?  @relation("TeacherClasses", fields: [teacherId], references: [id])
+  tasks     Task[]
+  user      User[]
+  feedbacks Feedback[]
+  students  User[]     @relation("StudentClasses")
+  teacher   User?      @relation("TeacherClasses", fields: [teacherId], references: [id])
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -169,17 +171,15 @@ model Rubric {
 }
 
 model Evaluation {
-  id          String @id @unique @default(cuid())
+  id          String   @id @unique @default(cuid())
   name        String
   description String
+  level       Int
+  score       Int[]
+  rubricId    String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  level Int
-  score Int[]
-
-  rubricId String?
   rubric   Rubric?    @relation(fields: [rubricId], references: [id])
   feedback Feedback[]
 
@@ -190,11 +190,15 @@ model Feedback {
   id      String   @id @unique @default(cuid())
   comment String
   tips    String[]
-  taskId  String
+  taskId  String   @map("task_id")
+  userId  String   @map("user_id")
+  classId String   @map("class_id")
   level   Int
 
   task Task @relation(fields: [taskId], references: [id])
 
+  user       User         @relation("StudentFeedback", fields: [userId], references: [id])
+  class      Class[]
   evaluation Evaluation[]
 
   @@map("feedbacks")

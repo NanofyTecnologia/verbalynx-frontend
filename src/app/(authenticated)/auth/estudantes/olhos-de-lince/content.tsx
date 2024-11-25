@@ -10,7 +10,6 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Select } from '@/components/ui/select'
-import { Dialog } from '@/components/ui/dialog'
 import { Textarea } from '@/components/ui/textarea'
 import { Carousel } from '@/components/ui/carousel'
 
