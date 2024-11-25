@@ -10,6 +10,7 @@ function findByTaskId(id: string) {
       name: true,
       evaluation: {
         select: {
+          id: true,
           name: true,
           description: true,
           level: true,
