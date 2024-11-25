@@ -13,9 +13,15 @@ export default function Layout({ children }: PropsWithChildren) {
       feedback: [
         {
           comment: '',
-          criterionId: '',
-          level: NaN,
-          score: NaN,
+          criterion: {
+            id: '',
+            description: '',
+            score: [],
+            level: 0,
+            name: '',
+          },
+          level: 0,
+          score: 0,
           tips: [],
         },
       ],
