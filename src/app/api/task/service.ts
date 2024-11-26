@@ -1,6 +1,6 @@
 import { HttpStatusCode } from 'axios'
 import { getServerSession } from 'next-auth'
-import { Evaluation, Rubric, Task } from '@prisma/client'
+import { Criterion, Rubric, Task } from '@prisma/client'
 
 import { authOptions } from '@/lib/next-auth'
 import { HttpError } from '@/helpers/http-error'
@@ -15,7 +15,7 @@ import {
 
 export type CreateTaskData = Omit<Task, 'id' | 'createdAt' | 'updatedAt'> & {
   rubric: Rubric & {
-    evaluation: Evaluation[]
+    evaluation: Criterion[]
   }
 }
 

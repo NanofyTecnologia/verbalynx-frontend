@@ -11,7 +11,7 @@ function create(data: CreateTaskData) {
       rubric: {
         create: {
           name: rubric.name,
-          evaluation: {
+          criterion: {
             create: rubric.evaluation.map((item) => ({
               ...item,
             })),

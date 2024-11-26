@@ -26,21 +26,20 @@ model User {
   observation      String?
   registrationCode String?   @unique @map("registration_code")
   graduation       String?
-  role             Role      @default(PENDING_APPROVAL)
-  accounts         Account[]
-  sessions         Session[]
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 
-  Authenticator Authenticator[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  studentFeedback Feedback[] @relation("StudentFeedback")
-  studentClasses  Class[]    @relation("StudentClasses")
-  teacherClasses  Class[]    @relation("TeacherClasses")
-  class           Class?     @relation(fields: [classId], references: [id])
-  studentTasks    Task[]     @relation("StudentTasks")
-  teacherTasks    Task[]     @relation("TeacherTasks")
+  role            Role            @default(PENDING_APPROVAL)
+  accounts        Account[]
+  sessions        Session[]
+  Authenticator   Authenticator[]
+  studentFeedback Feedback[]      @relation("StudentFeedback")
+  teacherFeedback Feedback[]      @relation("TeacherFeedback")
+  studentClasses  Class[]         @relation("StudentClasses")
+  teacherClasses  Class[]         @relation("TeacherClasses")
+  class           Class?          @relation(fields: [classId], references: [id])
+  studentTasks    Task[]          @relation("StudentTasks")
+  teacherTasks    Task[]          @relation("TeacherTasks")
 
   taskId String?
 
@@ -163,43 +162,57 @@ model Rubric {
   name   String
   taskId String @unique
 
-  task Task @relation(fields: [taskId], references: [id])
-
-  evaluation Evaluation[]
+  task      Task        @relation(fields: [taskId], references: [id])
+  criterion Criterion[]
 
   @@map("rubrics")
 }
 
-model Evaluation {
+model Criterion {
   id          String   @id @unique @default(cuid())
   name        String
   description String
   level       Int
   score       Int[]
-  rubricId    String?
+  rubricId    String?  @map("rubric_id")
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
-  rubric   Rubric?    @relation(fields: [rubricId], references: [id])
-  feedback Feedback[]
+  rubric            Rubric?             @relation(fields: [rubricId], references: [id])
+  FeedbackCriterion FeedbackCriterion[]
 
-  @@map("evaluations")
+  @@map("criteria")
 }
 
 model Feedback {
-  id      String   @id @unique @default(cuid())
-  comment String
-  tips    String[]
-  taskId  String   @map("task_id")
-  userId  String   @map("user_id")
-  classId String   @map("class_id")
-  level   Int
+  id        String @id @unique @default(cuid())
+  taskId    String @map("task_id")
+  classId   String @map("class_id")
+  studentId String @map("user_id")
+  teacherId String @map("teacher_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
-  task Task @relation(fields: [taskId], references: [id])
-
-  user       User         @relation("StudentFeedback", fields: [userId], references: [id])
-  class      Class[]
-  evaluation Evaluation[]
+  task              Task                @relation(fields: [taskId], references: [id])
+  student           User                @relation("StudentFeedback", fields: [studentId], references: [id])
+  teacher           User                @relation("TeacherFeedback", fields: [teacherId], references: [id])
+  class             Class[]
+  feedbackCriterion FeedbackCriterion[]
 
   @@map("feedbacks")
+}
+
+model FeedbackCriterion {
+  id          String   @id @default(uuid())
+  comment     String
+  tips        String[]
+  feedbackId  String   @map("feedback_id")
+  criterionId String   @map("criterion_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  feedback  Feedback  @relation(fields: [feedbackId], references: [id])
+  criterion Criterion @relation(fields: [criterionId], references: [id])
+
+  @@map("feedback_criterion")
 }
