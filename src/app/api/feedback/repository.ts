@@ -1,10 +1,36 @@
 import { prisma } from '@/config/prisma'
 
-import { CreateData } from './service'
+export type CreateFeedbackCriterionData = {
+  tips: string[]
+  comment: string
+  criterionId: string
+  level: number
+  score: number
+}[]
 
-function create(data: CreateData) {
+export type CreateFeedbackData = {
+  taskId: string
+  classId: string
+  teacherId: string
+  studentId: string
+} & CreateFeedbackCriterionData
+
+function create(
+  data: Omit<CreateFeedbackData, keyof CreateFeedbackCriterionData>,
+  feedbackCriterionData: CreateFeedbackCriterionData,
+) {
   return prisma.feedback.create({
-    data: {},
+    data: {
+      ...data,
+      feedbackCriterion: {
+        createMany: {
+          data: feedbackCriterionData,
+        },
+      },
+    },
+    select: {
+      id: true,
+    },
   })
 }
 

@@ -13,15 +13,17 @@ import { Select } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { Carousel } from '@/components/ui/carousel'
 
-import { SearchData } from '../_schema'
+import { FeedbackData } from '../_schema'
 import { useGetByRubricId } from './_hooks/use-get-rubric-by-id'
+import { useCreateFeedback } from './_hooks/use-create-feedback'
 
 export default function Content() {
   const { replace, back } = useRouter()
   const { watch, setValue, register, control, handleSubmit } =
-    useFormContext<SearchData>()
+    useFormContext<FeedbackData>()
 
-  const { fields, append, remove } = useFieldArray<SearchData>({
+  const { mutate: handleCreateFeedback } = useCreateFeedback()
+  const { fields, append, remove } = useFieldArray<FeedbackData>({
     control,
     name: 'feedback',
   })
@@ -36,6 +38,7 @@ export default function Content() {
         level: 0,
         name: '',
       },
+      criterionId: '',
       level: 0,
       score: 0,
       tips: [],
@@ -47,8 +50,15 @@ export default function Content() {
 
   const { data: criteria } = useGetByRubricId({ id: task?.id ?? '' })
 
-  const onSubmit: SubmitHandler<SearchData> = (data) => {
-    alert(JSON.stringify(data))
+  const onSubmit: SubmitHandler<FeedbackData> = (data) => {
+    const { task, team, student } = data
+
+    handleCreateFeedback({
+      taskId: task.id,
+      classId: team.id,
+      studentId: student.id,
+      feedbacks: data.feedback,
+    })
   }
 
   useEffect(() => {
@@ -131,12 +141,17 @@ export default function Content() {
                         </div>
 
                         <Select.Root
-                          onValueChange={(value) =>
+                          onValueChange={(value) => {
                             setValue(
                               `feedback.${index}.criterion`,
                               JSON.parse(value),
                             )
-                          }
+
+                            setValue(
+                              `feedback.${index}.criterionId`,
+                              JSON.parse(value).id,
+                            )
+                          }}
                         >
                           <Select.Trigger>
                             <Select.Value placeholder="Selecione o critério" />

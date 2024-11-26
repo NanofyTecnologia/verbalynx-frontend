@@ -8,7 +8,7 @@ function findByTaskId(id: string) {
     select: {
       id: true,
       name: true,
-      evaluation: {
+      criterion: {
         select: {
           id: true,
           name: true,

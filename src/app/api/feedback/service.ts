@@ -5,18 +5,20 @@ import { Feedback } from '@prisma/client'
 import { authOptions } from '@/lib/next-auth'
 import { HttpError } from '@/helpers/http-error'
 
-import { create } from './repository'
+import { create, type CreateFeedbackData } from './repository'
 
-export type CreateData = Omit<Feedback, 'id' | 'createdAt' | 'updatedAt'>
+async function createFeedback(data: CreateFeedbackData) {
+  const { taskId, classId, studentId, ...restData } = data
 
-async function createFeedback(data: CreateData) {
   const session = await getServerSession(authOptions)
 
   if (!session?.user.id || session.user.role !== 'PROFESSOR') {
     throw new HttpError('UNAUTHORIZED', HttpStatusCode.Unauthorized)
   }
 
-  return create(data)
+  const teacherId = session.user.id
+
+  return create({ taskId, classId, studentId, teacherId }, { ...restData })
 }
 
 export { createFeedback }
