@@ -15,7 +15,7 @@ async function getRubricByTaskId(id: string) {
 
   const rubric = await findByTaskId(id)
 
-  return rubric?.evaluation
+  return rubric?.criterion
 }
 
 export { getRubricByTaskId }

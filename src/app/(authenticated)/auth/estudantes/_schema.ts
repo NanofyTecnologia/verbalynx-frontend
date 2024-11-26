@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const searchSchema = z.object({
+export const feedbackSchema = z.object({
   team: z.object({
     id: z.string().min(1),
     name: z.string().min(1),
@@ -22,6 +22,7 @@ export const searchSchema = z.object({
         level: z.number(),
         score: z.array(z.number()),
       }),
+      criterionId: z.string(),
       level: z.number(),
       score: z.number(),
       tips: z.array(z.string()),
@@ -30,4 +31,4 @@ export const searchSchema = z.object({
   ),
 })
 
-export type SearchData = z.infer<typeof searchSchema>
+export type FeedbackData = z.infer<typeof feedbackSchema>

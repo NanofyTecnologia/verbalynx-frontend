@@ -14,12 +14,12 @@ import { useGetClassesById } from '@/hooks/services/use-get-classes-by-id'
 
 import { useGetStudentsByClassId } from './_hooks/use-get-students-by-class-id'
 import { useGetTasksByStudentId } from './_hooks/use-get-tasks-by-student-id'
-import { SearchData } from './_schema'
+import { FeedbackData } from './_schema'
 
 export default function Content() {
   const { data } = useSession()
 
-  const { watch, setValue } = useFormContext<SearchData>()
+  const { watch, setValue } = useFormContext<FeedbackData>()
 
   const { team, student } = watch()
 

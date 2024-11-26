@@ -102,7 +102,7 @@ export default function Page() {
           </p>
         </div>
 
-        <div className="mx-auto mt-4 overflow-scroll">
+        <div className="mx-auto mt-4 overflow-auto">
           <table className="w-full border-2 border-black text-center">
             <thead className="text-nowrap border-b-2 border-black bg-[#73D997]">
               <tr>
