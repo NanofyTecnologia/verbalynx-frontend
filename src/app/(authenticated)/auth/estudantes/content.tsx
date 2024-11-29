@@ -81,8 +81,9 @@ export default function Content() {
             onValueChange={(value) => setValue('student', JSON.parse(value))}
           >
             <Select.Trigger disabled={!team}>
-              <Select.Value placeholder="Selecione o aluno" />
+              <Select.Value placeholder="Selecione o estudante" />
             </Select.Trigger>
+
             <Select.Content>
               {students?.map(({ id, name }) => (
                 <Fragment key={id}>
@@ -98,7 +99,7 @@ export default function Content() {
                   disabled
                   className="justify-center"
                 >
-                  Nenhum aluno encontrado
+                  Nenhum estudante encontrado
                 </Select.Item>
               )}
             </Select.Content>

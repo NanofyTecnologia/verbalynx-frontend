@@ -13,7 +13,7 @@ export type CreateFeedbackData = {
   classId: string
   teacherId: string
   studentId: string
-} & CreateFeedbackCriterionData
+}
 
 function create(
   data: Omit<CreateFeedbackData, keyof CreateFeedbackCriterionData>,
@@ -33,5 +33,7 @@ function create(
     },
   })
 }
+
+function createStudentTask()
 
 export { create }

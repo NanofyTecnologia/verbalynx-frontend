@@ -16,9 +16,10 @@ import { Carousel } from '@/components/ui/carousel'
 import { FeedbackData } from '../_schema'
 import { useGetByRubricId } from './_hooks/use-get-rubric-by-id'
 import { useCreateFeedback } from './_hooks/use-create-feedback'
+import Link from 'next/link'
 
 export default function Content() {
-  const { replace, back } = useRouter()
+  const { replace } = useRouter()
   const { watch, setValue, register, control, handleSubmit } =
     useFormContext<FeedbackData>()
 
@@ -57,7 +58,9 @@ export default function Content() {
       taskId: task.id,
       classId: team.id,
       studentId: student.id,
-      feedbacks: data.feedback,
+      feedbacks: data.feedback.map(({ criterion, ...restItem }) => ({
+        ...restItem,
+      })),
     })
   }
 
@@ -74,8 +77,10 @@ export default function Content() {
   return (
     <>
       <div className="flex items-center justify-between">
-        <Button size="icon" onClick={() => back()}>
-          <ChevronLeft className="size-5" />
+        <Button size="icon" asChild>
+          <Link href="/auth/estudantes">
+            <ChevronLeft className="size-5" />
+          </Link>
         </Button>
 
         <h2 className="text-lg font-semibold">Olhos de Lince</h2>

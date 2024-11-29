@@ -5,16 +5,19 @@ import { HttpError } from '@/helpers/http-error'
 
 import { createFeedback } from './service'
 
-export async function GET(req: NextRequest) {
+export async function POST(req: NextRequest) {
   try {
     const data = await req.json()
 
     const createdFeedback = await createFeedback(data)
 
+    console.log('afterPrisma')
+
     return NextResponse.json(createdFeedback, {
       status: HttpStatusCode.Created,
     })
   } catch (error) {
+    console.log(error)
     if (error instanceof HttpError) {
       return NextResponse.json(error.message, { status: error.status })
     }
