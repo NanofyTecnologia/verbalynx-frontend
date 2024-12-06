@@ -4,10 +4,16 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/next-auth'
 import { HttpError } from '@/helpers/http-error'
 
-import { create, type CreateFeedbackData } from './repository'
+import {
+  create,
+  type CreateFeedbackData,
+  type CreateFeedbackCriterionData,
+} from './repository'
 
-async function createFeedback(data: CreateFeedbackData) {
-  const { taskId, classId, studentId, ...restData } = data
+async function createFeedback(
+  data: CreateFeedbackData & { feedbacks: CreateFeedbackCriterionData },
+) {
+  const { taskId, classId, studentId, feedbacks } = data
 
   const session = await getServerSession(authOptions)
 
@@ -19,7 +25,7 @@ async function createFeedback(data: CreateFeedbackData) {
 
   const teacherId = session.user.id
 
-  return create({ taskId, classId, studentId, teacherId }, { ...restData })
+  return create({ taskId, classId, studentId, teacherId }, feedbacks)
 }
 
 export { createFeedback }

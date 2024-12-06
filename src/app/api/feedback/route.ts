@@ -11,10 +11,13 @@ export async function POST(req: NextRequest) {
 
     const createdFeedback = await createFeedback(data)
 
+    console.log('afterPrisma')
+
     return NextResponse.json(createdFeedback, {
       status: HttpStatusCode.Created,
     })
   } catch (error) {
+    console.log(error)
     if (error instanceof HttpError) {
       return NextResponse.json(error.message, { status: error.status })
     }

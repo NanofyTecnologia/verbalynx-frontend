@@ -66,7 +66,7 @@ export default function Page() {
           <div className="text-sm">
             Esta página mostra todos os detalhes da atividade em questão,
             incluindo data de abertura, data de fechamento e a possibilidade do
-            aluno fazer a entrega.
+            estudante fazer a entrega.
           </div>
 
           <Dialog.Footer>

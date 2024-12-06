@@ -102,7 +102,7 @@ export default function Page() {
           <div className="text-sm">
             <li>
               <span className="font-semibold">Filtro de busca:</span> Utilize o
-              filtro para encontrar um aluno específico.
+              filtro para encontrar um estudante específico.
             </li>
             <li>
               <span className="font-semibold">Deletar turma:</span> Clique sobre
