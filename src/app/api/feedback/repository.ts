@@ -37,6 +37,4 @@ function create(
   })
 }
 
-function createStudentTask()
-
 export { create }
