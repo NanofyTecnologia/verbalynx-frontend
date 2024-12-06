@@ -57,7 +57,9 @@ export default function Content() {
       taskId: task.id,
       classId: team.id,
       studentId: student.id,
-      feedbacks: data.feedback,
+      feedbacks: data.feedback.map(({ criterion, ...restItem }) => ({
+        ...restItem,
+      })),
     })
   }
 

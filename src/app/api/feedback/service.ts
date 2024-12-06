@@ -1,6 +1,5 @@
 import { HttpStatusCode } from 'axios'
 import { getServerSession } from 'next-auth'
-import { Feedback } from '@prisma/client'
 
 import { authOptions } from '@/lib/next-auth'
 import { HttpError } from '@/helpers/http-error'
@@ -15,6 +14,8 @@ async function createFeedback(data: CreateFeedbackData) {
   if (!session?.user.id || session.user.role !== 'PROFESSOR') {
     throw new HttpError('UNAUTHORIZED', HttpStatusCode.Unauthorized)
   }
+
+  console.log(data)
 
   const teacherId = session.user.id
 
