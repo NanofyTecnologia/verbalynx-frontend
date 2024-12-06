@@ -4,16 +4,16 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/next-auth'
 import { HttpError } from '@/helpers/http-error'
 
-import {
-  create,
-  type CreateFeedbackData,
-  type CreateFeedbackCriterionData,
-} from './repository'
+import { create, type CreateFeedbackData } from './repository'
 
-async function createFeedback(
-  data: CreateFeedbackData & { feedbacks: CreateFeedbackCriterionData },
-) {
-  const { taskId, classId, studentId, feedbacks } = data
+async function createFeedback(data: CreateFeedbackData) {
+  const {
+    taskId,
+    classId,
+    studentId,
+    teacherId: bodyTeacherId,
+    feedbacks,
+  } = data
 
   const session = await getServerSession(authOptions)
 
@@ -21,11 +21,16 @@ async function createFeedback(
     throw new HttpError('UNAUTHORIZED', HttpStatusCode.Unauthorized)
   }
 
-  console.log(data)
+  const teacherId = session.user.id || bodyTeacherId
 
-  const teacherId = session.user.id
+  const createdFeedback = await create(
+    { taskId, classId, studentId, teacherId },
+    feedbacks,
+  )
 
-  return create({ taskId, classId, studentId, teacherId }, feedbacks)
+  return {
+    id: createdFeedback.id,
+  }
 }
 
 export { createFeedback }

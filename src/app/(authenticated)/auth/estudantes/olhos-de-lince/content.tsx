@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { Fragment, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { SubmitHandler, useFieldArray, useFormContext } from 'react-hook-form'
@@ -16,7 +17,6 @@ import { Carousel } from '@/components/ui/carousel'
 import { FeedbackData } from '../_schema'
 import { useGetByRubricId } from './_hooks/use-get-rubric-by-id'
 import { useCreateFeedback } from './_hooks/use-create-feedback'
-import Link from 'next/link'
 
 export default function Content() {
   const { replace } = useRouter()
@@ -54,14 +54,21 @@ export default function Content() {
   const onSubmit: SubmitHandler<FeedbackData> = (data) => {
     const { task, team, student } = data
 
-    handleCreateFeedback({
-      taskId: task.id,
-      classId: team.id,
-      studentId: student.id,
-      feedbacks: data.feedback.map(({ criterion, ...restItem }) => ({
-        ...restItem,
-      })),
-    })
+    handleCreateFeedback(
+      {
+        taskId: task.id,
+        classId: team.id,
+        studentId: student.id,
+        feedbacks: data.feedback.map(({ criterion, ...restItem }) => ({
+          ...restItem,
+        })),
+      },
+      {
+        onSuccess: (data) => {
+          replace(`/auth/feedback-qualitativo/${data.id}`)
+        },
+      },
+    )
   }
 
   useEffect(() => {

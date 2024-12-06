@@ -1,3 +1,22 @@
+export type GetFeedbackByIdParams = {
+  id: string | undefined
+}
+export type GetFeedbackByIdResponse = {
+  student: {
+    name: string
+  }
+  class: {
+    name: string
+  }
+  task: {
+    name: string
+  }
+  feedbackCriterion: {
+    level: number
+    comment: string
+  }[]
+}
+
 export type CreateFeedbackParams = {
   taskId: string
   classId: string

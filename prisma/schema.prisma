@@ -14,8 +14,6 @@ enum Role {
   PENDING_APPROVAL
 }
 
-
-
 model Account {
   userId            String
   type              String
@@ -208,7 +206,7 @@ model Feedback {
   task              Task                @relation(fields: [taskId], references: [id])
   student           User                @relation("StudentFeedback", fields: [studentId], references: [id])
   teacher           User                @relation("TeacherFeedback", fields: [teacherId], references: [id])
-  class             Class[]
+  class             Class               @relation(fields: [classId], references: [id])
   feedbackCriterion FeedbackCriterion[]
 
   @@map("feedbacks")
