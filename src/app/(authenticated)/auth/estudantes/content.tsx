@@ -12,9 +12,9 @@ import { Select } from '@/components/ui/select'
 
 import { useGetClassesById } from '@/hooks/services/use-get-classes-by-id'
 
-import { useGetStudentsByClassId } from './_hooks/use-get-students-by-class-id'
-import { useGetTasksByStudentId } from './_hooks/use-get-tasks-by-student-id'
 import { FeedbackData } from './_schema'
+import { useGetTasksByStudentId } from './_hooks/use-get-tasks-by-student-id'
+import { useGetStudentsByClassId } from './_hooks/use-get-students-by-class-id'
 
 export default function Content() {
   const { data } = useSession()

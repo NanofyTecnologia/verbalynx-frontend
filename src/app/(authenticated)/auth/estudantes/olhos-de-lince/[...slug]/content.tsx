@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { Fragment, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import { SubmitHandler, useFieldArray, useFormContext } from 'react-hook-form'
 import { ChevronLeft, CircleHelp } from 'lucide-react'
 
@@ -14,13 +14,30 @@ import { Select } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { Carousel } from '@/components/ui/carousel'
 
-import { FeedbackData } from '../_schema'
-import { useGetByRubricId } from './_hooks/use-get-rubric-by-id'
-import { useCreateFeedback } from './_hooks/use-create-feedback'
+import { normalizeSlug } from '@/utils/normalize-slug'
+import { useGetFeedbackById } from '@/hooks/services/use-get-feedback-by-id'
+
+import { FeedbackData } from '../../_schema'
+import { useGetByRubricId } from '../_hooks/use-get-rubric-by-id'
+import { useCreateFeedback } from '../_hooks/use-create-feedback'
+import { feedback } from '@/services/feedback'
+
+export interface IParams {
+  [key: string]: string[]
+}
 
 export default function Content() {
   const { replace } = useRouter()
-  const { watch, setValue, register, control, handleSubmit } =
+  const { slug } = useParams<IParams>()
+  const searchParams = useSearchParams()
+
+  const taskId = searchParams.get('taskId')
+
+  const { id } = normalizeSlug(slug)
+
+  const { data: queryFeedback } = useGetFeedbackById({ id })
+
+  const { watch, reset, setValue, register, control, handleSubmit } =
     useFormContext<FeedbackData>()
 
   const { mutate: handleCreateFeedback } = useCreateFeedback()
@@ -47,9 +64,29 @@ export default function Content() {
 
   const handleRemove = (index: number) => remove(index)
 
+  const handleDefaultValues = () => {
+    if (!queryFeedback) {
+      return
+    }
+
+    const { student, task, class: team, feedbackCriterion } = queryFeedback
+
+    reset({
+      task,
+      team,
+      student,
+      feedback: feedbackCriterion.map((item) => ({
+        ...item,
+        criterionId: item.id,
+      })),
+    })
+  }
+
   const { team, student, task, feedback } = watch()
 
-  const { data: criteria } = useGetByRubricId({ id: task?.id ?? '' })
+  const { data: criteria } = useGetByRubricId({
+    id: task?.id ?? taskId,
+  })
 
   const onSubmit: SubmitHandler<FeedbackData> = (data) => {
     const { task, team, student } = data
@@ -72,12 +109,14 @@ export default function Content() {
   }
 
   useEffect(() => {
-    if (!team || !student || !task) {
+    if ((!team || !student || !task) && !id) {
       return replace('/auth/estudantes')
     }
   }, [watch, replace])
 
-  if (!team || !student || !task) {
+  useEffect(handleDefaultValues, [reset, queryFeedback])
+
+  if ((!team || !student || !task) && !id) {
     return <></>
   }
 
@@ -102,7 +141,7 @@ export default function Content() {
           <Badge className="w-full max-w-24 justify-center p-1.5">Turma:</Badge>
 
           <Badge variant="outline" className="w-full bg-white p-1.5">
-            {team.name}
+            {team?.name}
           </Badge>
         </div>
 
@@ -110,7 +149,7 @@ export default function Content() {
           <Badge className="w-full max-w-24 justify-center p-1.5">Aluno:</Badge>
 
           <Badge variant="outline" className="w-full bg-white p-1.5">
-            {student.name}
+            {student?.name}
           </Badge>
         </div>
 
@@ -120,7 +159,7 @@ export default function Content() {
           </Badge>
 
           <Badge variant="outline" className="w-full bg-white p-1.5">
-            {task.name}
+            {task?.name}
           </Badge>
         </div>
       </div>
@@ -217,13 +256,17 @@ export default function Content() {
                             }}
                           >
                             <Select.Trigger
-                              disabled={!feedback[index]?.criterion.id}
+                              disabled={
+                                feedback && !feedback[index]?.criterion.id
+                              }
                             >
                               <Select.Value placeholder="Selecione o nível de qualidade" />
                             </Select.Trigger>
                             <Select.Content>
                               {Array.from({
-                                length: feedback[index]?.criterion.level,
+                                length: feedback
+                                  ? feedback[index]?.criterion.level
+                                  : 0,
                               }).map((_, index) => (
                                 <Fragment key={index + 'level'}>
                                   <Select.Item value={String(index + 1)}>

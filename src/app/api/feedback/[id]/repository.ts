@@ -19,11 +19,15 @@ function findById(id: string) {
       },
       task: {
         select: {
+          id: true,
           name: true,
         },
       },
       feedbackCriterion: {
         select: {
+          id: true,
+          tips: true,
+          score: true,
           level: true,
           comment: true,
         },

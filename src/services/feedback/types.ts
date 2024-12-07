@@ -9,10 +9,14 @@ export type GetFeedbackByIdResponse = {
     name: string
   }
   task: {
+    id: string
     name: string
   }
   feedbackCriterion: {
+    id: string
+    tips: string[]
     level: number
+    score: number
     comment: string
   }[]
 }

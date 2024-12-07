@@ -1,15 +1,15 @@
 'use client'
 
 import Link from 'next/link'
+import { Fragment } from 'react'
 import { useParams } from 'next/navigation'
-import { ChevronLeft, CircleHelp } from 'lucide-react'
+import { CircleHelp } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { normalizeSlug } from '@/utils/normalize-slug'
 
-import { useGetFeedbackById } from './_hooks/use-get-feedback-by-id'
-import { Fragment } from 'react'
+import { normalizeSlug } from '@/utils/normalize-slug'
+import { useGetFeedbackById } from '@/hooks/services/use-get-feedback-by-id'
 
 export interface IParams {
   [key: string]: string[]
@@ -78,6 +78,18 @@ export default function Content() {
             </Fragment>
           ))}
         </div>
+      </div>
+
+      <div className="mt-4 space-y-6">
+        <Button variant="destructive" className="w-full" asChild>
+          <Link
+            href={`/auth/estudantes/olhos-de-lince/${id}?taskId=${feedback?.task.id}`}
+          >
+            Reavaliar
+          </Link>
+        </Button>
+
+        <Button className="w-full">Encerrar</Button>
       </div>
     </>
   )
