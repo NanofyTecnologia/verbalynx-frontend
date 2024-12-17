@@ -1,27 +1,57 @@
 'use client'
 
-import Link from 'next/link'
-import { Fragment } from 'react'
+import { Fragment, ReactNode, useState } from 'react'
+import { useSession } from 'next-auth/react'
 import { useParams } from 'next/navigation'
-import { CircleHelp } from 'lucide-react'
+import { BoomBox, Camera, CircleHelp, FolderCheck, Link2 } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Dialog } from '@/components/ui/dialog'
 
 import { normalizeSlug } from '@/utils/normalize-slug'
 import { useGetFeedbackById } from '@/hooks/services/use-get-feedback-by-id'
+
+import FormReevaluate from '../_components/form-reevaluate'
+import { log } from 'console'
 
 export interface IParams {
   [key: string]: string[]
 }
 
+const tipElement: { [key: string]: ReactNode } = {
+  '1': <FolderCheck className="size-4" />,
+  '2': <BoomBox className="size-4" />,
+  '3': <Camera className="size-4" />,
+  '4': <Link2 className="size-4" />,
+}
+
 export default function Content() {
+  const { data: session } = useSession()
+
   const { slug } = useParams<IParams>()
   const { id } = normalizeSlug(slug)
 
-  const { data: feedback } = useGetFeedbackById({ id })
+  const [showDialog, setShowDialog] = useState<boolean>(false)
+
+  const { data: feedback, refetch } = useGetFeedbackById({ id })
 
   const studentFirstName = feedback?.student.name.split(' ')[0]
+
+  const getTotalScore = () => {
+    let total = 0
+
+    if (feedback?.task?.rubric?.criterion) {
+      feedback.task.rubric.criterion.forEach((criterion) => {
+        total += criterion.score.reduce(
+          (criterionSum, score) => criterionSum + score,
+          0,
+        )
+      })
+    }
+
+    return total
+  }
 
   return (
     <>
@@ -61,36 +91,71 @@ export default function Content() {
         </div>
       </div>
 
-      <div className="mt-6 rounded-md border bg-white p-4">
+      <div className="relative mt-6 rounded-md border bg-white p-4">
         <h2 className="text-sm font-semibold">Olá, {studentFirstName}!</h2>
 
         <div className="mt-6 space-y-2">
           {feedback?.feedbackCriterion.map((item, index) => (
             <Fragment key={index}>
-              <div className="">
+              <div className="space-y-2">
                 <p className="text-sm">
                   <span className="font-semibold">
                     Comentário Critério {item.level}
                   </span>{' '}
                   {item.comment}
                 </p>
+
+                <div className="flex items-center gap-4">
+                  {item.tips.map((tip) => (
+                    <Fragment key={tip}>
+                      <div className="rounded-full border border-muted-foreground p-2">
+                        {tipElement[tip]}
+                      </div>
+                    </Fragment>
+                  ))}
+                </div>
               </div>
             </Fragment>
           ))}
         </div>
+
+        <div className="flex justify-end">
+          <Badge>Total de pontos: {getTotalScore()}</Badge>
+        </div>
       </div>
 
       <div className="mt-4 space-y-6">
-        <Button variant="destructive" className="w-full" asChild>
-          <Link
-            href={`/auth/estudantes/olhos-de-lince/${id}?taskId=${feedback?.task.id}`}
+        {session?.user.role === 'PROFESSOR' && (
+          <Button
+            className="w-full"
+            variant="destructive"
+            onClick={() => setShowDialog(!showDialog)}
           >
             Reavaliar
-          </Link>
-        </Button>
+          </Button>
+        )}
 
         <Button className="w-full">Encerrar</Button>
       </div>
+
+      <Dialog.Root open={showDialog} onOpenChange={setShowDialog}>
+        <Dialog.Content>
+          <Dialog.Header>
+            <Dialog.Title>
+              Reavaliar {feedback?.student.name} - {feedback?.class.name}
+            </Dialog.Title>
+            <Dialog.Description>
+              <span className="font-semibold">Atividade:</span>{' '}
+              {feedback?.task.name}
+            </Dialog.Description>
+          </Dialog.Header>
+
+          <FormReevaluate
+            taskId={feedback?.task.id}
+            onReloadFeedback={refetch}
+          />
+        </Dialog.Content>
+      </Dialog.Root>
     </>
   )
 }

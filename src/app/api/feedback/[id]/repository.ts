@@ -1,5 +1,5 @@
 import { prisma } from '@/config/prisma'
-import { comment } from 'postcss'
+import { FeedbackCriterion } from '@prisma/client'
 
 function findById(id: string) {
   return prisma.feedback.findUnique({
@@ -21,6 +21,15 @@ function findById(id: string) {
         select: {
           id: true,
           name: true,
+          rubric: {
+            select: {
+              criterion: {
+                select: {
+                  score: true,
+                },
+              },
+            },
+          },
         },
       },
       feedbackCriterion: {
@@ -36,4 +45,18 @@ function findById(id: string) {
   })
 }
 
-export { findById }
+export type CriterionData = Omit<
+  FeedbackCriterion,
+  'id' | 'createdAt' | 'updatedAt'
+>
+
+function createRevaluation(id: string, data: CriterionData) {
+  return prisma.feedbackCriterion.create({
+    data: {
+      ...data,
+      feedbackId: id,
+    },
+  })
+}
+
+export { findById, createRevaluation }

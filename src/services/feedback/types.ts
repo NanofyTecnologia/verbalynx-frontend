@@ -11,6 +11,11 @@ export type GetFeedbackByIdResponse = {
   task: {
     id: string
     name: string
+    rubric: {
+      criterion: {
+        score: number[]
+      }[]
+    }
   }
   feedbackCriterion: {
     id: string
@@ -34,5 +39,17 @@ export type CreateFeedbackParams = {
   }[]
 }
 export type CreateFeedbackResponse = {
+  id: string
+}
+
+export type CreateRevaluationParams = {
+  id: string | undefined
+  level: number
+  score: number
+  comment: string
+  criterionId: string
+  tips?: string[] | undefined
+}
+export type CreateRevaluationResponse = {
   id: string
 }

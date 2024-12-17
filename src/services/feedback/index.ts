@@ -2,6 +2,8 @@ import axios from '@/lib/axios'
 import type {
   CreateFeedbackParams,
   CreateFeedbackResponse,
+  CreateRevaluationParams,
+  CreateRevaluationResponse,
   GetFeedbackByIdParams,
   GetFeedbackByIdResponse,
 } from './types'
@@ -19,6 +21,16 @@ export const feedback = {
     const { data } = await axios.post<CreateFeedbackResponse>(
       '/feedback',
       params,
+    )
+
+    return data
+  },
+
+  async createRevaluation(params: CreateRevaluationParams) {
+    const { id, ...rest } = params
+    const { data } = await axios.post<CreateRevaluationResponse>(
+      '/feedback/' + id,
+      rest,
     )
 
     return data
