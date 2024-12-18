@@ -4,7 +4,13 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/next-auth'
 import { HttpError } from '@/helpers/http-error'
 
-import { createRevaluation, type CriterionData, findById } from './repository'
+import {
+  update,
+  findById,
+  createRevaluation,
+  type UpdateData,
+  type CriterionData,
+} from './repository'
 
 async function getById(id: string) {
   const session = await getServerSession(authOptions)
@@ -14,6 +20,16 @@ async function getById(id: string) {
   }
 
   return await findById(id)
+}
+
+async function updateFeedback(id: string, data: UpdateData) {
+  const session = await getServerSession(authOptions)
+
+  if (!session?.user.id && session?.user.role !== 'PROFESSOR') {
+    throw new HttpError('UNAUTHORIZED', HttpStatusCode.Unauthorized)
+  }
+
+  return await update(id, data)
 }
 
 async function createRevaluationByFeedbackID(id: string, data: CriterionData) {
@@ -30,4 +46,4 @@ async function createRevaluationByFeedbackID(id: string, data: CriterionData) {
   return await createRevaluation(id, data)
 }
 
-export { getById, createRevaluationByFeedbackID }
+export { getById, updateFeedback, createRevaluationByFeedbackID }

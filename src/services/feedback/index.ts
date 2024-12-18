@@ -1,11 +1,13 @@
 import axios from '@/lib/axios'
-import type {
-  CreateFeedbackParams,
-  CreateFeedbackResponse,
-  CreateRevaluationParams,
-  CreateRevaluationResponse,
-  GetFeedbackByIdParams,
-  GetFeedbackByIdResponse,
+import {
+  UpdateFeedbackResponse,
+  type CreateFeedbackParams,
+  type CreateFeedbackResponse,
+  type CreateRevaluationParams,
+  type CreateRevaluationResponse,
+  type GetFeedbackByIdParams,
+  type GetFeedbackByIdResponse,
+  type UpdateFeedbackParams,
 } from './types'
 
 export const feedback = {
@@ -20,6 +22,15 @@ export const feedback = {
   async create(params: CreateFeedbackParams) {
     const { data } = await axios.post<CreateFeedbackResponse>(
       '/feedback',
+      params,
+    )
+
+    return data
+  },
+
+  async update(params: UpdateFeedbackParams) {
+    const { data } = await axios.put<UpdateFeedbackResponse>(
+      '/feedback/' + params.id,
       params,
     )
 

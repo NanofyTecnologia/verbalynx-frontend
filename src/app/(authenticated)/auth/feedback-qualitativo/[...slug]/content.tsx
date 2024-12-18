@@ -2,7 +2,7 @@
 
 import { Fragment, ReactNode, useState } from 'react'
 import { useSession } from 'next-auth/react'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { BoomBox, Camera, CircleHelp, FolderCheck, Link2 } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
@@ -13,7 +13,8 @@ import { normalizeSlug } from '@/utils/normalize-slug'
 import { useGetFeedbackById } from '@/hooks/services/use-get-feedback-by-id'
 
 import FormReevaluate from '../_components/form-reevaluate'
-import { log } from 'console'
+import { useUpdateFeedback } from './_hooks/use-update-feedback'
+import { toast } from 'react-toastify'
 
 export interface IParams {
   [key: string]: string[]
@@ -27,6 +28,8 @@ const tipElement: { [key: string]: ReactNode } = {
 }
 
 export default function Content() {
+  const { replace } = useRouter()
+
   const { data: session } = useSession()
 
   const { slug } = useParams<IParams>()
@@ -35,6 +38,7 @@ export default function Content() {
   const [showDialog, setShowDialog] = useState<boolean>(false)
 
   const { data: feedback, refetch } = useGetFeedbackById({ id })
+  const { mutate: handleUpdateFeedback } = useUpdateFeedback()
 
   const studentFirstName = feedback?.student.name.split(' ')[0]
 
@@ -51,6 +55,20 @@ export default function Content() {
     }
 
     return total
+  }
+
+  const onClosedFeedback = () => {
+    if (!id) return
+
+    handleUpdateFeedback(
+      { id, isClosed: true },
+      {
+        onSuccess: () => {
+          replace('/auth')
+          toast.success('Feedback encerrado com sucesso!')
+        },
+      },
+    )
   }
 
   return (
@@ -122,6 +140,14 @@ export default function Content() {
         <div className="flex justify-end">
           <Badge>Total de pontos: {getTotalScore()}</Badge>
         </div>
+
+        <div className="mt-6 grid grid-cols-3 gap-4">
+          <Button size="sm">Enviar por e-mail</Button>
+
+          <Button size="sm">Exportar .PDF</Button>
+
+          <Button size="sm">Salvar</Button>
+        </div>
       </div>
 
       <div className="mt-4 space-y-6">
@@ -135,7 +161,9 @@ export default function Content() {
           </Button>
         )}
 
-        <Button className="w-full">Encerrar</Button>
+        <Button className="w-full" onClick={onClosedFeedback}>
+          Encerrar
+        </Button>
       </div>
 
       <Dialog.Root open={showDialog} onOpenChange={setShowDialog}>

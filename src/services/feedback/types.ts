@@ -53,3 +53,9 @@ export type CreateRevaluationParams = {
 export type CreateRevaluationResponse = {
   id: string
 }
+
+export type UpdateFeedbackParams = Partial<CreateFeedbackParams> & {
+  id: string
+  isClosed: boolean
+}
+export type UpdateFeedbackResponse = { id: string }

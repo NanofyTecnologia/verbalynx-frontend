@@ -1,5 +1,6 @@
+import { FeedbackCriterion, Feedback } from '@prisma/client'
+
 import { prisma } from '@/config/prisma'
-import { FeedbackCriterion } from '@prisma/client'
 
 function findById(id: string) {
   return prisma.feedback.findUnique({
@@ -45,6 +46,17 @@ function findById(id: string) {
   })
 }
 
+export type UpdateData = Partial<Feedback>
+
+function update(id: string, data: UpdateData) {
+  return prisma.feedback.update({
+    where: {
+      id,
+    },
+    data,
+  })
+}
+
 export type CriterionData = Omit<
   FeedbackCriterion,
   'id' | 'createdAt' | 'updatedAt'
@@ -59,4 +71,4 @@ function createRevaluation(id: string, data: CriterionData) {
   })
 }
 
-export { findById, createRevaluation }
+export { findById, update, createRevaluation }
