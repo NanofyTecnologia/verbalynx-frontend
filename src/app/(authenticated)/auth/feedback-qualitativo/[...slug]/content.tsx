@@ -3,6 +3,7 @@
 import { Fragment, ReactNode, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { useParams, useRouter } from 'next/navigation'
+import { toast } from 'react-toastify'
 import { BoomBox, Camera, CircleHelp, FolderCheck, Link2 } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
@@ -12,9 +13,9 @@ import { Dialog } from '@/components/ui/dialog'
 import { normalizeSlug } from '@/utils/normalize-slug'
 import { useGetFeedbackById } from '@/hooks/services/use-get-feedback-by-id'
 
+import SavePDF from '../_components/save-pdf'
 import FormReevaluate from '../_components/form-reevaluate'
 import { useUpdateFeedback } from './_hooks/use-update-feedback'
-import { toast } from 'react-toastify'
 
 export interface IParams {
   [key: string]: string[]
@@ -144,7 +145,7 @@ export default function Content() {
         <div className="mt-6 grid grid-cols-3 gap-4">
           <Button size="sm">Enviar por e-mail</Button>
 
-          <Button size="sm">Exportar .PDF</Button>
+          <SavePDF feedback={feedback} />
 
           <Button size="sm">Salvar</Button>
         </div>
