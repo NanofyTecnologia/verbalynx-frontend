@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { toast } from 'react-toastify'
 import { useParams, useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useSession } from 'next-auth/react'
@@ -12,11 +13,10 @@ import { Dialog } from '@/components/ui/dialog'
 import { Badge } from '@/components/ui/badge'
 
 import { normalizeSlug } from '@/utils/normalize-slug'
+import { compareDateWithToday } from '@/utils/compareDateWithToday'
 
 import { useDeleteTask } from '../_hooks/use-delete-task'
 import { useGetTaskById } from '../_hooks/use-get-task-by-id'
-import { compareDateWithToday } from '@/utils/compareDateWithToday'
-import { toast } from 'react-toastify'
 
 export interface IParams {
   [key: string]: string[]
@@ -163,10 +163,10 @@ export default function Page() {
                 </Dialog.Title>
                 <Dialog.Description>
                   {task.feedback.length > 0 &&
-                    'Essa atividade não pode ser excluída, pois existem feedbacks já enviados!'}
+                    'Esta atividade não pode ser excluída, pois já existem feedbacks enviados.'}
 
                   {task.feedback.length === 0 &&
-                    'Ao excluir essa atividade ela não poderá ser recuperada!'}
+                    'Atenção! Ao excluir esta atividade, todos os dados serão perdidos e não será possível recuperá-la.'}
                 </Dialog.Description>
               </Dialog.Header>
 

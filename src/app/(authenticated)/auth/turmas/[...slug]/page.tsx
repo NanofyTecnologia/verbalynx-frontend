@@ -7,11 +7,11 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { format } from 'date-fns'
 import {
-  ChevronRight,
-  ChevronLeft,
   Dices,
-  HelpCircle,
   UserPlus,
+  HelpCircle,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react'
 import { toast } from 'react-toastify'
 
@@ -24,23 +24,25 @@ import { RadioGroup } from '@/components/ui/radio-group'
 import { Badge } from '@/components/ui/badge'
 
 import { normalizeSlug } from '@/utils/normalize-slug'
+import { generateRegistrationCode } from '@/utils/generate-student-code'
 
 import { useGetClassById } from '../_hooks/use-get-class-by-id'
+import { useCreateStudent } from './_hooks/use-create-student'
 
 import { StudentData, studentSchema } from './_schema'
-import { useCreateStudent } from './_hooks/use-create-student'
-import { generateRegistrationCode } from '@/utils/generate-student-code'
+import { useDeleteClass } from '../_hooks/use-delete-class'
 
 export interface IParams {
   [key: string]: string[]
 }
 
 export default function Page() {
-  const { back } = useRouter()
+  const { push } = useRouter()
   const { slug } = useParams<IParams>()
   const { id } = normalizeSlug(slug)
 
   const { data: team, refetch } = useGetClassById({ id })
+  const { mutate: handleDeleteClass } = useDeleteClass()
   const { mutate: handleCreateStudent } = useCreateStudent()
   const [showDialog, setShowDialog] = useState(false)
   const [showDialogHelp, setShowDialogHelp] = useState(false)
@@ -76,7 +78,7 @@ export default function Page() {
   return (
     <>
       <div className="flex items-center justify-between">
-        <Button size="icon" onClick={() => back()}>
+        <Button size="icon" onClick={() => push('/auth/turmas')}>
           <ChevronLeft className="size-5" />
         </Button>
 
@@ -86,37 +88,6 @@ export default function Page() {
           <HelpCircle className="text-zinc-500" />
         </button>
       </div>
-
-      <Dialog.Root open={showDialogHelp} onOpenChange={setShowDialogHelp}>
-        <Dialog.Content>
-          <Dialog.Header>
-            <Dialog.Title>Ajuda - Detalhes da turma</Dialog.Title>
-          </Dialog.Header>
-
-          <div className="text-sm">
-            Esta página mostra todos os detalhes da turma em questão, incluindo
-            a lista de alunos, número de alunos, data de criação e filtro de
-            busca.
-          </div>
-
-          <div className="text-sm">
-            <li>
-              <span className="font-semibold">Filtro de busca:</span> Utilize o
-              filtro para encontrar um estudante específico.
-            </li>
-            <li>
-              <span className="font-semibold">Deletar turma:</span> Clique sobre
-              o botão para realizar a exclusão. Ao confirmar o pedido, a turma
-              será excluída.
-            </li>
-          </div>
-          <Dialog.Footer>
-            <Link href={'/auth/ajuda'}>
-              <Button type="submit">Ver tutoriais</Button>
-            </Link>
-          </Dialog.Footer>
-        </Dialog.Content>
-      </Dialog.Root>
 
       <div className="mt-6 flex flex-col space-y-4 md:flex-row md:space-y-0">
         <div className="flex w-full items-center gap-2 md:justify-start">
@@ -182,6 +153,56 @@ export default function Page() {
             </Fragment>
           ))}
         </div>
+      </div>
+
+      <div className="mt-4">
+        <Dialog.Root>
+          <Dialog.Trigger asChild>
+            <Button className="w-full" variant="destructive">
+              Deletar turma
+            </Button>
+          </Dialog.Trigger>
+          <Dialog.Content>
+            <Dialog.Header>
+              <Dialog.Title>
+                Excluir <b>{team.name}</b>
+              </Dialog.Title>
+
+              <Dialog.Description>
+                {team.students.length > 0 &&
+                  'Esta turma não pode ser excluída, pois há alunos cadastrados nela.'}
+
+                {team.students.length === 0 &&
+                  'Atenção! Ao excluir esta turma, todos os dados serão perdidos e não será possível recuperá-la.'}
+              </Dialog.Description>
+            </Dialog.Header>
+
+            <Dialog.Footer className="gap-y-4">
+              <Button variant="secondary">Cancelar</Button>
+
+              {!(team.students.length > 0) && (
+                <Button
+                  variant="destructive"
+                  onClick={() => {
+                    handleDeleteClass(
+                      {
+                        id: team.id,
+                      },
+                      {
+                        onSuccess: () => {
+                          push('/auth/turmas')
+                          toast.success('Turma deletada com sucesso!')
+                        },
+                      },
+                    )
+                  }}
+                >
+                  Sim, excluir
+                </Button>
+              )}
+            </Dialog.Footer>
+          </Dialog.Content>
+        </Dialog.Root>
       </div>
 
       <Dialog.Root open={showDialog} onOpenChange={setShowDialog}>
@@ -274,6 +295,37 @@ export default function Page() {
               <Button type="submit">Salvar</Button>
             </Dialog.Footer>
           </form>
+        </Dialog.Content>
+      </Dialog.Root>
+
+      <Dialog.Root open={showDialogHelp} onOpenChange={setShowDialogHelp}>
+        <Dialog.Content>
+          <Dialog.Header>
+            <Dialog.Title>Ajuda - Detalhes da turma</Dialog.Title>
+          </Dialog.Header>
+
+          <div className="text-sm">
+            Esta página mostra todos os detalhes da turma em questão, incluindo
+            a lista de alunos, número de alunos, data de criação e filtro de
+            busca.
+          </div>
+
+          <div className="text-sm">
+            <li>
+              <span className="font-semibold">Filtro de busca:</span> Utilize o
+              filtro para encontrar um estudante específico.
+            </li>
+            <li>
+              <span className="font-semibold">Deletar turma:</span> Clique sobre
+              o botão para realizar a exclusão. Ao confirmar o pedido, a turma
+              será excluída.
+            </li>
+          </div>
+          <Dialog.Footer>
+            <Link href={'/auth/ajuda'}>
+              <Button type="submit">Ver tutoriais</Button>
+            </Link>
+          </Dialog.Footer>
         </Dialog.Content>
       </Dialog.Root>
     </>
