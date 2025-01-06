@@ -119,7 +119,7 @@ export default function Content() {
               <div className="space-y-2">
                 <p className="text-sm">
                   <span className="font-semibold">
-                    Comentário Critério {item.level}
+                    Comentário {item.criterion.name}
                   </span>{' '}
                   {item.comment}
                 </p>

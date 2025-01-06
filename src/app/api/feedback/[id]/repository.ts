@@ -40,6 +40,11 @@ function findById(id: string) {
           score: true,
           level: true,
           comment: true,
+          criterion: {
+            select: {
+              name: true,
+            },
+          },
         },
       },
     },

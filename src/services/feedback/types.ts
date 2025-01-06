@@ -23,6 +23,9 @@ export type GetFeedbackByIdResponse = {
     level: number
     score: number
     comment: string
+    criterion: {
+      name: string
+    }
   }[]
 }
 

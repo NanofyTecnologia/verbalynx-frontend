@@ -15,6 +15,7 @@ import { useGetUser } from '@/hooks/services/use-get-user'
 
 import { UserData, userSchema } from './_schema'
 import { useUpdateUser } from './_hooks/use-update-user'
+import { toast } from 'react-toastify'
 
 export default function Content() {
   const { update } = useSession()
@@ -54,6 +55,7 @@ export default function Content() {
       {
         onSuccess: () => {
           update({ name, email })
+          toast.success('Perfil atualizado com sucesso!')
         },
       },
     )

@@ -21,6 +21,13 @@ export type GetTaskResponse = {
   objective: string
   teacherId: string
   classId: string
+  feedback: {
+    id: string
+    taskId: string
+    classId: string
+    studentId: string
+    isClosed: boolean
+  }[]
   createdAt: string
   updatedAt: string
   class: {
@@ -41,4 +48,8 @@ export type CreateTaskParams = Omit<
       score: number[]
     }[]
   }
+}
+
+export type DeleteTaskParams = {
+  id: string | undefined
 }

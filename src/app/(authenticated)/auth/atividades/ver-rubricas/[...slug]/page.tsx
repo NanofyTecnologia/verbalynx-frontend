@@ -11,7 +11,7 @@ import { Badge } from '@/components/ui/badge'
 
 import { normalizeSlug } from '@/utils/normalize-slug'
 
-import { useGetTaskById } from '../../_hooks/use-get-tasks-by-id'
+import { useGetTaskById } from '../../_hooks/use-get-task-by-id'
 import { useGetRubric } from '../_hooks/use-get-rubrics-by-id'
 
 export interface IParams {

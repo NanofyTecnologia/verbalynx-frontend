@@ -80,12 +80,12 @@ model Task {
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
-  rubric      Rubric?
+  rubric      Rubric?       
   class       Class?        @relation(fields: [classId], references: [id])
   students    User[]        @relation("StudentTasks")
   teacher     User          @relation("TeacherTasks", fields: [teacherId], references: [id], onDelete: Cascade)
-  Feedback    Feedback[]
-  StudentTask StudentTask[]
+  feedback    Feedback[]
+  studentTask StudentTask[]
 
   @@map("tasks")
 }
@@ -172,7 +172,7 @@ model Rubric {
   name   String
   taskId String @unique
 
-  task      Task        @relation(fields: [taskId], references: [id])
+  task      Task        @relation(fields: [taskId], references: [id], onDelete: Cascade)
   criterion Criterion[]
 
   @@map("rubrics")

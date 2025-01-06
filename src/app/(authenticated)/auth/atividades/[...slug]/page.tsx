@@ -13,8 +13,10 @@ import { Badge } from '@/components/ui/badge'
 
 import { normalizeSlug } from '@/utils/normalize-slug'
 
-import { useGetTaskById } from '../_hooks/use-get-tasks-by-id'
+import { useDeleteTask } from '../_hooks/use-delete-task'
+import { useGetTaskById } from '../_hooks/use-get-task-by-id'
 import { compareDateWithToday } from '@/utils/compareDateWithToday'
+import { toast } from 'react-toastify'
 
 export interface IParams {
   [key: string]: string[]
@@ -22,21 +24,23 @@ export interface IParams {
 
 export default function Page() {
   const { data } = useSession()
-  const { back } = useRouter()
+  const { push } = useRouter()
   const { slug } = useParams<IParams>()
   const { id } = normalizeSlug(slug)
 
-  const { data: tasks } = useGetTaskById({ id })
+  const { mutate: handleDeleteTask } = useDeleteTask()
+
+  const { data: task } = useGetTaskById({ id })
   const [showDialogHelp, setShowDialogHelp] = useState(false)
 
-  if (!tasks) {
+  if (!task) {
     return null
   }
 
   return (
     <>
       <div className="flex items-center justify-between">
-        <Button size="icon" onClick={() => back()}>
+        <Button size="icon" onClick={() => push('/auth/atividades')}>
           <ChevronLeft className="size-5" />
         </Button>
 
@@ -85,7 +89,7 @@ export default function Page() {
             </Badge>
 
             <Badge variant="outline" className="w-full bg-white p-1.5">
-              {tasks.name}
+              {task.name}
             </Badge>
           </div>
 
@@ -95,7 +99,7 @@ export default function Page() {
             </Badge>
 
             <Badge variant="outline" className="w-full bg-white p-1.5">
-              {tasks.class.name}
+              {task.class.name}
             </Badge>
           </div>
 
@@ -105,7 +109,7 @@ export default function Page() {
             </Badge>
 
             <Badge variant="outline" className="w-full bg-white p-1.5">
-              {tasks.objective}
+              {task.objective}
             </Badge>
           </div>
 
@@ -115,7 +119,7 @@ export default function Page() {
             </Badge>
 
             <Badge variant="outline" className="w-full bg-white p-1.5">
-              {format(tasks.openingDate, 'dd/MM/yyyy - HH:mm')}
+              {format(task.openingDate, 'dd/MM/yyyy - HH:mm')}
             </Badge>
           </div>
 
@@ -128,21 +132,73 @@ export default function Page() {
               {(() => {
                 const isBeforeClosingDate =
                   compareDateWithToday(
-                    format(tasks.closingDate, 'dd/MM/yyyy - HH:mm'),
+                    format(task.closingDate, 'dd/MM/yyyy - HH:mm'),
                   ) === true
 
                 return (
                   <span
-                    className={`${
-                      isBeforeClosingDate ? '' : 'text-[#FF6B6B]' // Cor diferente para datas que já passaram
-                    }`}
+                    className={`${isBeforeClosingDate ? '' : 'text-[#FF6B6B]'}`}
                   >
-                    {format(tasks.closingDate, 'dd/MM/yyyy - HH:mm')}
+                    {format(task.closingDate, 'dd/MM/yyyy - HH:mm')}
                   </span>
                 )
               })()}
             </Badge>
           </div>
+
+          <Button className="w-full bg-yellow-400 hover:bg-yellow-400/80">
+            Editar
+          </Button>
+
+          <Dialog.Root>
+            <Dialog.Trigger asChild>
+              <Button className="w-full" variant="destructive">
+                Deletar atividade
+              </Button>
+            </Dialog.Trigger>
+            <Dialog.Content>
+              <Dialog.Header>
+                <Dialog.Title>
+                  Excluir atividade <b>{task.name}</b>
+                </Dialog.Title>
+                <Dialog.Description>
+                  {task.feedback.length > 0 &&
+                    'Essa atividade não pode ser excluída, pois existem feedbacks já enviados!'}
+
+                  {task.feedback.length === 0 &&
+                    'Ao excluir essa atividade ela não poderá ser recuperada!'}
+                </Dialog.Description>
+              </Dialog.Header>
+
+              <Dialog.Footer className="gap-y-4">
+                <Dialog.Close asChild>
+                  <Button variant="secondary">Cancelar</Button>
+                </Dialog.Close>
+
+                {!(task.feedback.length > 0) && (
+                  <Button
+                    variant="destructive"
+                    onClick={() =>
+                      handleDeleteTask(
+                        { id: task.id },
+                        {
+                          onSuccess: () => {
+                            push('/auth/atividades')
+                            toast.success('Tarefa excluída com sucesso!')
+                          },
+                          onError: (data) => {
+                            console.log(data)
+                          },
+                        },
+                      )
+                    }
+                  >
+                    Sim, deletar
+                  </Button>
+                )}
+              </Dialog.Footer>
+            </Dialog.Content>
+          </Dialog.Root>
         </div>
       </div>
     </>

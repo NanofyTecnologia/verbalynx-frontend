@@ -59,7 +59,7 @@ export default function Content() {
     register,
     setValue,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = useForm<TaskData>({
     resolver: zodResolver(taskSchema),
   })
@@ -70,8 +70,6 @@ export default function Content() {
   const [criteria, setCriteria] = useState<Criterion[]>([
     { name: '', description: '', level: 1, score: [] },
   ])
-
-  console.log(criteria)
 
   const onSubmit: SubmitHandler<TaskData> = (data) => {
     handleCreateTask(

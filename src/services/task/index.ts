@@ -4,6 +4,7 @@ import type {
   GetTaskResponse,
   CreateTaskParams,
   GetTaskByIdParams,
+  DeleteTaskParams,
 } from './types'
 
 export const task = {
@@ -35,6 +36,12 @@ export const task = {
 
   async getRubric(params: GetTaskByIdParams) {
     const { data } = await axios.get(`/task/${params}/rubric`)
+
+    return data
+  },
+
+  async delete(params: DeleteTaskParams) {
+    const { data } = await axios.delete('/task/' + params.id)
 
     return data
   },

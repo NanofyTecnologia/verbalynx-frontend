@@ -10,6 +10,7 @@ function findById(id: string) {
     select: {
       id: true,
       name: true,
+      feedback: true,
       openingDate: true,
       closingDate: true,
       rubric: true,
@@ -36,4 +37,12 @@ function update(id: string, data: UpdateTaskData) {
   })
 }
 
-export { update, findById }
+function destroy(id: string) {
+  return prisma.task.delete({
+    where: {
+      id,
+    },
+  })
+}
+
+export { findById, update, destroy }

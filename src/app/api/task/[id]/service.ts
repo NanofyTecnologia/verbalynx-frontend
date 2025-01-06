@@ -4,7 +4,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/next-auth'
 import { HttpError } from '@/helpers/http-error'
 
-import { findById } from './repository'
+import { destroy, findById } from './repository'
 
 import { CreateTaskData } from '../service'
 
@@ -30,4 +30,24 @@ async function updateTask(id: string, data: UpdateTaskData) {
   await updateTask(id, data)
 }
 
-export { getTaskById, updateTask }
+async function deleteTask(id: string) {
+  const session = await getServerSession(authOptions)
+
+  if (!session?.user.id || session.user.role !== 'PROFESSOR') {
+    throw new HttpError('UNAUTHORIZED', HttpStatusCode.Unauthorized)
+  }
+
+  const task = await findById(id)
+
+  if (task?.teacherId !== session.user.id) {
+    throw new HttpError('UNAUTHORIZED', HttpStatusCode.Unauthorized)
+  }
+
+  if (task.feedback.length > 0) {
+    throw new HttpError('ERROR', HttpStatusCode.BadRequest)
+  }
+
+  await destroy(id)
+}
+
+export { getTaskById, updateTask, deleteTask }
