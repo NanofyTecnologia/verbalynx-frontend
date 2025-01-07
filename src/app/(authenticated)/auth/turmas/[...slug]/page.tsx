@@ -16,21 +16,22 @@ import {
 import { toast } from 'react-toastify'
 
 import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Dialog } from '@/components/ui/dialog'
 import { Textarea } from '@/components/ui/textarea'
 import { RadioGroup } from '@/components/ui/radio-group'
-import { Badge } from '@/components/ui/badge'
 
 import { normalizeSlug } from '@/utils/normalize-slug'
 import { generateRegistrationCode } from '@/utils/generate-student-code'
 
-import { useGetClassById } from '../_hooks/use-get-class-by-id'
-import { useCreateStudent } from './_hooks/use-create-student'
-
-import { StudentData, studentSchema } from './_schema'
 import { useDeleteClass } from '../_hooks/use-delete-class'
+import { useGetClassById } from '../_hooks/use-get-class-by-id'
+
+import { useCreateStudent } from './_hooks/use-create-student'
+import { StudentData, studentSchema } from './_schema'
+import ImportStudents from './_components/import-students'
 
 export interface IParams {
   [key: string]: string[]
@@ -44,8 +45,10 @@ export default function Page() {
   const { data: team, refetch } = useGetClassById({ id })
   const { mutate: handleDeleteClass } = useDeleteClass()
   const { mutate: handleCreateStudent } = useCreateStudent()
+
   const [showDialog, setShowDialog] = useState(false)
   const [showDialogHelp, setShowDialogHelp] = useState(false)
+  const [showDialogImport, setShowDialogImport] = useState(false)
 
   const { register, handleSubmit, setValue } = useForm<StudentData>({
     resolver: zodResolver(studentSchema),
@@ -130,32 +133,34 @@ export default function Page() {
         </div>
       </div>
 
-      <div className="mt-4 rounded-lg bg-white p-4">
-        <div className="flex items-center justify-between">
-          <h2 className="font-semibold">Estudantes da Turma</h2>
+      <div className="mt-4 space-y-4">
+        <div className="rounded-lg bg-white p-4">
+          <div className="flex items-center justify-between">
+            <h2 className="font-semibold">Estudantes da Turma</h2>
 
-          <Button onClick={() => setShowDialog(true)} size="icon">
-            <UserPlus />
-          </Button>
+            <Button onClick={() => setShowDialog(true)} size="icon">
+              <UserPlus />
+            </Button>
+          </div>
+
+          <div className="mt-4 max-h-96 space-y-2 overflow-y-auto pe-4">
+            {team.students.map((student) => (
+              <Fragment key={student.id}>
+                <Link
+                  href={`/auth/alunos/${student.id}`}
+                  className="flex items-center justify-between rounded-md bg-muted/50 p-2"
+                >
+                  <p className="font-medium">{student.name}</p>
+
+                  <ChevronRight className="size-4" />
+                </Link>
+              </Fragment>
+            ))}
+          </div>
         </div>
 
-        <div className="mt-4 max-h-96 space-y-2 overflow-y-auto pe-4">
-          {team.students.map((student) => (
-            <Fragment key={student.id}>
-              <Link
-                href={`/auth/alunos/${student.id}`}
-                className="flex items-center justify-between rounded-md bg-muted/50 p-2"
-              >
-                <p className="font-medium">{student.name}</p>
+        <ImportStudents />
 
-                <ChevronRight className="size-4" />
-              </Link>
-            </Fragment>
-          ))}
-        </div>
-      </div>
-
-      <div className="mt-4">
         <Dialog.Root>
           <Dialog.Trigger asChild>
             <Button className="w-full" variant="destructive">
