@@ -36,7 +36,10 @@ async function createUser(data: CreateUserData) {
 
   await validateEmailExistsOrFail(email)
 
-  await create({ ...data, role: data.role ?? 'PENDING_APPROVAL' })
+  await create({
+    ...data,
+    role: data.role ?? 'PENDING_APPROVAL',
+  })
 }
 
 async function validateEmailExistsOrFail(email: string) {

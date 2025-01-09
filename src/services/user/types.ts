@@ -15,6 +15,11 @@ export type CreateUserParams = Partial<
 >
 export type CreateUserResponse = User
 
+export type CreateManyUsersParams = {
+  id: string | undefined
+  students: CreateUserParams[]
+}
+
 export type GetUserByIdResponse = User
 
 export type UpdateUserParams = {

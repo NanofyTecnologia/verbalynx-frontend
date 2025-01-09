@@ -1,6 +1,7 @@
 import axios from '@/lib/axios'
 
 import type {
+  CreateManyUsersParams,
   CreateUserParams,
   CreateUserResponse,
   GetTaskByStudentIdResponse,
@@ -43,6 +44,15 @@ export const user = {
 
   async update(params: UpdateUserParams) {
     const { data } = await axios.put('/user', params)
+
+    return data
+  },
+
+  async createStudents(params: CreateManyUsersParams) {
+    const { data } = await axios.post(
+      '/user/students/' + params.id,
+      params.students,
+    )
 
     return data
   },
