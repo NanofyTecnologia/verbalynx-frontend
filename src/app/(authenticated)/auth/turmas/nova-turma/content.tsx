@@ -127,9 +127,9 @@ export default function Content() {
                 Ensino Fundamental
               </Select.Item>
 
-              <Select.Item value="Ensino Superior">Ensino Superior</Select.Item>
+              <Select.Item value="Ensino Médio">Ensino Médio</Select.Item>
 
-              <Select.Item value="Ensino Médio">Ensino Fundamental</Select.Item>
+              <Select.Item value="Ensino Superior">Ensino Superior</Select.Item>
 
               <Select.Item value="Outro">Outro</Select.Item>
             </Select.Content>

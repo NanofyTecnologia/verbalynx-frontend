@@ -12,6 +12,8 @@ import {
   Dices,
   HelpCircle,
   UserPlus,
+  Trash,
+  UserRoundPen,
 } from 'lucide-react'
 import { toast } from 'react-toastify'
 
@@ -29,6 +31,7 @@ import { useGetClassById } from '../_hooks/use-get-class-by-id'
 
 import { StudentData, studentSchema } from './_schema'
 import { useCreateStudent } from './_hooks/use-create-student'
+import { useDeleteStudent } from './_hooks/use-delete-student'
 import { generateRegistrationCode } from '@/utils/generate-student-code'
 
 export interface IParams {
@@ -42,8 +45,13 @@ export default function Page() {
 
   const { data: team, refetch } = useGetClassById({ id })
   const { mutate: handleCreateStudent } = useCreateStudent()
+  const { mutate: deleteStudent, isError, error } = useDeleteStudent()
+
   const [showDialog, setShowDialog] = useState(false)
   const [showDialogHelp, setShowDialogHelp] = useState(false)
+  const [showDialogDeleteStudant, setShowDialogDeleteStudant] = useState(false)
+  const [studentIdDelete, setStudentIdDelete] = useState('')
+  const [studentNameDelete, setStudentNameDelete] = useState('')
 
   const { register, handleSubmit, setValue } = useForm<StudentData>({
     resolver: zodResolver(studentSchema),
@@ -64,6 +72,24 @@ export default function Page() {
           refetch()
           setShowDialog(false)
           toast.success('Estudante cadastrado com sucesso!')
+        },
+      },
+    )
+  }
+
+  const handleDelete = () => {
+    const id = studentIdDelete
+    deleteStudent(
+      { id },
+      {
+        onSuccess: () => {
+          toast.success('Estudante deletado com sucesso!')
+        },
+        onError: (err) => {
+          toast.error(
+            'Houve um erro ao excluir o estudante. Tente novamente mais tarde.',
+          )
+          console.error('Erro ao excluir o estudante: ', err)
         },
       },
     )
@@ -171,14 +197,24 @@ export default function Page() {
         <div className="mt-4 max-h-96 space-y-2 overflow-y-auto pe-4">
           {team.students.map((student) => (
             <Fragment key={student.id}>
-              <Link
-                href={`/auth/alunos/${student.id}`}
-                className="flex items-center justify-between rounded-md bg-muted/50 p-2"
-              >
+              <div className="flex items-center justify-between rounded-md bg-muted/50 p-2">
                 <p className="font-medium">{student.name}</p>
 
-                <ChevronRight className="size-4" />
-              </Link>
+                <div className="flex items-center justify-center gap-4">
+                  <button
+                    onClick={() => {
+                      setStudentIdDelete(student.id)
+                      setStudentNameDelete(student.name ? student.name : '')
+                      setShowDialogDeleteStudant(true)
+                    }}
+                  >
+                    <Trash className="size-4" />
+                  </button>
+                  <Link href={`/auth/alunos/${student.id}`}>
+                    <UserRoundPen className="size-4" />
+                  </Link>
+                </div>
+              </div>
             </Fragment>
           ))}
         </div>
@@ -276,6 +312,52 @@ export default function Page() {
           </form>
         </Dialog.Content>
       </Dialog.Root>
+
+      <Dialog.Root
+        open={showDialogDeleteStudant}
+        onOpenChange={setShowDialogDeleteStudant}
+      >
+        <Dialog.Content>
+          <Dialog.Header>
+            <Dialog.Title>Exclusão de estudante</Dialog.Title>
+            <Dialog.Description />
+          </Dialog.Header>
+
+          <form onSubmit={handleDelete} className="space-y-4">
+            <div className="space-y-0.5">
+              <Label>Nome do estudante</Label>
+
+              <Input value={studentNameDelete} disabled />
+            </div>
+
+            <div className="space-y-0.5">
+              <Label>Turma</Label>
+
+              <Input value={team.name} disabled />
+            </div>
+
+            <Dialog.Footer className="gap-4">
+              <Dialog.Close asChild>
+                <Button variant="outline">Cancelar</Button>
+              </Dialog.Close>
+
+              <Button type="submit" variant="destructive">
+                Excluir
+              </Button>
+            </Dialog.Footer>
+          </form>
+        </Dialog.Content>
+      </Dialog.Root>
+
+      <div className="mt-4">
+        <Button
+          className="w-full"
+          variant="destructive"
+          onClick={() => console.log('teste turma excluida')}
+        >
+          Excluir turma
+        </Button>
+      </div>
     </>
   )
 }
