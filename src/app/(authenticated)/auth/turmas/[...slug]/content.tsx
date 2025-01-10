@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useSession } from 'next-auth/react'
 import { useParams, useRouter } from 'next/navigation'
-import { FormEvent, Fragment, useState } from 'react'
+import { Fragment, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { format } from 'date-fns'
@@ -13,11 +13,11 @@ import {
   UserPlus,
   HelpCircle,
   ChevronLeft,
-  UserRoundPen,
   EllipsisVertical,
   Pen,
   Search,
   Eye,
+  ContactRound,
 } from 'lucide-react'
 import { toast } from 'react-toastify'
 
@@ -165,7 +165,7 @@ export default function Content() {
 
           {session?.user.role === 'PROFESSOR' && (
             <Button onClick={() => setShowDialog(true)} size="sm">
-              <UserPlus className="size-4" /> Adicionar aluno
+              <UserPlus className="size-4" /> Adicionar estudante
             </Button>
           )}
         </div>
@@ -210,8 +210,10 @@ export default function Content() {
 
                           <Dropdown.Content side="left">
                             <Dropdown.Item asChild>
-                              <Link href={`/auth/estudantes/${student.id}`}>
-                                <Eye className="size-5" /> Visualizar
+                              <Link
+                                href={`/auth/estudantes/detalhes/${student.id}`}
+                              >
+                                <ContactRound className="size-5" /> Detalhes
                               </Link>
                             </Dropdown.Item>
 
@@ -228,12 +230,14 @@ export default function Content() {
                                 </Dialog.Trigger>
                                 <Dialog.Content>
                                   <Dialog.Header>
-                                    <Dialog.Title>Excluir aluno</Dialog.Title>
+                                    <Dialog.Title>
+                                      Excluir Estudante
+                                    </Dialog.Title>
 
                                     <Dialog.Description>
                                       Você está prestes a excluir{' '}
-                                      <b>{student.name}</b>. O aluno não poderá
-                                      ser recuperado
+                                      <b>{student.name}</b>. O Estudante não
+                                      poderá ser recuperado
                                     </Dialog.Description>
                                   </Dialog.Header>
 
@@ -307,7 +311,7 @@ export default function Content() {
 
                   <Dialog.Description>
                     {team.students.length > 0 &&
-                      'Esta turma não pode ser excluída, pois há alunos cadastrados nela.'}
+                      'Esta turma não pode ser excluída, pois há estudantes cadastrados nela.'}
 
                     {team.students.length === 0 &&
                       'Atenção! Ao excluir esta turma, todos os dados serão perdidos e não será possível recuperá-la.'}
@@ -445,8 +449,8 @@ export default function Content() {
 
           <div className="text-sm">
             Esta página mostra todos os detalhes da turma em questão, incluindo
-            a lista de alunos, número de alunos, data de criação e filtro de
-            busca.
+            a lista de estudantes, número de estudantes, data de criação e
+            filtro de busca.
           </div>
 
           <div className="text-sm">

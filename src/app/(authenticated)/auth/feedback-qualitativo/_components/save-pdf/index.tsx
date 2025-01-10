@@ -84,7 +84,7 @@ function FeedbackPDF({ feedback }: PDFProps) {
 
         {/* Informações Gerais */}
         <View style={styles.section}>
-          <Text style={styles.subheader}>Informações do Aluno</Text>
+          <Text style={styles.subheader}>Informações do Estudante</Text>
           <Text style={styles.text}>Nome: {feedback?.student.name}</Text>
           <Text style={styles.text}>Turma: {feedback?.class.name}</Text>
         </View>

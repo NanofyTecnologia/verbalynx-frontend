@@ -1,12 +1,21 @@
 import { HttpStatusCode } from 'axios'
 import { getServerSession } from 'next-auth'
-import { User } from '@prisma/client'
 
 import { authOptions } from '@/lib/next-auth'
 import { HttpError } from '@/helpers/http-error'
 
 import { sendEmail } from '../_utils/send-email'
-import { createMany, CreateManyData } from './repository'
+import { findById, createMany, type CreateManyData } from './repository'
+
+async function getStudentById(id: string) {
+  const session = await getServerSession(authOptions)
+
+  if (!session?.user.id) {
+    throw new HttpError('UNAUTHORIZED', HttpStatusCode.Unauthorized)
+  }
+
+  return await findById(id)
+}
 
 async function createManyStudents(data: CreateManyData, classId: string) {
   const session = await getServerSession(authOptions)
@@ -24,4 +33,4 @@ async function createManyStudents(data: CreateManyData, classId: string) {
   return students
 }
 
-export { createManyStudents }
+export { getStudentById, createManyStudents }

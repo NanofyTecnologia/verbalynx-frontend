@@ -92,7 +92,9 @@ export default function Content() {
         </div>
 
         <div className="flex items-center gap-2">
-          <Badge className="w-full max-w-24 justify-center p-1.5">Aluno:</Badge>
+          <Badge className="w-full max-w-24 justify-center p-1.5">
+            Estudante:
+          </Badge>
 
           <Badge variant="outline" className="w-full bg-white p-1.5">
             {feedback?.student.name}

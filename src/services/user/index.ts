@@ -9,11 +9,21 @@ import type {
   GetUserByIdResponse,
   UpdateUserParams,
   DeleteUserParams,
+  GetStudentByIdParams,
+  GetStudentByIdResponse,
 } from './types'
 
 export const user = {
   async getById() {
     const { data } = await axios.get<GetUserByIdResponse>('/user')
+
+    return data
+  },
+
+  async getStudentById(params: GetStudentByIdParams) {
+    const { data } = await axios.get<GetStudentByIdResponse>(
+      '/user/students/' + params.id,
+    )
 
     return data
   },

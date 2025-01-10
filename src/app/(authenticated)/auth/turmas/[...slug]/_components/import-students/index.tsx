@@ -66,7 +66,7 @@ export default function ImportStudents() {
       { id, students },
       {
         onSuccess: () => {
-          toast.success('Alunos importados com sucesso!')
+          toast.success('Estudantes importados com sucesso!')
         },
       },
     )
@@ -76,14 +76,16 @@ export default function ImportStudents() {
     <>
       <Dialog.Root>
         <Dialog.Trigger asChild>
-          <Button className="w-full">Importar lista de alunos (XLSX)</Button>
+          <Button className="w-full">
+            Importar lista de estudantes (XLSX)
+          </Button>
         </Dialog.Trigger>
 
         <Dialog.Content className="flex h-full flex-col">
           <Dialog.Header>
-            <Dialog.Title>Importar lista de alunos</Dialog.Title>
+            <Dialog.Title>Importar lista de estudantes</Dialog.Title>
             <Dialog.Description>
-              Selecione um arquivo XLSX para importar a lista de alunos para
+              Selecione um arquivo XLSX para importar a lista de estudantes para
               esta turma.
             </Dialog.Description>
           </Dialog.Header>
@@ -96,7 +98,7 @@ export default function ImportStudents() {
 
           {data.length > 0 && (
             <div className="space-y-1">
-              <h2>Confira os alunos:</h2>
+              <h2>Confira os estudantes:</h2>
               <div className="rounded-md border">
                 <Table.Root>
                   <Table.Header>
@@ -129,7 +131,7 @@ export default function ImportStudents() {
             <Input type="file" onChange={handleFileUpload} />
 
             <Button className="w-full" onClick={handleAddStudents}>
-              Adicionar alunos
+              Adicionar estudantes
             </Button>
           </div>
         </Dialog.Content>

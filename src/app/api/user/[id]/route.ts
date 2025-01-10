@@ -5,6 +5,7 @@ import { deleteUserById } from './service'
 import { HttpError } from '@/helpers/http-error'
 
 import { IParams } from '../../types'
+import { getByStudent } from '../../class/repository'
 
 export async function DELETE(req: NextRequest, props: IParams) {
   const params = await props.params

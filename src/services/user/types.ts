@@ -32,3 +32,15 @@ export type UpdateUserParams = {
 export type DeleteUserParams = {
   id: string
 }
+
+export type GetStudentByIdParams = {
+  id: string | undefined
+}
+export type GetStudentByIdResponse = GetUserByIdResponse & {
+  StudentTask: {
+    isCompleted: boolean
+    task: {
+      name: string
+    }
+  }[]
+}

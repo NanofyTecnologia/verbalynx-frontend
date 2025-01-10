@@ -6,7 +6,7 @@ export interface IParams {
 }
 
 export const metadata: Metadata = {
-  title: 'Alunos',
+  title: 'Estudantes',
 }
 
 export default function Page() {
