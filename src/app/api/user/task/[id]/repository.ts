@@ -1,3 +1,5 @@
+import { type StudentTask } from '@prisma/client'
+
 import { prisma } from '@/config/prisma'
 
 function findTasks(id: string, classId: string) {
@@ -15,4 +17,12 @@ function findTasks(id: string, classId: string) {
   })
 }
 
-export { findTasks }
+function createTask(id: string, userId: string, data: StudentTask) {
+  return prisma.studentTask.create({
+    data: {
+      ...data,
+    },
+  })
+}
+
+export { findTasks, createTask }

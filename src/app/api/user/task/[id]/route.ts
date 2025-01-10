@@ -25,3 +25,20 @@ export async function GET(req: NextRequest, props: IParams) {
     })
   }
 }
+
+export async function POST(req: NextRequest, props: IParams) {
+  const params = await props.params
+  try {
+    const id = params.id
+
+    return NextResponse.json(true, { status: HttpStatusCode.Ok })
+  } catch (error) {
+    if (error instanceof HttpError) {
+      return NextResponse.json(error.message, { status: error.status })
+    }
+
+    return NextResponse.json('INTERNAL_SERVER_ERROR', {
+      status: HttpStatusCode.InternalServerError,
+    })
+  }
+}

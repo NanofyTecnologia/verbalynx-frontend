@@ -94,6 +94,9 @@ model StudentTask {
   id          String  @id @default(cuid())
   taskId      String
   studentId   String
+  title       String?
+  url         String?
+  description String?
   isCompleted Boolean @default(false)
 
   task    Task @relation(fields: [taskId], references: [id])
@@ -101,10 +104,9 @@ model StudentTask {
 }
 
 model Videos {
-  id    String @id @default(cuid())
-  title String
-  url   String
-
+  id        String   @id @default(cuid())
+  title     String
+  url       String
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -145,7 +147,6 @@ model Authenticator {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([userId, credentialID])
-  
   @@map("authenticators")
 }
 

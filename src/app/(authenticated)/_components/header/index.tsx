@@ -114,34 +114,6 @@ export default function Header() {
                         </Sheet.Close>
                       </Fragment>
                     ))}
-
-                <Button
-                  className="w-full"
-                  onClick={() => update({ role: 'ADMIN' })}
-                >
-                  Admin
-                </Button>
-
-                <Button
-                  className="w-full"
-                  onClick={() => update({ role: 'PROFESSOR' })}
-                >
-                  Professor
-                </Button>
-
-                <Button
-                  className="w-full"
-                  onClick={() => update({ role: 'STUDENT' })}
-                >
-                  Estudante
-                </Button>
-
-                <Button
-                  className="w-full"
-                  onClick={() => update({ role: 'PENDING_APPROVAL' })}
-                >
-                  Aguardando Aprovação
-                </Button>
               </div>
 
               <div className="mt-auto w-full space-y-2">
