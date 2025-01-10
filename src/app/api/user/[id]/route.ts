@@ -15,7 +15,6 @@ export async function DELETE(req: NextRequest, props: IParams) {
 
     return NextResponse.json(user)
   } catch (error) {
-    console.log(error)
     if (error instanceof HttpError) {
       return NextResponse.json(error.message, { status: error.status })
     }

@@ -54,6 +54,8 @@ export const user = {
       '/user/students/' + params.id,
       params.students,
     )
+
+    return data
   },
 
   async delete(params: DeleteUserParams) {

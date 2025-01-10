@@ -1,14 +1,12 @@
 import { createMutation } from 'react-query-kit'
+
 import { user } from '@/services/user'
 
-type IProps = {
-  id: string
-}
+export function useDeleteStudent() {
+  const mutation = createMutation({
+    mutationKey: ['delete-student'],
+    mutationFn: user.delete,
+  })
 
-export const useDeleteStudent = createMutation({
-  mutationKey: ['delete-student'],
-  mutationFn: async ({ id }: IProps) => {
-    const response = await user.delete(id)
-    return response
-  },
-})
+  return mutation()
+}

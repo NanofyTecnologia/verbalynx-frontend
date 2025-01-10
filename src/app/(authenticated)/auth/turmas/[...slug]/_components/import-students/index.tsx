@@ -8,10 +8,10 @@ import { Table } from '@/components/ui/table'
 import { Dialog } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 
+import { IParams } from '@/types/params'
 import { normalizeSlug } from '@/utils/normalize-slug'
 
 import { useCreateStudents } from './use-create-students'
-import { IParams } from '@/types/params'
 
 export default function ImportStudents() {
   const params = useParams<IParams>()

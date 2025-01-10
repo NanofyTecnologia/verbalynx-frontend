@@ -1,12 +1,8 @@
-import { type Metadata } from 'next'
+import { Metadata } from 'next'
 import Content from './content'
 
-export interface IParams {
-  [key: string]: string[]
-}
-
 export const metadata: Metadata = {
-  title: 'Alunos',
+  title: 'Perfil do estudante',
 }
 
 export default function Page() {
