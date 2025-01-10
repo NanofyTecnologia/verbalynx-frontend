@@ -125,11 +125,9 @@ export default function Content() {
             <Select.Content>
               <Select.Item value="Fundamental">Fundamental</Select.Item>
 
-              <Select.Item value="Médio">Médio</Select.Item>
+              <Select.Item value="Ensino Médio">Ensino Médio</Select.Item>
 
-              <Select.Item value="Superior">Superior</Select.Item>
-
-              <Select.Item value="Pós-Graduação">Pós-Graduação</Select.Item>
+              <Select.Item value="Ensino Superior">Ensino Superior</Select.Item>
 
               <Select.Item value="Outro">Outro</Select.Item>
             </Select.Content>

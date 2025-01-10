@@ -28,3 +28,7 @@ export type UpdateUserParams = {
   email: string
   pronoun: string
 }
+
+export type DeleteUserParams = {
+  id: string
+}

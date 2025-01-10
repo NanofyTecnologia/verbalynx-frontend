@@ -8,6 +8,7 @@ import type {
   GetTasksByStudentId,
   GetUserByIdResponse,
   UpdateUserParams,
+  DeleteUserParams,
 } from './types'
 
 export const user = {
@@ -53,6 +54,10 @@ export const user = {
       '/user/students/' + params.id,
       params.students,
     )
+  },
+
+  async delete(params: DeleteUserParams) {
+    const { data } = await axios.delete(`/user/${params.id}`)
 
     return data
   },
