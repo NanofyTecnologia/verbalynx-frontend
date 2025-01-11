@@ -10,10 +10,8 @@ export default async function Page() {
   return (
     <>
       <div className="flex h-full flex-col gap-4">
-        <div className="flex items-center justify-between font-semibold">
+        <div className="flex items-center justify-center font-semibold">
           <h2 className="font-semibold">O que fazer agora?</h2>
-
-          <HelpCircle className="text-zinc-500" />
         </div>
 
         {session?.user.role === 'PROFESSOR' && (

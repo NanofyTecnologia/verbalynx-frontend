@@ -2,7 +2,7 @@
 
 import { Fragment, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { ChevronLeft, HelpCircle } from 'lucide-react'
+import { ChevronLeft } from 'lucide-react'
 
 import { type IParams } from '@/types/params'
 import { normalizeSlug } from '@/utils/normalize-slug'
@@ -38,6 +38,14 @@ export default function Content() {
 
           <div className="flex h-10 items-center rounded-md bg-white p-2 shadow-sm">
             {student?.name}
+          </div>
+        </div>
+
+        <div className="space-y-0.5">
+          <Label>E-mail</Label>
+
+          <div className="flex h-10 items-center rounded-md bg-white p-2 shadow-sm">
+            {student?.email}
           </div>
         </div>
 

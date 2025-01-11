@@ -113,7 +113,10 @@ export default function Content() {
 
         <h2 className="text-lg font-semibold">Detalhes da turma</h2>
 
-        <button onClick={() => setShowDialogHelp(true)}>
+        <button
+          onClick={() => setShowDialogHelp(true)}
+          className={session?.user.role === 'PROFESSOR' ? '' : 'invisible'}
+        >
           <HelpCircle className="text-zinc-500" />
         </button>
       </div>
@@ -185,7 +188,13 @@ export default function Content() {
               <Table.Row>
                 <Table.Head>Nome</Table.Head>
                 <Table.Head>E-mail</Table.Head>
-                <Table.Head>Ações</Table.Head>
+                <Table.Head
+                  className={
+                    session?.user.role === 'PROFESSOR' ? '' : 'invisible'
+                  }
+                >
+                  Ações
+                </Table.Head>
               </Table.Row>
             </Table.Header>
 
@@ -199,13 +208,15 @@ export default function Content() {
                       <div className="flex justify-center">
                         <Dropdown.Root>
                           <Dropdown.Trigger asChild>
-                            <Button
-                              size="icon"
-                              variant="secondary"
-                              className="h-8 w-8"
-                            >
-                              <EllipsisVertical className="size-5" />
-                            </Button>
+                            {session?.user.role === 'PROFESSOR' && (
+                              <Button
+                                size="icon"
+                                variant="secondary"
+                                className="h-8 w-8"
+                              >
+                                <EllipsisVertical className="size-5" />
+                              </Button>
+                            )}
                           </Dropdown.Trigger>
 
                           <Dropdown.Content side="left">

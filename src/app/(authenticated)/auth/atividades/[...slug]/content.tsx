@@ -47,7 +47,10 @@ export default function Content() {
 
         <h2 className="text-lg font-semibold">Detalhes da atividade</h2>
 
-        <button onClick={() => setShowDialogHelp(true)}>
+        <button
+          onClick={() => setShowDialogHelp(true)}
+          className={session?.user.role === 'PROFESSOR' ? '' : 'invisible'}
+        >
           <HelpCircle className="text-zinc-500" />
         </button>
       </div>
