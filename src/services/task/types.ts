@@ -33,6 +33,8 @@ export type GetTaskResponse = {
     title: string
     studentId: string
     isCompleted: boolean
+    createdAt: Date
+    updatedAt: Date
     student: {
       name: string
     }

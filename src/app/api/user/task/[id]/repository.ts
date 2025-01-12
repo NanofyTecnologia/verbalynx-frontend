@@ -46,4 +46,15 @@ function createTask(id: string, userId: string, data: CreateTaskData) {
   })
 }
 
-export { findTaskById, findTasks, createTask }
+function updateTask(id: string, data: Partial<CreateTaskData>) {
+  return prisma.studentTask.update({
+    data: {
+      ...data,
+    },
+    where: {
+      id,
+    },
+  })
+}
+
+export { findTaskById, findTasks, createTask, updateTask }

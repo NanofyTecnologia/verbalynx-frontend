@@ -36,6 +36,7 @@ export async function POST(req: NextRequest, props: IParams) {
 
     return NextResponse.json(createdSendTask, { status: HttpStatusCode.Ok })
   } catch (error) {
+    console.log(error)
     if (error instanceof HttpError) {
       return NextResponse.json(error.message, { status: error.status })
     }

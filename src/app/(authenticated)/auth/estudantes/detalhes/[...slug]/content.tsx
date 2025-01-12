@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button'
 import { useGetStudentById } from './_hooks/use-get-student-by-id'
 import { Label } from '@/components/ui/label'
 import { Table } from '@/components/ui/table'
+import { cn } from '@/lib/shadcn'
 
 export default function Content() {
   const { back } = useRouter()
@@ -71,27 +72,39 @@ export default function Content() {
           </div>
         </div>
 
-        <Table.Root>
-          <Table.Header>
-            <Table.Row>
-              <Table.Head>Atividade</Table.Head>
-              <Table.Head>Completa</Table.Head>
-            </Table.Row>
-          </Table.Header>
+        <h2>Entregas</h2>
+        <div className="overflow-hidden rounded-md bg-white shadow-sm">
+          <Table.Root>
+            <Table.Header>
+              <Table.Row>
+                <Table.Head>Atividade</Table.Head>
+                <Table.Head>Turma</Table.Head>
+                <Table.Head className="text-center">Encerrado</Table.Head>
+              </Table.Row>
+            </Table.Header>
 
-          <Table.Body>
-            {student.StudentTask.map((item, index) => (
-              <Fragment key={index}>
-                <Table.Row>
-                  <Table.Cell>{item.task.name}</Table.Cell>
-                  <Table.Cell>
-                    {item.isCompleted ? 'Entregue' : 'Não entregue'}
-                  </Table.Cell>
-                </Table.Row>
-              </Fragment>
-            ))}
-          </Table.Body>
-        </Table.Root>
+            <Table.Body>
+              {student.StudentTask.map((item, index) => (
+                <Fragment key={index}>
+                  <Table.Row>
+                    <Table.Cell>{item.task.name}</Table.Cell>
+                    <Table.Cell>{item.task.class.name}</Table.Cell>
+                    <Table.Cell>
+                      <div className="text-center">
+                        <span
+                          className={cn(
+                            'inline-block size-4 rounded-full',
+                            item.isCompleted ? 'bg-green-500' : 'bg-red-500',
+                          )}
+                        ></span>
+                      </div>
+                    </Table.Cell>
+                  </Table.Row>
+                </Fragment>
+              ))}
+            </Table.Body>
+          </Table.Root>
+        </div>
       </div>
     </>
   )

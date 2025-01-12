@@ -1,19 +1,32 @@
 import axios from '@/lib/axios'
-import {
+import type {
   UpdateFeedbackResponse,
-  type CreateFeedbackParams,
-  type CreateFeedbackResponse,
-  type CreateRevaluationParams,
-  type CreateRevaluationResponse,
-  type GetFeedbackByIdParams,
-  type GetFeedbackByIdResponse,
-  type UpdateFeedbackParams,
+  CreateFeedbackParams,
+  CreateFeedbackResponse,
+  CreateRevaluationParams,
+  CreateRevaluationResponse,
+  GetFeedbackByIdParams,
+  GetFeedbackByIdResponse,
+  UpdateFeedbackParams,
+  GetFeedbackDetailsParams,
+  GetFeedBackDetailsResponse,
 } from './types'
 
 export const feedback = {
   async getById(params: GetFeedbackByIdParams) {
     const { data } = await axios.get<GetFeedbackByIdResponse>(
       '/feedback/' + params.id,
+    )
+
+    return data
+  },
+
+  async getDetails(params: GetFeedbackDetailsParams) {
+    const { data } = await axios.get<GetFeedBackDetailsResponse>(
+      '/feedback/details',
+      {
+        params,
+      },
     )
 
     return data

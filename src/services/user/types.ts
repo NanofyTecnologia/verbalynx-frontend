@@ -1,4 +1,4 @@
-import { User } from '@prisma/client'
+import { Feedback, User } from '@prisma/client'
 
 export type GetTasksByStudentId = {
   id: string
@@ -37,10 +37,14 @@ export type GetStudentByIdParams = {
   id: string | undefined
 }
 export type GetStudentByIdResponse = GetUserByIdResponse & {
+  studentFeedbacks: Feedback[]
   StudentTask: {
     isCompleted: boolean
     task: {
       name: string
+      class: {
+        name: string
+      }
     }
   }[]
 }
