@@ -41,6 +41,7 @@ export type GetStudentByIdResponse = GetUserByIdResponse & {
   StudentTask: {
     isCompleted: boolean
     task: {
+      id: string
       name: string
       class: {
         name: string

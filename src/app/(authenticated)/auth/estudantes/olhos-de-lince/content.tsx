@@ -72,7 +72,7 @@ export default function Content() {
   const handleRemove = (index: number) => remove(index)
 
   const { data: criteria } = useGetByRubricId({
-    id: teamId ?? taskId,
+    id: taskId,
   })
 
   const onSubmit: SubmitHandler<FeedbackData> = (data) => {

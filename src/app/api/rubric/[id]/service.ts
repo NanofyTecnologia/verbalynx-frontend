@@ -13,6 +13,8 @@ async function getRubricByTaskId(id: string) {
     throw new HttpError('UNAUTHORIZED', HttpStatusCode.Unauthorized)
   }
 
+  console.log(id)
+
   const rubric = await findByTaskId(id)
 
   return rubric?.criterion

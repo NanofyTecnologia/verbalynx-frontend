@@ -13,6 +13,7 @@ import { normalizeSlug } from '@/utils/normalize-slug'
 
 import { useGetTaskById } from '../../_hooks/use-get-task-by-id'
 import { useGetRubric } from '../_hooks/use-get-rubrics-by-id'
+import { useSession } from 'next-auth/react'
 
 export interface IParams {
   [key: string]: string[]
@@ -22,6 +23,7 @@ export default function Content() {
   const { back } = useRouter()
   const { slug } = useParams<IParams>()
   const { id } = normalizeSlug(slug)
+  const { data: session } = useSession()
 
   const { data: tasks } = useGetTaskById({ id })
   const { data: rubrics } = useGetRubric({ id })
@@ -47,7 +49,10 @@ export default function Content() {
 
         <h2 className="text-lg font-semibold">Rubricas da atividade</h2>
 
-        <button onClick={() => setShowDialogHelp(true)}>
+        <button
+          onClick={() => setShowDialogHelp(true)}
+          className={session?.user.role === 'PROFESSOR' ? '' : 'invisible'}
+        >
           <HelpCircle className="text-zinc-500" />
         </button>
       </div>

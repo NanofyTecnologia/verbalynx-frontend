@@ -148,6 +148,14 @@ export default function Content() {
             </Badge>
           </div>
 
+          {session?.user.role === 'STUDENT' && !!feedback && (
+            <Button asChild className="w-full" variant="outline">
+              <Link href={`/auth/feedback-qualitativo/${feedback.id}`}>
+                Ver feedback
+              </Link>
+            </Button>
+          )}
+
           {session?.user.role === 'STUDENT' &&
             (compareDateWithToday(formattedClosingDate) ? (
               <>

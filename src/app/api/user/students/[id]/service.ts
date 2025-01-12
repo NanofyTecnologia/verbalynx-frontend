@@ -10,11 +10,11 @@ import { findById, createMany, type CreateManyData } from './repository'
 async function getStudentById(id: string) {
   const session = await getServerSession(authOptions)
 
-  if (!session?.user.id) {
+  if (!session?.user.id || session.user.role !== 'PROFESSOR') {
     throw new HttpError('UNAUTHORIZED', HttpStatusCode.Unauthorized)
   }
 
-  return await findById(id)
+  return await findById(id, session.user.id)
 }
 
 async function createManyStudents(data: CreateManyData, classId: string) {

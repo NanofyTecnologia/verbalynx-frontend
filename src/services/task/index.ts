@@ -4,6 +4,7 @@ import type {
   GetTaskResponse,
   CreateTaskParams,
   GetTaskByIdParams,
+  GetFeedbackByTaskIdResponse,
   DeleteTaskParams,
 } from './types'
 
@@ -29,7 +30,9 @@ export const task = {
   },
 
   async getFeedback(params: GetTaskByIdParams) {
-    const { data } = await axios.get('/task/' + params.id + '/feedback')
+    const { data } = await axios.get<GetFeedbackByTaskIdResponse>(
+      '/task/' + params.id + '/feedback',
+    )
 
     return data
   },

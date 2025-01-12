@@ -227,10 +227,6 @@ export default function Content() {
                               </Link>
                             </Dropdown.Item>
 
-                            <Dropdown.Item>
-                              <Pen className="size-5" /> Editar
-                            </Dropdown.Item>
-
                             <Dropdown.Item asChild>
                               <Dialog.Root>
                                 <Dialog.Trigger asChild>

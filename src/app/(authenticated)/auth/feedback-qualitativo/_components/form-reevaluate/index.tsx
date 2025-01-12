@@ -2,6 +2,7 @@
 
 import { Fragment, useRef, useState } from 'react'
 import { useParams } from 'next/navigation'
+import { toast } from 'react-toastify'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { FolderCheck, BoomBox, Camera, Link2 } from 'lucide-react'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -20,11 +21,10 @@ import { IParams } from '../../[...slug]/content'
 
 import { criterionSchema, type CriterionData } from './_schema'
 import { useCreateRevaluation } from './_hooks/use-create-revaluation'
-import { toast } from 'react-toastify'
 
 type IProps = {
   taskId: string | undefined
-  onReloadFeedback: () => void
+  onReloadFeedback: VoidFunction
 }
 
 type Criterion = {

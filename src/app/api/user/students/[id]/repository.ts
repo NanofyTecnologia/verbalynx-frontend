@@ -3,7 +3,7 @@ import { User } from '@prisma/client'
 
 export type CreateManyData = Omit<User, 'classId'>[]
 
-function findById(id: string) {
+function findById(id: string, teacherId: string) {
   return prisma.user.findUnique({
     where: {
       id,
@@ -24,6 +24,7 @@ function findById(id: string) {
           isCompleted: true,
           task: {
             select: {
+              id: true,
               name: true,
               class: {
                 select: {
@@ -31,6 +32,11 @@ function findById(id: string) {
                 },
               },
             },
+          },
+        },
+        where: {
+          task: {
+            teacherId,
           },
         },
       },
