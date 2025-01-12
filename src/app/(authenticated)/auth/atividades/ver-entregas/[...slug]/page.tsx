@@ -3,7 +3,7 @@ import { type Metadata } from 'next'
 import Content from './content'
 
 export const metadata: Metadata = {
-  title: 'Ver Rubricas',
+  title: 'Ver Entregas',
 }
 
 export default function Page() {

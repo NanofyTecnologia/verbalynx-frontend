@@ -2,7 +2,7 @@
 
 import { Fragment, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { ChevronLeft, HelpCircle } from 'lucide-react'
+import { ChevronLeft } from 'lucide-react'
 
 import { type IParams } from '@/types/params'
 import { normalizeSlug } from '@/utils/normalize-slug'
@@ -19,6 +19,10 @@ export default function Content() {
   const { id } = normalizeSlug(params.slug)
 
   const { data: student } = useGetStudentById({ id })
+
+  if (!student) {
+    return null
+  }
 
   return (
     <>
@@ -37,7 +41,33 @@ export default function Content() {
           <Label>Nome</Label>
 
           <div className="flex h-10 items-center rounded-md bg-white p-2 shadow-sm">
-            {student?.name}
+            {student.name}
+          </div>
+        </div>
+
+        <div className="space-y-0.5">
+          <Label>E-mail</Label>
+
+          <div className="flex h-10 items-center rounded-md bg-white p-2 shadow-sm">
+            {student.email}
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between gap-4">
+          <div className="w-full space-y-0.5">
+            <Label>Pronome</Label>
+
+            <div className="flex h-10 items-center rounded-md bg-white p-2 shadow-sm">
+              {student.pronoun}
+            </div>
+          </div>
+
+          <div className="w-full space-y-0.5">
+            <Label>Nível de Ensino</Label>
+
+            <div className="flex h-10 items-center rounded-md bg-white p-2 shadow-sm">
+              {student.graduation}
+            </div>
           </div>
         </div>
 
@@ -50,7 +80,7 @@ export default function Content() {
           </Table.Header>
 
           <Table.Body>
-            {student?.StudentTask.map((item, index) => (
+            {student.StudentTask.map((item, index) => (
               <Fragment key={index}>
                 <Table.Row>
                   <Table.Cell>{item.task.name}</Table.Cell>
