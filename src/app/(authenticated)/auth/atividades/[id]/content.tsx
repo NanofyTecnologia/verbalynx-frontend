@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { toast } from 'react-toastify'
 import { useParams, useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { format } from 'date-fns'
 import { ChevronLeft, HelpCircle, PencilLine, ListTodo } from 'lucide-react'
@@ -55,12 +55,6 @@ export default function Content() {
 
       {session?.user.role === 'PROFESSOR' && (
         <div className="mt-6 space-x-4 text-end">
-          <Button className="shadow" asChild>
-            <Link href={`/auth/atividades/ver-entregas/${id}`}>
-              Ver entregas <ListTodo size={20} />
-            </Link>
-          </Button>
-
           <Button className="shadow" asChild>
             <Link href={`/auth/atividades/ver-rubricas/${id}`}>
               Ver rubricas <PencilLine size={20} />
@@ -145,7 +139,7 @@ export default function Content() {
 
                 return (
                   <span
-                    className={`${isBeforeClosingDate ? '' : 'text-[#FF6B6B]'}`}
+                    className={`${isBeforeClosingDate ? 'text-blue-500' : 'text-[#FF6B6B]'}`}
                   >
                     {format(task.closingDate, 'dd/MM/yyyy - HH:mm')}
                   </span>
@@ -176,65 +170,128 @@ export default function Content() {
 
           {session?.user.role === 'PROFESSOR' && (
             <>
-              <Button className="w-full bg-yellow-400 hover:bg-yellow-400/80">
-                Editar
-              </Button>
+              <h3 className="pt-6 font-semibold">Entregas da atividade</h3>
 
-              <Dialog.Root>
-                <Dialog.Trigger asChild>
-                  <Button className="w-full" variant="destructive">
-                    Deletar atividade
-                  </Button>
-                </Dialog.Trigger>
-                <Dialog.Content>
-                  <Dialog.Header>
-                    <Dialog.Title>
-                      Excluir atividade <b>{task.name}</b>
-                    </Dialog.Title>
-                    <Dialog.Description>
-                      {task.feedback.length > 0 &&
-                        'Esta atividade não pode ser excluída, pois já existem feedbacks enviados.'}
-
-                      {task.studentTask.length > 0 &&
-                        'Esta atividade não pode ser excluída, pois um aluno já fez a entrega da atividade.'}
-
-                      {task.feedback.length === 0 &&
-                        task.studentTask.length === 0 &&
-                        'Atenção! Ao excluir esta atividade, todos os dados serão perdidos e não será possível recuperá-la.'}
-                    </Dialog.Description>
-                  </Dialog.Header>
-
-                  <Dialog.Footer className="gap-y-4">
-                    <Dialog.Close asChild>
-                      <Button variant="secondary">Cancelar</Button>
-                    </Dialog.Close>
-
-                    {!(
-                      task.feedback.length > 0 || task.studentTask.length > 0
-                    ) && (
-                      <Button
-                        variant="destructive"
-                        onClick={() =>
-                          handleDeleteTask(
-                            { id: task.id },
-                            {
-                              onSuccess: () => {
-                                push('/auth/atividades')
-                                toast.success('Tarefa excluída com sucesso!')
+              <div className="max-h-96 overflow-y-scroll rounded-md border bg-white p-4">
+                {task.studentTask.length === 0 ? (
+                  <div className="text-center">Nenhuma atividade entregue</div>
+                ) : (
+                  <div className="space-y-4">
+                    {task.studentTask
+                      .sort(
+                        (isFalse, isTrue) =>
+                          Number(isFalse.isCompleted) -
+                          Number(isTrue.isCompleted),
+                      )
+                      .map((item) => (
+                        <Fragment key={item.id}>
+                          <Link
+                            href={{
+                              pathname: '/auth/estudantes/',
+                              query: {
+                                taskId: task.id,
+                                classId: task.classId,
+                                userId: item.studentId,
                               },
-                              onError: (data) => {
-                                console.log(data)
+                            }}
+                            className="block"
+                          >
+                            <div className="rounded-md border p-4 text-sm transition-colors hover:border-gray-400">
+                              <div className="space-y-1">
+                                <div className="flex gap-2">
+                                  <p className="font-semibold">Estudante:</p>
+                                  <p>{item.student.name}</p>
+                                </div>
+
+                                <div className="flex gap-2">
+                                  <p className="font-semibold">Título:</p>
+                                  <p>{item.title}</p>
+                                </div>
+
+                                <div className="flex gap-2">
+                                  <p className="font-semibold">Avaliação:</p>
+                                  <p
+                                    className={
+                                      item.isCompleted
+                                        ? 'text-green-500'
+                                        : 'text-[#FF6B6B]'
+                                    }
+                                  >
+                                    {item.isCompleted
+                                      ? 'Concluído'
+                                      : 'Pendente'}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          </Link>
+                        </Fragment>
+                      ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-4 pt-6">
+                <Button className="w-full bg-yellow-400 hover:bg-yellow-400/80">
+                  Editar
+                </Button>
+
+                <Dialog.Root>
+                  <Dialog.Trigger asChild>
+                    <Button className="w-full" variant="destructive">
+                      Deletar atividade
+                    </Button>
+                  </Dialog.Trigger>
+                  <Dialog.Content>
+                    <Dialog.Header>
+                      <Dialog.Title>
+                        Excluir atividade <b>{task.name}</b>
+                      </Dialog.Title>
+                      <Dialog.Description>
+                        {task.feedback.length > 0 &&
+                          'Esta atividade não pode ser excluída, pois já existem feedbacks enviados.'}
+
+                        {task.studentTask.length > 0 &&
+                          'Esta atividade não pode ser excluída, pois um aluno já fez a entrega da atividade.'}
+
+                        {task.feedback.length === 0 &&
+                          task.studentTask.length === 0 &&
+                          'Atenção! Ao excluir esta atividade, todos os dados serão perdidos e não será possível recuperá-la.'}
+                      </Dialog.Description>
+                    </Dialog.Header>
+
+                    <Dialog.Footer className="gap-y-4">
+                      <Dialog.Close asChild>
+                        <Button variant="secondary">Cancelar</Button>
+                      </Dialog.Close>
+
+                      {!(
+                        task.feedback.length > 0 || task.studentTask.length > 0
+                      ) && (
+                        <Button
+                          variant="destructive"
+                          onClick={() =>
+                            handleDeleteTask(
+                              { id: task.id },
+                              {
+                                onSuccess: () => {
+                                  push('/auth/atividades')
+                                  toast.success('Tarefa excluída com sucesso!')
+                                },
+                                onError: (data) => {
+                                  console.log(data)
+                                },
                               },
-                            },
-                          )
-                        }
-                      >
-                        Sim, deletar
-                      </Button>
-                    )}
-                  </Dialog.Footer>
-                </Dialog.Content>
-              </Dialog.Root>
+                            )
+                          }
+                        >
+                          Sim, deletar
+                        </Button>
+                      )}
+                    </Dialog.Footer>
+                  </Dialog.Content>
+                </Dialog.Root>
+              </div>
             </>
           )}
         </div>

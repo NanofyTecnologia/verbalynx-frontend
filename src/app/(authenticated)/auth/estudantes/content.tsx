@@ -1,9 +1,11 @@
 'use client'
 
 import Link from 'next/link'
-import { Fragment } from 'react'
+import { useSearchParams } from 'next/navigation'
+import { Fragment, useEffect } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { useSession } from 'next-auth/react'
+
 import { SquarePlus } from 'lucide-react'
 
 import { Label } from '@/components/ui/label'
@@ -18,17 +20,28 @@ import { useGetStudentsByClassId } from './_hooks/use-get-students-by-class-id'
 
 export default function Content() {
   const { data } = useSession()
+  const searchParams = useSearchParams()
+
+  const taskId = searchParams.get('taskId')
+  const classId = searchParams.get('classId')
+  const studentId = searchParams.get('studentId')
 
   const { watch, setValue } = useFormContext<FeedbackData>()
 
-  const { team, student } = watch()
+  const { teamId, userId } = watch()
 
   const { data: teams } = useGetClassesById()
-  const { data: students } = useGetStudentsByClassId({ id: team?.id ?? '' })
+  const { data: students } = useGetStudentsByClassId({ id: teamId ?? '' })
   const { data: tasks } = useGetTasksByStudentId({
-    id: student?.id ?? '',
-    classId: team?.id ?? '',
+    id: userId ?? '',
+    classId: teamId ?? '',
   })
+
+  useEffect(() => {
+    setValue('teamId', classId ?? '')
+    setValue('userId', studentId ?? '')
+    setValue('taskId', taskId ?? '')
+  }, [setValue, classId, studentId, taskId])
 
   return (
     <>
@@ -47,7 +60,8 @@ export default function Content() {
           <Label>Turma</Label>
 
           <Select.Root
-            onValueChange={(value) => setValue('team', JSON.parse(value))}
+            defaultValue={classId ?? ''}
+            onValueChange={(value) => setValue('teamId', value)}
           >
             <Select.Trigger>
               <Select.Value placeholder="Selecione a turma" />
@@ -55,9 +69,7 @@ export default function Content() {
             <Select.Content>
               {teams?.map(({ id, name }) => (
                 <Fragment key={id}>
-                  <Select.Item value={JSON.stringify({ id, name })}>
-                    {name}
-                  </Select.Item>
+                  <Select.Item value={id}>{name}</Select.Item>
                 </Fragment>
               ))}
 
@@ -78,18 +90,17 @@ export default function Content() {
           <Label>Estudante</Label>
 
           <Select.Root
-            onValueChange={(value) => setValue('student', JSON.parse(value))}
+            defaultValue={studentId ?? ''}
+            onValueChange={(value) => setValue('userId', value)}
           >
-            <Select.Trigger disabled={!team}>
+            <Select.Trigger disabled={!teamId}>
               <Select.Value placeholder="Selecione o estudante" />
             </Select.Trigger>
 
             <Select.Content>
               {students?.map(({ id, name }) => (
                 <Fragment key={id}>
-                  <Select.Item value={JSON.stringify({ id, name })}>
-                    {name}
-                  </Select.Item>
+                  <Select.Item value={id}>{name}</Select.Item>
                 </Fragment>
               ))}
 
@@ -110,17 +121,16 @@ export default function Content() {
           <Label>Atividade</Label>
 
           <Select.Root
-            onValueChange={(value) => setValue('task', JSON.parse(value))}
+            defaultValue={taskId ?? ''}
+            onValueChange={(value) => setValue('taskId', value)}
           >
-            <Select.Trigger disabled={!student}>
+            <Select.Trigger disabled={!userId}>
               <Select.Value placeholder="Selecione a atividade" />
             </Select.Trigger>
             <Select.Content>
               {tasks?.map(({ id, name }) => (
                 <Fragment key={id}>
-                  <Select.Item value={JSON.stringify({ id, name })}>
-                    {name}
-                  </Select.Item>
+                  <Select.Item value={id}>{name}</Select.Item>
                 </Fragment>
               ))}
 
@@ -137,7 +147,7 @@ export default function Content() {
           </Select.Root>
         </div>
 
-        <Button type="submit" className="w-full" asChild>
+        <Button className="w-full" asChild>
           <Link href="/auth/estudantes/olhos-de-lince">Avaliar agora</Link>
         </Button>
       </div>
