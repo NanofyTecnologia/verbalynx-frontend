@@ -37,6 +37,18 @@ function findFeedbackByIds({
   })
 }
 
+function findStudentTask({
+  userId,
+  taskId,
+}: Pick<FindFeedbackByIdsParams, 'userId' | 'taskId'>) {
+  return prisma.studentTask.findFirst({
+    where: {
+      taskId,
+      studentId: userId,
+    },
+  })
+}
+
 function create(
   data: Omit<CreateFeedbackData, 'feedbacks'>,
   feedbacks: CreateFeedbackCriterionData,
@@ -56,4 +68,15 @@ function create(
   })
 }
 
-export { findFeedbackByIds, create }
+function updateIsCompleted(id: string) {
+  return prisma.studentTask.update({
+    where: {
+      id,
+    },
+    data: {
+      isCompleted: true,
+    },
+  })
+}
+
+export { findFeedbackByIds, findStudentTask, create, updateIsCompleted }

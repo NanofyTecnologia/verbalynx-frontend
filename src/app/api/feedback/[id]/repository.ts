@@ -51,6 +51,18 @@ function findById(id: string) {
   })
 }
 
+function findStudentAndTaskByFeedbackId(id: string) {
+  return prisma.feedback.findUnique({
+    where: {
+      id,
+    },
+    select: {
+      taskId: true,
+      studentId: true,
+    },
+  })
+}
+
 export type UpdateData = Partial<Feedback>
 
 function update(id: string, data: UpdateData) {
@@ -76,4 +88,4 @@ function createRevaluation(id: string, data: CriterionData) {
   })
 }
 
-export { findById, update, createRevaluation }
+export { findById, findStudentAndTaskByFeedbackId, update, createRevaluation }
