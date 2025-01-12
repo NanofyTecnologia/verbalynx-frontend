@@ -12,7 +12,6 @@ import { Button } from '@/components/ui/button'
 import { Dialog } from '@/components/ui/dialog'
 import { Badge } from '@/components/ui/badge'
 
-import { normalizeSlug } from '@/utils/normalize-slug'
 import { compareDateWithToday } from '@/utils/compareDateWithToday'
 
 import FormSendTask from './_components/form-send-task'
