@@ -1,8 +1,8 @@
 import { z } from 'zod'
 
 export const feedbackSchema = z.object({
-  userId: z.string(),
   teamId: z.string(),
+  userId: z.string(),
   taskId: z.string(),
   feedback: z.array(
     z.object({
