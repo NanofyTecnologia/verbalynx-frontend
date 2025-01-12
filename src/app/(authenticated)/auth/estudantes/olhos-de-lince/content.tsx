@@ -25,6 +25,9 @@ import { useGetByRubricId } from '@/hooks/services/use-get-rubric-by-id'
 
 import { FeedbackData } from '../_schema'
 import { useCreateFeedback } from './_hooks/use-create-feedback'
+import { useGetFeedbackDetails } from './_hooks/use-get-feedback-details'
+import { team } from '@/services/class'
+import { task } from '@/services/task'
 
 export interface IParams {
   [key: string]: string[]
@@ -32,13 +35,17 @@ export interface IParams {
 
 export default function Content() {
   const { replace } = useRouter()
-
   const searchParams = useSearchParams()
-
-  const taskId = searchParams.get('taskId')
 
   const { watch, setValue, register, control, handleSubmit } =
     useFormContext<FeedbackData>()
+  const { teamId, userId, taskId, feedback } = watch()
+
+  const { data: feedbackDetails } = useGetFeedbackDetails({
+    userId,
+    teamId,
+    taskId,
+  })
 
   const { mutate: handleCreateFeedback } = useCreateFeedback()
   const { fields, append, remove } = useFieldArray<FeedbackData>({
@@ -64,20 +71,18 @@ export default function Content() {
 
   const handleRemove = (index: number) => remove(index)
 
-  const { team, student, task, feedback } = watch()
-
   const { data: criteria } = useGetByRubricId({
-    id: task?.id ?? taskId,
+    id: teamId ?? taskId,
   })
 
   const onSubmit: SubmitHandler<FeedbackData> = (data) => {
-    const { task, team, student } = data
+    const { userId, teamId, taskId } = data
 
     handleCreateFeedback(
       {
-        taskId: task.id,
-        classId: team.id,
-        studentId: student.id,
+        taskId,
+        classId: teamId,
+        studentId: userId,
         feedbacks: data.feedback.map(({ criterion, ...restItem }) => ({
           ...restItem,
         })),
@@ -111,12 +116,12 @@ export default function Content() {
   }
 
   useEffect(() => {
-    if (!team || !student || !task) {
+    if (!teamId || !userId || !taskId) {
       return replace('/auth/estudantes')
     }
   }, [watch, replace])
 
-  if (!team || !student || !task) {
+  if (!team || !userId || !task) {
     return <></>
   }
 
@@ -141,7 +146,7 @@ export default function Content() {
           <Badge className="w-full max-w-24 justify-center p-1.5">Turma:</Badge>
 
           <Badge variant="outline" className="w-full bg-white p-1.5">
-            {team?.name}
+            {feedbackDetails?.class.name}
           </Badge>
         </div>
 
@@ -151,7 +156,7 @@ export default function Content() {
           </Badge>
 
           <Badge variant="outline" className="w-full bg-white p-1.5">
-            {student?.name}
+            {feedbackDetails?.user.name}
           </Badge>
         </div>
 
@@ -161,7 +166,7 @@ export default function Content() {
           </Badge>
 
           <Badge variant="outline" className="w-full bg-white p-1.5">
-            {task?.name}
+            {feedbackDetails?.task.name}
           </Badge>
         </div>
       </div>

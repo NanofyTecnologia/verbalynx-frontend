@@ -8,15 +8,16 @@ import { useSession } from 'next-auth/react'
 import { format } from 'date-fns'
 import { ChevronLeft, HelpCircle, PencilLine, ListTodo } from 'lucide-react'
 
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Dialog } from '@/components/ui/dialog'
-import { Badge } from '@/components/ui/badge'
 
 import { compareDateWithToday } from '@/utils/compareDateWithToday'
 
 import FormSendTask from './_components/form-send-task'
 import { useDeleteTask } from '../_hooks/use-delete-task'
 import { useGetTaskById } from '../_hooks/use-get-task-by-id'
+import { useGetStudentFeedback } from './_hooks/use-get-student-feedback'
 
 export interface IParams {
   [key: string]: string
@@ -28,6 +29,7 @@ export default function Content() {
   const { id } = useParams<IParams>()
 
   const { data: task } = useGetTaskById({ id })
+  const { data: feedback } = useGetStudentFeedback({ id })
   const { mutate: handleDeleteTask } = useDeleteTask()
 
   const [showDialogHelp, setShowDialogHelp] = useState(false)
@@ -35,6 +37,8 @@ export default function Content() {
   if (!task) {
     return null
   }
+
+  const formattedClosingDate = format(task.closingDate, 'dd/MM/yyyy - HH:mm')
 
   return (
     <>
@@ -139,9 +143,7 @@ export default function Content() {
             <Badge variant="outline" className="w-full bg-white p-1.5">
               {(() => {
                 const isBeforeClosingDate =
-                  compareDateWithToday(
-                    format(task.closingDate, 'dd/MM/yyyy - HH:mm'),
-                  ) === true
+                  compareDateWithToday(formattedClosingDate) === true
 
                 return (
                   <span
@@ -154,24 +156,31 @@ export default function Content() {
             </Badge>
           </div>
 
-          {session?.user.role === 'STUDENT' && (
-            <Dialog.Root>
-              <Dialog.Trigger asChild>
-                <Button className="w-full">Enviar atividade</Button>
-              </Dialog.Trigger>
+          {session?.user.role === 'STUDENT' &&
+          compareDateWithToday(formattedClosingDate) ? (
+            <>
+              <Dialog.Root>
+                <Dialog.Trigger asChild>
+                  <Button className="w-full">Enviar atividade</Button>
+                </Dialog.Trigger>
 
-              <Dialog.Content>
-                <Dialog.Header>
-                  <Dialog.Title>Enviar atividade</Dialog.Title>
+                <Dialog.Content>
+                  <Dialog.Header>
+                    <Dialog.Title>Enviar atividade</Dialog.Title>
 
-                  <Dialog.Description>
-                    Envie suas atividades para serem avaliadas pelo professor
-                  </Dialog.Description>
-                </Dialog.Header>
+                    <Dialog.Description>
+                      Envie suas atividades para serem avaliadas pelo professor
+                    </Dialog.Description>
+                  </Dialog.Header>
 
-                <FormSendTask />
-              </Dialog.Content>
-            </Dialog.Root>
+                  <FormSendTask />
+                </Dialog.Content>
+              </Dialog.Root>
+            </>
+          ) : (
+            <Button className="w-full" disabled>
+              Enviar atividade
+            </Button>
           )}
 
           {session?.user.role === 'PROFESSOR' && (

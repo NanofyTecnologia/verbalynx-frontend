@@ -10,17 +10,26 @@ function findById(id: string) {
     },
     select: {
       name: true,
+      email: true,
+      pronoun: true,
+      graduation: true,
       class: {
         select: {
           name: true,
         },
       },
+      studentFeedback: true,
       StudentTask: {
         select: {
           isCompleted: true,
           task: {
             select: {
               name: true,
+              class: {
+                select: {
+                  name: true,
+                },
+              },
             },
           },
         },

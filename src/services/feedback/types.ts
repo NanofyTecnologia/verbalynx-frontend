@@ -29,6 +29,26 @@ export type GetFeedbackByIdResponse = {
   }[]
 }
 
+export type GetFeedbackDetailsParams = {
+  taskId: string
+  userId: string
+  teamId: string
+}
+export type GetFeedBackDetailsResponse = {
+  task: {
+    id: string
+    name: string
+  }
+  user: {
+    id: string
+    name: string
+  }
+  class: {
+    id: string
+    name: string
+  }
+}
+
 export type CreateFeedbackParams = {
   taskId: string
   classId: string
