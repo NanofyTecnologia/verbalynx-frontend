@@ -59,9 +59,9 @@ export default function Content() {
           </Dialog.Header>
 
           <div className="text-sm">
-            Esta página informa ao docente todas as rubricas vinculadas a
-            atividade em questão, incluindo informações vinculadas a ela como:
-            nome da turma, nome da atividade e as rubricas já criadas.
+            Esta página informa todas as rubricas vinculadas a atividade em
+            questão, incluindo informações vinculadas a ela como: nome da turma,
+            nome da atividade e as rubricas já criadas.
           </div>
 
           <Dialog.Footer>
@@ -92,7 +92,7 @@ export default function Content() {
         </div>
       </div>
 
-      <div className="mt-6 rounded-lg bg-white p-4">
+      <div className="mt-6 rounded-lg bg-white p-4 text-sm">
         <div className="text-center">
           <p>
             Tabela de informações da rubrica:{' '}

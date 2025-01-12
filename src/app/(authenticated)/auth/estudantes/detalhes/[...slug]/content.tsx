@@ -37,7 +37,7 @@ export default function Content() {
         <div></div>
       </div>
 
-      <div className="mt-6 space-y-4">
+      <div className="mt-6 space-y-4 text-sm">
         <div className="space-y-0.5">
           <Label>Nome</Label>
 
@@ -72,7 +72,7 @@ export default function Content() {
           </div>
         </div>
 
-        <h2>Entregas</h2>
+        <h3 className="pt-6 text-base font-semibold">Entregas</h3>
         <div className="overflow-hidden rounded-md bg-white shadow-sm">
           <Table.Root>
             <Table.Header>

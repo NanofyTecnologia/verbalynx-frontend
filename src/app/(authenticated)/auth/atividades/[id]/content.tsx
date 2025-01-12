@@ -57,15 +57,13 @@ export default function Content() {
         </button>
       </div>
 
-      {session?.user.role === 'PROFESSOR' && (
-        <div className="mt-6 space-x-4 text-end">
-          <Button className="shadow" asChild>
-            <Link href={`/auth/atividades/ver-rubricas/${id}`}>
-              Ver rubricas <PencilLine size={20} />
-            </Link>
-          </Button>
-        </div>
-      )}
+      <div className="mt-6 space-x-4 text-end">
+        <Button className="shadow" asChild>
+          <Link href={`/auth/atividades/ver-rubricas/${id}`}>
+            Ver rubricas <PencilLine size={20} />
+          </Link>
+        </Button>
+      </div>
 
       <Dialog.Root open={showDialogHelp} onOpenChange={setShowDialogHelp}>
         <Dialog.Content>

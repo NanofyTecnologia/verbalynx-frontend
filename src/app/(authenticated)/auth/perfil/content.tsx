@@ -18,7 +18,7 @@ import { useUpdateUser } from './_hooks/use-update-user'
 import { toast } from 'react-toastify'
 
 export default function Content() {
-  const { update } = useSession()
+  const { update, data: session } = useSession()
 
   const { data: user } = useGetUser()
   const { mutate: handleUpdateUser } = useUpdateUser()
@@ -67,19 +67,27 @@ export default function Content() {
 
   return (
     <>
-      <h3 className="font-semibold">Editar perfil</h3>
+      <h2 className="text-center text-lg font-semibold">Visualizar perfil</h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="mt-4 space-y-4">
         <div className="space-y-0.5">
           <Label>Nome</Label>
 
-          <Input {...register('name')} error={errors.name?.message} />
+          <Input
+            {...register('name')}
+            error={errors.name?.message}
+            disabled={session?.user.role === 'STUDENT'}
+          />
         </div>
 
         <div className="space-y-0.5">
           <Label>E-mail</Label>
 
-          <Input {...register('email')} error={errors.email?.message} />
+          <Input
+            {...register('email')}
+            error={errors.email?.message}
+            disabled={session?.user.role === 'STUDENT'}
+          />
         </div>
 
         <div className="space-y-0.5">
@@ -91,6 +99,7 @@ export default function Content() {
               showMaskOnHover: false,
             })}
             error={errors.cpf?.message}
+            disabled={session?.user.role === 'STUDENT'}
           />
         </div>
 

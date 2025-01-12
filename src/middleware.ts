@@ -13,7 +13,7 @@ export default withAuth(
 
     const allowedRolesForRoute: AllowedRoles = {
       '/auth': ['ADMIN', 'STUDENT', 'PROFESSOR'],
-      '/auth/atividades/ver-rubricas/:path*': ['PROFESSOR'],
+      '/auth/atividades/ver-rubricas/:path*': ['PROFESSOR', 'STUDENT'],
       '/auth/:path*': ['ADMIN', 'STUDENT', 'PROFESSOR'],
       '/aguardando-aprovacao': ['PENDING_APPROVAL'],
     }

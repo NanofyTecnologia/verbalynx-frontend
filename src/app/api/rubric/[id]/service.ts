@@ -9,7 +9,7 @@ import { findByTaskId } from './repository'
 async function getRubricByTaskId(id: string) {
   const session = await getServerSession(authOptions)
 
-  if (!session?.user.id || session.user.role !== 'PROFESSOR') {
+  if (!session?.user.id) {
     throw new HttpError('UNAUTHORIZED', HttpStatusCode.Unauthorized)
   }
 
