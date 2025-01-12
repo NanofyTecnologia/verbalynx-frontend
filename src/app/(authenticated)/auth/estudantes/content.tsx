@@ -24,7 +24,7 @@ export default function Content() {
 
   const taskId = searchParams.get('taskId')
   const classId = searchParams.get('classId')
-  const studentId = searchParams.get('studentId')
+  const studentId = searchParams.get('userId')
 
   const { watch, setValue } = useFormContext<FeedbackData>()
 
