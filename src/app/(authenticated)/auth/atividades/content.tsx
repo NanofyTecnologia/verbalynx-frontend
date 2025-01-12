@@ -116,7 +116,7 @@ export default function Content() {
                                 className={`flex items-center gap-2 rounded-md px-2 py-0.5 ${
                                   isBeforeClosingDate
                                     ? 'bg-[#8ABF3B]'
-                                    : 'bg-[#FF6B6B]' // Cor diferente para datas que já passaram
+                                    : 'bg-[#FF6B6B]'
                                 }`}
                               >
                                 {isBeforeClosingDate ? (

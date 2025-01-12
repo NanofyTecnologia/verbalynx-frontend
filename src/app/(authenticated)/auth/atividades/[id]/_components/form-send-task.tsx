@@ -1,5 +1,6 @@
 'use client'
 
+import { LegacyRef, useRef } from 'react'
 import { useParams } from 'next/navigation'
 import { toast } from 'react-toastify'
 import { SubmitHandler, useForm } from 'react-hook-form'
@@ -11,15 +12,15 @@ import { Button } from '@/components/ui/button'
 import { Dialog } from '@/components/ui/dialog'
 import { Textarea } from '@/components/ui/textarea'
 
-import { type IParams } from '@/types/params'
-import { normalizeSlug } from '@/utils/normalize-slug'
+import { IParamsID, type IParams } from '@/types/params'
 
 import { useSendTask } from '../_hooks/use-send-task'
 import { SendTaskData, sendTaskSchema } from './_schema'
 
 export default function FormSendTask() {
-  const params = useParams<IParams>()
-  const { id } = normalizeSlug(params.slug)
+  const { id } = useParams<IParamsID>()
+
+  const dialogCloseRef = useRef<HTMLButtonElement>(null)
 
   const { mutate: handleSendTask } = useSendTask()
 
@@ -32,6 +33,7 @@ export default function FormSendTask() {
       { id, ...data },
       {
         onSuccess: () => {
+          dialogCloseRef.current?.click()
           toast.success('Atividade enviada com sucesso!')
         },
       },
@@ -59,7 +61,7 @@ export default function FormSendTask() {
       </div>
 
       <Dialog.Footer className="gap-y-4">
-        <Dialog.Close asChild>
+        <Dialog.Close asChild ref={dialogCloseRef}>
           <Button variant="secondary">Cancelar</Button>
         </Dialog.Close>
 

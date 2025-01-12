@@ -3,8 +3,9 @@
 import { useParams, useRouter } from 'next/navigation'
 import { ChevronLeft, HelpCircle } from 'lucide-react'
 
-import { Button } from '@/components/ui/button'
+import { Table } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 
 import { normalizeSlug } from '@/utils/normalize-slug'
 
@@ -47,6 +48,14 @@ export default function Content() {
             {task.name}
           </Badge>
         </div>
+      </div>
+
+      <div className="mt-6">
+        <Table.Root>
+          <Table.Header>
+            <Table.Row></Table.Row>
+          </Table.Header>
+        </Table.Root>
       </div>
     </>
   )
