@@ -151,31 +151,32 @@ export default function Content() {
           </div>
 
           {session?.user.role === 'STUDENT' &&
-          compareDateWithToday(formattedClosingDate) ? (
-            <>
-              <Dialog.Root>
-                <Dialog.Trigger asChild>
-                  <Button className="w-full">Enviar atividade</Button>
-                </Dialog.Trigger>
+            (compareDateWithToday(formattedClosingDate) ? (
+              <>
+                <Dialog.Root>
+                  <Dialog.Trigger asChild>
+                    <Button className="w-full">Enviar atividade</Button>
+                  </Dialog.Trigger>
 
-                <Dialog.Content>
-                  <Dialog.Header>
-                    <Dialog.Title>Enviar atividade</Dialog.Title>
+                  <Dialog.Content>
+                    <Dialog.Header>
+                      <Dialog.Title>Enviar atividade</Dialog.Title>
 
-                    <Dialog.Description>
-                      Envie suas atividades para serem avaliadas pelo professor
-                    </Dialog.Description>
-                  </Dialog.Header>
+                      <Dialog.Description>
+                        Envie suas atividades para serem avaliadas pelo
+                        professor
+                      </Dialog.Description>
+                    </Dialog.Header>
 
-                  <FormSendTask />
-                </Dialog.Content>
-              </Dialog.Root>
-            </>
-          ) : (
-            <Button className="w-full" disabled>
-              Enviar atividade
-            </Button>
-          )}
+                    <FormSendTask />
+                  </Dialog.Content>
+                </Dialog.Root>
+              </>
+            ) : (
+              <Button className="w-full" disabled>
+                Enviar atividade
+              </Button>
+            ))}
 
           {session?.user.role === 'PROFESSOR' && (
             <>
