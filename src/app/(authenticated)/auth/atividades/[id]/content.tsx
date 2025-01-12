@@ -205,7 +205,7 @@ export default function Content() {
                         'Esta atividade não pode ser excluída, pois já existem feedbacks enviados.'}
 
                       {task.studentTask.length > 0 &&
-                        'Esta atividade não pode ser excluída, pois um aluno já fez a entrega da atividade.'}
+                        'Esta atividade não pode ser excluída, pois um estudante já fez a entrega da atividade.'}
 
                       {task.feedback.length === 0 &&
                         task.studentTask.length === 0 &&

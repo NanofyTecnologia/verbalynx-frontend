@@ -19,7 +19,7 @@ async function getFeedbackDetails({
 }: FeedbackDetailParams) {
   const session = await getServerSession(authOptions)
 
-  if (!session?.user.id || session.user.role === 'PROFESSOR') {
+  if (!session?.user.id || session.user.role !== 'PROFESSOR') {
     throw new HttpError('UNAUTHORIZED', HttpStatusCode.Unauthorized)
   }
 
