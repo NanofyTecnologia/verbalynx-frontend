@@ -11,7 +11,7 @@ export async function GET(req: NextRequest, props: IParams) {
   try {
     const id = params.id
 
-    const feedback = getFeedback(id)
+    const feedback = await getFeedback(id)
 
     return NextResponse.json(feedback, { status: HttpStatusCode.Ok })
   } catch (error) {

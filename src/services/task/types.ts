@@ -46,6 +46,10 @@ export type GetTaskResponse = {
   }
 }
 
+export type GetFeedbackByTaskIdResponse = {
+  id: string
+}
+
 export type CreateTaskParams = Omit<
   Task,
   'id' | 'createdAt' | 'updatedAt' | 'teacherId'

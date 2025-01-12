@@ -58,7 +58,7 @@ function update(id: string, data: UpdateData) {
     where: {
       id,
     },
-    data,
+    data: {},
   })
 }
 

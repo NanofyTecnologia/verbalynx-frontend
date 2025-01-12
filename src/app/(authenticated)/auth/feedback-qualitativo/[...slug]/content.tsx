@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { Fragment, ReactNode, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { useParams, useRouter } from 'next/navigation'
@@ -164,8 +165,16 @@ export default function Content() {
           </Button>
         )}
 
+        {session?.user.role === 'STUDENT' && (
+          <Button className="w-full" variant="destructive" asChild>
+            <Link href={`/auth/atividades/${feedback?.task.id}`}>
+              Quero melhorar
+            </Link>
+          </Button>
+        )}
+
         <Button className="w-full" onClick={onClosedFeedback}>
-          Encerrar
+          Encerrar {session?.user.role === 'STUDENT' && 'trabalho'}
         </Button>
       </div>
 

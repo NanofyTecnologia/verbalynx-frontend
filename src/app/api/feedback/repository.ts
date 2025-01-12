@@ -17,6 +17,26 @@ export type CreateFeedbackData = {
   feedbacks: CreateFeedbackCriterionData
 }
 
+type FindFeedbackByIdsParams = {
+  userId: string
+  teamId: string
+  taskId: string
+}
+
+function findFeedbackByIds({
+  userId,
+  teamId,
+  taskId,
+}: FindFeedbackByIdsParams) {
+  return prisma.feedback.findFirst({
+    where: {
+      taskId,
+      classId: teamId,
+      studentId: userId,
+    },
+  })
+}
+
 function create(
   data: Omit<CreateFeedbackData, 'feedbacks'>,
   feedbacks: CreateFeedbackCriterionData,
@@ -36,4 +56,4 @@ function create(
   })
 }
 
-export { create }
+export { findFeedbackByIds, create }
