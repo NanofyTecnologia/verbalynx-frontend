@@ -34,7 +34,7 @@ export interface IParams {
 }
 
 export default function Content() {
-  const { replace } = useRouter()
+  const { replace, back } = useRouter()
   const searchParams = useSearchParams()
 
   const { watch, setValue, register, control, handleSubmit } =
@@ -128,10 +128,8 @@ export default function Content() {
   return (
     <>
       <div className="flex items-center justify-between">
-        <Button size="icon" asChild>
-          <Link href="/auth/estudantes">
-            <ChevronLeft className="size-5" />
-          </Link>
+        <Button size="icon" onClick={() => back()}>
+          <ChevronLeft className="size-5" />
         </Button>
 
         <h2 className="text-lg font-semibold">Olhos de Lince</h2>

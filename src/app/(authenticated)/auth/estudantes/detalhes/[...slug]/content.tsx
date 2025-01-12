@@ -34,7 +34,7 @@ export default function Content() {
 
         <h2 className="text-lg font-semibold">Detalhes do estudante</h2>
 
-        <div></div>
+        <div />
       </div>
 
       <div className="mt-6 space-y-4 text-sm">

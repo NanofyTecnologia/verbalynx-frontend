@@ -5,7 +5,14 @@ import { Fragment, ReactNode, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { useParams, useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
-import { BoomBox, Camera, CircleHelp, FolderCheck, Link2 } from 'lucide-react'
+import {
+  BoomBox,
+  Camera,
+  CircleHelp,
+  FolderCheck,
+  Link2,
+  ChevronLeft,
+} from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -30,7 +37,7 @@ const tipElement: { [key: string]: ReactNode } = {
 }
 
 export default function Content() {
-  const { replace } = useRouter()
+  const { replace, back } = useRouter()
 
   const { data: session } = useSession()
 
@@ -76,11 +83,13 @@ export default function Content() {
   return (
     <>
       <div className="flex items-center justify-between">
+        <Button size="icon" onClick={() => back()}>
+          <ChevronLeft className="size-5" />
+        </Button>
+
         <h2 className="text-lg font-semibold">Feedback Qualitativo</h2>
 
-        <button>
-          <CircleHelp className="text-zinc-500" />
-        </button>
+        <div />
       </div>
 
       <div className="mt-6 space-y-3">
@@ -145,16 +154,14 @@ export default function Content() {
           <Badge>Total de pontos: {getTotalScore()}</Badge>
         </div>
 
-        <div className="mt-6 grid grid-cols-3 gap-4">
+        <div className="mt-6 grid grid-cols-2 gap-4">
           <Button size="sm">Enviar por e-mail</Button>
 
           <SavePDF feedback={feedback} />
-
-          <Button size="sm">Salvar</Button>
         </div>
       </div>
 
-      <div className="mt-4 space-y-6">
+      <div className="mt-6 space-y-4">
         {session?.user.role === 'PROFESSOR' && (
           <Button
             className="w-full"

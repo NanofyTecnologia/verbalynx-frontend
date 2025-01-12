@@ -26,10 +26,18 @@ function findById(id: string) {
           isCompleted: true,
           student: {
             select: {
-              name: true
-            }
-          }
-        }
+              name: true,
+              studentFeedback: {
+                where: {
+                  taskId: id,
+                },
+                select: {
+                  id: true,
+                },
+              },
+            },
+          },
+        },
       },
       updatedAt: true,
       class: {
