@@ -20,6 +20,10 @@ export default function Content() {
 
   const { data: student } = useGetStudentById({ id })
 
+  if (!student) {
+    return null
+  }
+
   return (
     <>
       <div className="flex items-center justify-between">
@@ -37,7 +41,7 @@ export default function Content() {
           <Label>Nome</Label>
 
           <div className="flex h-10 items-center rounded-md bg-white p-2 shadow-sm">
-            {student?.name}
+            {student.name}
           </div>
         </div>
 
@@ -45,7 +49,25 @@ export default function Content() {
           <Label>E-mail</Label>
 
           <div className="flex h-10 items-center rounded-md bg-white p-2 shadow-sm">
-            {student?.email}
+            {student.email}
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between gap-4">
+          <div className="w-full space-y-0.5">
+            <Label>Pronome</Label>
+
+            <div className="flex h-10 items-center rounded-md bg-white p-2 shadow-sm">
+              {student.pronoun}
+            </div>
+          </div>
+
+          <div className="w-full space-y-0.5">
+            <Label>Nível de Ensino</Label>
+
+            <div className="flex h-10 items-center rounded-md bg-white p-2 shadow-sm">
+              {student.graduation}
+            </div>
           </div>
         </div>
 
@@ -58,7 +80,7 @@ export default function Content() {
           </Table.Header>
 
           <Table.Body>
-            {student?.StudentTask.map((item, index) => (
+            {student.StudentTask.map((item, index) => (
               <Fragment key={index}>
                 <Table.Row>
                   <Table.Cell>{item.task.name}</Table.Cell>

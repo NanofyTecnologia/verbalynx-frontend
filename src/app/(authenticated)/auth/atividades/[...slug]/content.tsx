@@ -6,7 +6,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { format } from 'date-fns'
-import { ChevronLeft, HelpCircle, PencilLine } from 'lucide-react'
+import { ChevronLeft, HelpCircle, PencilLine, ListTodo } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Dialog } from '@/components/ui/dialog'
@@ -56,7 +56,13 @@ export default function Content() {
       </div>
 
       {session?.user.role === 'PROFESSOR' && (
-        <div className="mt-6 text-end">
+        <div className="mt-6 space-x-4 text-end">
+          <Button className="shadow" asChild>
+            <Link href={`/auth/atividades/ver-entregas/${id}`}>
+              Ver entregas <ListTodo size={20} />
+            </Link>
+          </Button>
+
           <Button className="shadow" asChild>
             <Link href={`/auth/atividades/ver-rubricas/${id}`}>
               Ver rubricas <PencilLine size={20} />
