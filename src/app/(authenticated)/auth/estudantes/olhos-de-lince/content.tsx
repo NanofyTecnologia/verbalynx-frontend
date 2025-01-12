@@ -146,7 +146,7 @@ export default function Content() {
           <Badge className="w-full max-w-24 justify-center p-1.5">Turma:</Badge>
 
           <Badge variant="outline" className="w-full bg-white p-1.5">
-            {feedbackDetails?.class.name}
+            {feedbackDetails?.team.name}
           </Badge>
         </div>
 

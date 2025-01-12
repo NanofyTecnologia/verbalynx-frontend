@@ -43,7 +43,7 @@ export type GetFeedBackDetailsResponse = {
     id: string
     name: string
   }
-  class: {
+  team: {
     id: string
     name: string
   }
