@@ -29,12 +29,13 @@ export type GetTaskResponse = {
     isClosed: boolean
   }[]
   studentTask: {
-    url: string
+    id: string
     title: string
-    taskId: string
     studentId: string
-    description: string
     isCompleted: boolean
+    student: {
+      name: string
+    }
   }[]
   createdAt: string
   updatedAt: string
