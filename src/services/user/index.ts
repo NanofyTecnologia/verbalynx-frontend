@@ -11,9 +11,17 @@ import type {
   DeleteUserParams,
   GetStudentByIdParams,
   GetStudentByIdResponse,
+  SendStudentTask,
 } from './types'
 
 export const user = {
+  async getAll() {
+    const { data } =
+      await axios.get<GetUserByIdResponse[]>('/user/all/students')
+
+    return data
+  },
+
   async getById() {
     const { data } = await axios.get<GetUserByIdResponse>('/user')
 
@@ -70,6 +78,13 @@ export const user = {
 
   async delete(params: DeleteUserParams) {
     const { data } = await axios.delete(`/user/${params.id}`)
+
+    return data
+  },
+
+  async sendTask(params: SendStudentTask) {
+    const { id, ...restParams } = params
+    const { data } = await axios.post(`/user/task/` + params.id, restParams)
 
     return data
   },

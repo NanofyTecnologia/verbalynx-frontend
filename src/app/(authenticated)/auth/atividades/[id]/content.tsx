@@ -15,23 +15,22 @@ import { Badge } from '@/components/ui/badge'
 import { normalizeSlug } from '@/utils/normalize-slug'
 import { compareDateWithToday } from '@/utils/compareDateWithToday'
 
+import FormSendTask from './_components/form-send-task'
 import { useDeleteTask } from '../_hooks/use-delete-task'
 import { useGetTaskById } from '../_hooks/use-get-task-by-id'
-import FormSendTask from './_components/form-send-task'
 
 export interface IParams {
-  [key: string]: string[]
+  [key: string]: string
 }
 
 export default function Content() {
   const { data: session } = useSession()
   const { push } = useRouter()
-  const { slug } = useParams<IParams>()
-  const { id } = normalizeSlug(slug)
-
-  const { mutate: handleDeleteTask } = useDeleteTask()
+  const { id } = useParams<IParams>()
 
   const { data: task } = useGetTaskById({ id })
+  const { mutate: handleDeleteTask } = useDeleteTask()
+
   const [showDialogHelp, setShowDialogHelp] = useState(false)
 
   if (!task) {
@@ -188,7 +187,11 @@ export default function Content() {
                       {task.feedback.length > 0 &&
                         'Esta atividade não pode ser excluída, pois já existem feedbacks enviados.'}
 
+                      {task.studentTask.length > 0 &&
+                        'Esta atividade não pode ser excluída, pois um aluno já fez a entrega da atividade.'}
+
                       {task.feedback.length === 0 &&
+                        task.studentTask.length === 0 &&
                         'Atenção! Ao excluir esta atividade, todos os dados serão perdidos e não será possível recuperá-la.'}
                     </Dialog.Description>
                   </Dialog.Header>
@@ -198,7 +201,9 @@ export default function Content() {
                       <Button variant="secondary">Cancelar</Button>
                     </Dialog.Close>
 
-                    {!(task.feedback.length > 0) && (
+                    {!(
+                      task.feedback.length > 0 || task.studentTask.length > 0
+                    ) && (
                       <Button
                         variant="destructive"
                         onClick={() =>

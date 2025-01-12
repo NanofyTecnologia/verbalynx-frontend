@@ -18,6 +18,7 @@ function findById(id: string) {
       teacherId: true,
       classId: true,
       createdAt: true,
+      studentTask: true,
       updatedAt: true,
       class: {
         select: {

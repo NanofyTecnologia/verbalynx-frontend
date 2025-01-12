@@ -44,3 +44,10 @@ export type GetStudentByIdResponse = GetUserByIdResponse & {
     }
   }[]
 }
+
+export type SendStudentTask = {
+  id: string | undefined
+  url: string
+  title: string
+  description: string
+}

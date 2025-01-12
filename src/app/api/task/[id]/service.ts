@@ -17,7 +17,7 @@ async function getTaskById(id: string) {
     throw new HttpError('UNAUTHORIZED', HttpStatusCode.Unauthorized)
   }
 
-  return findById(id)
+  return await findById(id)
 }
 
 async function updateTask(id: string, data: UpdateTaskData) {

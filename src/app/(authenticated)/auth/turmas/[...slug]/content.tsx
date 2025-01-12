@@ -8,16 +8,15 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { format } from 'date-fns'
 import {
+  Pen,
   Trash,
   Dices,
+  Search,
   UserPlus,
   HelpCircle,
   ChevronLeft,
-  EllipsisVertical,
-  Pen,
-  Search,
-  Eye,
   ContactRound,
+  EllipsisVertical,
 } from 'lucide-react'
 import { toast } from 'react-toastify'
 
@@ -359,7 +358,11 @@ export default function Content() {
             <div className="space-y-0.5">
               <Label>Nome do estudante</Label>
 
-              <Input {...register('name')} />
+              <div className="relative">
+                <Input {...register('name')} className="peer" />
+
+                <div className="invisible absolute left-0 top-4 w-full rounded-md bg-red-500 p-4 peer-focus:visible"></div>
+              </div>
             </div>
 
             <div className="space-y-0.5">

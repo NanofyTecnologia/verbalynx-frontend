@@ -17,12 +17,33 @@ function findTasks(id: string, classId: string) {
   })
 }
 
-function createTask(id: string, userId: string, data: StudentTask) {
-  return prisma.studentTask.create({
-    data: {
-      ...data,
+function findTaskById(taskId: string, studentId: string) {
+  return prisma.studentTask.findFirst({
+    where: {
+      taskId,
+      studentId,
     },
   })
 }
 
-export { findTasks, createTask }
+type CreateTaskData = Pick<StudentTask, 'title' | 'url' | 'description'>
+
+function createTask(id: string, userId: string, data: CreateTaskData) {
+  return prisma.studentTask.create({
+    data: {
+      ...data,
+      student: {
+        connect: {
+          id: userId,
+        },
+      },
+      task: {
+        connect: {
+          id,
+        },
+      },
+    },
+  })
+}
+
+export { findTaskById, findTasks, createTask }

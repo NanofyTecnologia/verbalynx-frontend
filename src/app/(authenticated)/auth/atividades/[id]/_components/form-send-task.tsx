@@ -1,30 +1,41 @@
 'use client'
 
 import { useParams } from 'next/navigation'
+import { toast } from 'react-toastify'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
+import { Dialog } from '@/components/ui/dialog'
 import { Textarea } from '@/components/ui/textarea'
 
 import { type IParams } from '@/types/params'
 import { normalizeSlug } from '@/utils/normalize-slug'
 
+import { useSendTask } from '../_hooks/use-send-task'
 import { SendTaskData, sendTaskSchema } from './_schema'
-import { Dialog } from '@/components/ui/dialog'
 
 export default function FormSendTask() {
   const params = useParams<IParams>()
   const { id } = normalizeSlug(params.slug)
+
+  const { mutate: handleSendTask } = useSendTask()
 
   const { handleSubmit, register } = useForm<SendTaskData>({
     resolver: zodResolver(sendTaskSchema),
   })
 
   const onSubmit: SubmitHandler<SendTaskData> = (data) => {
-    console.log(data)
+    handleSendTask(
+      { id, ...data },
+      {
+        onSuccess: () => {
+          toast.success('Atividade enviada com sucesso!')
+        },
+      },
+    )
   }
 
   return (

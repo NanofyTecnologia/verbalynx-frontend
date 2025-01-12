@@ -79,11 +79,8 @@ export default function Content() {
                         <span className="size-8 rounded-full border-2"></span>
 
                         <div className="space-y-1">
-                          <p>
-                            Atividade:{' '}
-                            <span className="font-semibold">
-                              <Highlight text={item.name} search={search} />
-                            </span>
+                          <p className="font-semibold">
+                            <Highlight text={item.name} search={search} />
                           </p>
 
                           <p>
