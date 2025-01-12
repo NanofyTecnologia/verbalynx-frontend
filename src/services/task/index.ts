@@ -28,6 +28,12 @@ export const task = {
     return data
   },
 
+  async getFeedback(params: GetTaskByIdParams) {
+    const { data } = await axios.get('/task/' + params.id + '/feedback')
+
+    return data
+  },
+
   async create(params: CreateTaskParams) {
     const { data } = await axios.post<GetTaskResponse>('/task', params)
 
