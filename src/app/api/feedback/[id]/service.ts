@@ -8,9 +8,11 @@ import {
   update,
   findById,
   createRevaluation,
+  findStudentAndTaskByFeedbackId,
   type UpdateData,
   type CriterionData,
 } from './repository'
+import { updateStudentTaskIsCompleted } from '../service'
 
 async function getById(id: string) {
   const session = await getServerSession(authOptions)
@@ -42,6 +44,17 @@ async function createRevaluationByFeedbackID(id: string, data: CriterionData) {
   if (!data) {
     throw new HttpError('BAD_REQUEST', HttpStatusCode.BadRequest)
   }
+
+  const studentTask = await findStudentAndTaskByFeedbackId(id)
+
+  if (!studentTask) {
+    return await createRevaluation(id, data)
+  }
+
+  await updateStudentTaskIsCompleted({
+    taskId: studentTask.taskId,
+    studentId: studentTask.studentId,
+  })
 
   return await createRevaluation(id, data)
 }

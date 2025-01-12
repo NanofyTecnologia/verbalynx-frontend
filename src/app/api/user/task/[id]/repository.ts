@@ -32,6 +32,7 @@ function createTask(id: string, userId: string, data: CreateTaskData) {
   return prisma.studentTask.create({
     data: {
       ...data,
+      isCompleted: true,
       student: {
         connect: {
           id: userId,
@@ -50,6 +51,7 @@ function updateTask(id: string, data: Partial<CreateTaskData>) {
   return prisma.studentTask.update({
     data: {
       ...data,
+      isCompleted: true,
     },
     where: {
       id,

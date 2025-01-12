@@ -7,9 +7,11 @@ import { HttpError } from '@/helpers/http-error'
 import {
   create,
   findFeedbackByIds,
+  findStudentTask,
+  updateIsCompleted,
   type CreateFeedbackData,
 } from './repository'
-import { updateFeedback } from './[id]/service'
+
 import { createRevaluation } from './[id]/repository'
 
 async function createFeedback(data: CreateFeedbackData) {
@@ -48,6 +50,8 @@ async function createFeedback(data: CreateFeedbackData) {
 
   const feedbackId = hasFeedbackCreatedForStudent.id
 
+  await updateStudentTaskIsCompleted({ taskId, studentId })
+
   for (const feedback of data.feedbacks) {
     await createRevaluation(feedbackId, { ...feedback, feedbackId })
   }
@@ -55,6 +59,19 @@ async function createFeedback(data: CreateFeedbackData) {
   return {
     id: feedbackId,
   }
+}
+
+export async function updateStudentTaskIsCompleted({
+  taskId,
+  studentId,
+}: Pick<CreateFeedbackData, 'studentId' | 'taskId'>) {
+  const studentTask = await findStudentTask({ userId: studentId, taskId })
+
+  if (!studentTask) {
+    return
+  }
+
+  await updateIsCompleted(studentTask?.id)
 }
 
 type ValidateFeedbackParams = {
