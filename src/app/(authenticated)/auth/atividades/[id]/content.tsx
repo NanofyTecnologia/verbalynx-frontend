@@ -139,7 +139,7 @@ export default function Content() {
 
                 return (
                   <span
-                    className={`${isBeforeClosingDate ? 'text-blue-500' : 'text-[#FF6B6B]'}`}
+                    className={`${isBeforeClosingDate ? 'text-[#8ABF3B]' : 'text-[#FF6B6B]'}`}
                   >
                     {format(task.closingDate, 'dd/MM/yyyy - HH:mm')}
                   </span>

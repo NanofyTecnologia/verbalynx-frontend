@@ -102,7 +102,9 @@ export default function Content() {
                             Fechamento:{' '}
                             <span
                               className={`font-semibold ${
-                                isBeforeClosingDate ? '' : 'text-[#FF6B6B]' // Cor diferente para datas que já passaram
+                                isBeforeClosingDate
+                                  ? 'text-[#8ABF3B]'
+                                  : 'text-[#FF6B6B]' // Cor diferente para datas que já passaram
                               }`}
                             >
                               {format(item.closingDate, 'dd/MM/yyyy - HH:mm')}
