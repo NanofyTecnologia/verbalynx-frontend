@@ -14,7 +14,7 @@ export async function POST(req: NextRequest, props: IParams) {
 
     const updatedTask = await updateTask(id, data)
 
-    return NextResponse.json(updateTask, { status: HttpStatusCode.Ok })
+    return NextResponse.json(updatedTask, { status: HttpStatusCode.Ok })
   } catch (error) {
     if (error instanceof HttpError) {
       return NextResponse.json(error.message, { status: error.status })
