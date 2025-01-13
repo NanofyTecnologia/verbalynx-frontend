@@ -174,7 +174,7 @@ export default function Content() {
           <Label>Nome da Atividade</Label>
           <Input
             {...register('name')}
-            placeholder="Ex: Atividade Didática XX.X"
+            placeholder="Informe o nome para a nova atividade"
             disabled={isSubmitting}
           />
         </div>
@@ -201,14 +201,18 @@ export default function Content() {
 
         <div className="space-y-0.5">
           <Label>Objetivo Geral da Atividade</Label>
-          <Input {...register('objective')} disabled={isSubmitting} />
+          <Input
+            {...register('objective')}
+            disabled={isSubmitting}
+            placeholder="Escreva o objetivo geral da atividade"
+          />
         </div>
 
         <div className="space-y-0.5">
           <Label>Nome da Rubrica</Label>
           <Input
             {...register('rubric.name')}
-            placeholder="Ex: Atividade Didática XX.X"
+            placeholder="Insira o nome da rubrica"
             disabled={isSubmitting}
           />
         </div>
@@ -229,9 +233,9 @@ export default function Content() {
 
               {/* Nome do Critério */}
               <div className="space-y-0.5">
-                <Label>Critério {index + 1}</Label>
+                <Label> Título do Critério {index + 1}</Label>
                 <Input
-                  placeholder="Insira um nome para o critério..."
+                  placeholder="Insira o título do critério"
                   value={criterion.name}
                   onChange={(e) =>
                     updateCriterion(index, 'name', e.target.value)
@@ -243,7 +247,7 @@ export default function Content() {
               <div className="space-y-0.5">
                 <Label>Descrição do Critério {index + 1}</Label>
                 <Input
-                  placeholder="Ex: Este critério tem por finalidade..."
+                  placeholder="Descreva sobre o critério criado para a rubrica"
                   onChange={(e) =>
                     updateCriterion(index, 'description', e.target.value)
                   }

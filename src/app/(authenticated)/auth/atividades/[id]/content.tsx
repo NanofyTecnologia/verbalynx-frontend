@@ -81,7 +81,7 @@ export default function Content() {
             <Dialog.Close asChild>
               <Button variant="outline">Cancelar</Button>
             </Dialog.Close>
-            
+
             <Link href={'/auth/ajuda'}>
               <Button type="submit">Ver tutoriais</Button>
             </Link>
@@ -258,8 +258,13 @@ export default function Content() {
               </div>
 
               <div className="space-y-4 pt-6">
-                <Button className="w-full bg-yellow-400 hover:bg-yellow-400/80">
-                  Editar
+                <Button
+                  className="w-full bg-yellow-400 hover:bg-yellow-400/80"
+                  asChild
+                >
+                  <Link href={`/auth/atividades/editar-atividade/${id}`}>
+                    Editar
+                  </Link>
                 </Button>
 
                 <Dialog.Root>
