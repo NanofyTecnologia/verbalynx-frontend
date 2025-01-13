@@ -3,18 +3,18 @@ import { NextRequest, NextResponse } from 'next/server'
 
 import { HttpError } from '@/helpers/http-error'
 
-import { IParams } from '../../../types'
-import { updateStudent } from './service'
+import { IParams } from '../../types'
+import { updateTask } from './service'
 
-export async function PUT(req: NextRequest, props: IParams) {
+export async function POST(req: NextRequest, props: IParams) {
   const params = await props.params
   try {
     const id = params.id
     const data = await req.json()
 
-    const updatedStudent = await updateStudent(id, data)
+    const updatedTask = await updateTask(id, data)
 
-    return NextResponse.json(updatedStudent, { status: HttpStatusCode.Ok })
+    return NextResponse.json(updateTask, { status: HttpStatusCode.Ok })
   } catch (error) {
     if (error instanceof HttpError) {
       return NextResponse.json(error.message, { status: error.status })
