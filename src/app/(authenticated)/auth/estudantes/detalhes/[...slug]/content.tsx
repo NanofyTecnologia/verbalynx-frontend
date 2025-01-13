@@ -1,25 +1,76 @@
 'use client'
 
-import { Fragment } from 'react'
+import { useEffect, Fragment } from 'react'
+import { toast } from 'react-toastify'
 import { useParams, useRouter } from 'next/navigation'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useHookFormMask } from 'use-mask-input'
 import { ChevronLeft } from 'lucide-react'
 
-import { type IParams } from '@/types/params'
-import { normalizeSlug } from '@/utils/normalize-slug'
-
-import { Button } from '@/components/ui/button'
-
-import { useGetStudentById } from './_hooks/use-get-student-by-id'
 import { Label } from '@/components/ui/label'
+import { Select } from '@/components/ui/select'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
 import { Table } from '@/components/ui/table'
+import { normalizeSlug } from '@/utils/normalize-slug'
 import { cn } from '@/lib/shadcn'
 
+import { type IParams } from '@/types/params'
+
+import { StudentData, studentSchema } from './_schema'
+import { useUpdateStudent } from './_hooks/use-update-student'
+import { useGetStudentById } from './_hooks/use-get-student-by-id'
+
 export default function Content() {
-  const { back, push } = useRouter()
+  const { push, back } = useRouter()
   const params = useParams<IParams>()
   const { id } = normalizeSlug(params.slug)
 
   const { data: student } = useGetStudentById({ id })
+  const { mutate: handleUpdateStudent } = useUpdateStudent()
+
+  const {
+    watch,
+    reset,
+    setValue,
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<StudentData>({
+    resolver: zodResolver(studentSchema),
+  })
+  const registerWithMask = useHookFormMask(register)
+
+  const handleDefaultValues = () => {
+    if (!student) {
+      return
+    }
+
+    const { name, email, cpf, graduation } = student
+
+    reset({
+      name: name ?? '',
+      email,
+      cpf: cpf ?? '',
+      educationLevel: graduation ?? '',
+    })
+  }
+
+  const onSubmit: SubmitHandler<StudentData> = (data) => {
+    handleUpdateStudent(
+      { ...data },
+      {
+        onSuccess: () => {
+          toast.success('Perfil do estudante atualizado com sucesso!')
+        },
+      },
+    )
+  }
+
+  useEffect(handleDefaultValues, [student, reset])
+
+  const { educationLevel } = watch()
 
   if (!student) {
     return null
@@ -37,49 +88,72 @@ export default function Content() {
         <div />
       </div>
 
-      <div className="mt-6 space-y-4 text-sm">
+      <form onSubmit={handleSubmit(onSubmit)} className="mt-4 space-y-4">
         <div className="space-y-0.5">
           <Label>Nome</Label>
 
-          <div className="flex h-10 items-center rounded-md bg-white p-2 shadow-sm">
-            {student.name}
-          </div>
+          <Input {...register('name')} error={errors.name?.message} />
         </div>
 
         <div className="space-y-0.5">
           <Label>E-mail</Label>
 
-          <div className="flex h-10 items-center rounded-md bg-white p-2 shadow-sm">
-            {student.email}
-          </div>
+          <Input {...register('email')} error={errors.email?.message} />
         </div>
 
         <div className="flex items-center justify-between gap-4">
           <div className="w-full space-y-0.5">
-            <Label>Pronome</Label>
+            <Label>CPF</Label>
 
-            <div className="flex h-10 items-center rounded-md bg-white p-2 shadow-sm">
-              {student.pronoun}
-            </div>
+            <Input
+            {...registerWithMask('cpf', ['999.999.999-99'], {
+              showMaskOnFocus: false,
+              showMaskOnHover: false,
+            })}
+            error={errors.cpf?.message}
+          />
           </div>
 
           <div className="w-full space-y-0.5">
             <Label>Nível de Ensino</Label>
 
-            <div className="flex h-10 items-center rounded-md bg-white p-2 shadow-sm">
-              {student.graduation}
-            </div>
+            <Select.Root
+              defaultValue={student.graduation ?? ''}
+              value={educationLevel}
+              onValueChange={(value) => setValue('educationLevel', value)}
+            >
+              <Select.Trigger>
+                <Select.Value placeholder="Selecione o ensino" />
+              </Select.Trigger>
+              <Select.Content>
+                <Select.Item value="Fundamental">Fundamental</Select.Item>
+
+                <Select.Item value="Ensino Médio">Ensino Médio</Select.Item>
+
+                <Select.Item value="Ensino Superior">
+                  Ensino Superior
+                </Select.Item>
+
+                <Select.Item value="Outro">Outro</Select.Item>
+              </Select.Content>
+            </Select.Root>
           </div>
         </div>
 
-        <h3 className="pt-6 text-base font-semibold">Entregas</h3>
+        <div className="flex justify-end">
+          <Button type="submit">Salvar</Button>
+        </div>
+      </form>
+
+      <div className="mt-6 space-y-4 text-sm">
+        <h3 className="text-base font-semibold">Entregas</h3>
         <div className="overflow-hidden rounded-md bg-white shadow-sm">
           <Table.Root>
             <Table.Header>
               <Table.Row>
                 <Table.Head>Atividade</Table.Head>
                 <Table.Head>Turma</Table.Head>
-                <Table.Head className="text-center">Encerrado</Table.Head>
+                <Table.Head className="text-center">Avaliado</Table.Head>
               </Table.Row>
             </Table.Header>
 

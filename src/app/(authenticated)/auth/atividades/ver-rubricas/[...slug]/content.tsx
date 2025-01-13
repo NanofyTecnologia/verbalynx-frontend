@@ -70,6 +70,10 @@ export default function Content() {
           </div>
 
           <Dialog.Footer>
+            <Dialog.Close asChild>
+              <Button variant="outline">Cancelar</Button>
+            </Dialog.Close>
+
             <Link href={'/auth/ajuda'}>
               <Button type="submit">Ver tutoriais</Button>
             </Link>

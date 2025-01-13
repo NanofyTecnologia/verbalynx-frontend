@@ -1,15 +1,18 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { toast } from 'react-toastify'
 import { useSession } from 'next-auth/react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useHookFormMask } from 'use-mask-input'
+import { HelpCircle } from 'lucide-react'
 
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { Dialog } from '@/components/ui/dialog'
 import { RadioGroup } from '@/components/ui/radio-group'
 
 import { useGetUser } from '@/hooks/services/use-get-user'
@@ -22,6 +25,8 @@ export default function Content() {
 
   const { data: user } = useGetUser()
   const { mutate: handleUpdateUser } = useUpdateUser()
+
+  const [showDialogHelp, setShowDialogHelp] = useState(false)
 
   const {
     watch,
@@ -67,7 +72,37 @@ export default function Content() {
 
   return (
     <>
-      <h2 className="text-center text-lg font-semibold">Visualizar perfil</h2>
+      <div className="flex items-center justify-between">
+        <div />
+
+        <h2 className="text-lg font-semibold">Visualizar perfil</h2>
+
+        <button onClick={() => setShowDialogHelp(true)}>
+          <HelpCircle className="text-zinc-500" />
+        </button>
+      </div>
+
+      <Dialog.Root open={showDialogHelp} onOpenChange={setShowDialogHelp}>
+        <Dialog.Content>
+          <Dialog.Header>
+            <Dialog.Title>Ajuda - Visualizar perfil</Dialog.Title>
+          </Dialog.Header>
+
+          <div className="text-sm">
+          Alterações nos dados pessoais dos estudantes podem ser realizadas somente por professores.
+          </div>
+
+          <Dialog.Footer>
+            <Dialog.Close asChild>
+              <Button variant="outline">Cancelar</Button>
+            </Dialog.Close>
+
+            <Link href={'/auth/ajuda'}>
+              <Button type="submit">Ver tutoriais</Button>
+            </Link>
+          </Dialog.Footer>
+        </Dialog.Content>
+      </Dialog.Root>
 
       <form onSubmit={handleSubmit(onSubmit)} className="mt-4 space-y-4">
         <div className="space-y-0.5">
