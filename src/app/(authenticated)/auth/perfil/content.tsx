@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
+import { toast } from 'react-toastify'
 import { useSession } from 'next-auth/react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -15,7 +16,6 @@ import { useGetUser } from '@/hooks/services/use-get-user'
 
 import { UserData, userSchema } from './_schema'
 import { useUpdateUser } from './_hooks/use-update-user'
-import { toast } from 'react-toastify'
 
 export default function Content() {
   const { update, data: session } = useSession()
@@ -46,11 +46,11 @@ export default function Content() {
   }
 
   const onSubmit: SubmitHandler<UserData> = (data) => {
-    const { name, email } = data
+    const { name, email, pronoun } = data
 
     handleUpdateUser(
       {
-        ...data,
+        pronoun,
       },
       {
         onSuccess: () => {
