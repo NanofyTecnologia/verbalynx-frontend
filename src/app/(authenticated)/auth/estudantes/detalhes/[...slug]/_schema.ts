@@ -8,7 +8,7 @@ export const studentSchema = z.object({
     .string()
     .min(1, 'Insira seu CPF')
     .refine((value) => CPF.isValid(value), 'CPF Inválido'),
-  educationLevel: z.string().min(1, 'Insira o ensino do estudante'),
+  graduation: z.string().min(1, 'Insira o ensino do estudante'),
 })
 
 export type StudentData = z.infer<typeof studentSchema>

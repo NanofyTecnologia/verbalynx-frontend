@@ -89,7 +89,8 @@ export default function Content() {
           </Dialog.Header>
 
           <div className="text-sm">
-          Alterações nos dados pessoais dos estudantes podem ser realizadas somente por professores.
+            Alterações nos dados pessoais dos estudantes podem ser realizadas
+            somente por professores.
           </div>
 
           <Dialog.Footer>

@@ -110,7 +110,7 @@ export default function Content() {
 
         <h2 className="text-lg font-semibold">Detalhes da turma</h2>
 
-        <div/>
+        <div />
       </div>
 
       <div className="mt-6 flex flex-col space-y-4 md:flex-row md:space-y-0">

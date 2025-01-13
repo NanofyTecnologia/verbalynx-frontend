@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 import { HttpError } from '@/helpers/http-error'
 
-import { IParams } from '../../types'
+import { IParams } from '../../../types'
 import { updateStudent } from './service'
 
 export async function PUT(req: NextRequest, props: IParams) {
@@ -16,6 +16,7 @@ export async function PUT(req: NextRequest, props: IParams) {
 
     return NextResponse.json(updatedStudent, { status: HttpStatusCode.Ok })
   } catch (error) {
+    console.log(error.stack)
     if (error instanceof HttpError) {
       return NextResponse.json(error.message, { status: error.status })
     }

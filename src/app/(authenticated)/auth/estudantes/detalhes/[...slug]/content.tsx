@@ -19,7 +19,7 @@ import { cn } from '@/lib/shadcn'
 import { type IParams } from '@/types/params'
 
 import { StudentData, studentSchema } from './_schema'
-import { useUpdateStudent } from './_hooks/use-update-student'
+import { useUpdateStudent } from './_hooks/use-update-student-by-id'
 import { useGetStudentById } from './_hooks/use-get-student-by-id'
 
 export default function Content() {
@@ -53,13 +53,15 @@ export default function Content() {
       name: name ?? '',
       email,
       cpf: cpf ?? '',
-      educationLevel: graduation ?? '',
+      graduation: graduation ?? '',
     })
   }
 
   const onSubmit: SubmitHandler<StudentData> = (data) => {
+    if (!id) return
+
     handleUpdateStudent(
-      { ...data },
+      { id, ...data },
       {
         onSuccess: () => {
           toast.success('Perfil do estudante atualizado com sucesso!')
@@ -70,7 +72,7 @@ export default function Content() {
 
   useEffect(handleDefaultValues, [student, reset])
 
-  const { educationLevel } = watch()
+  const { graduation } = watch()
 
   if (!student) {
     return null
@@ -119,8 +121,8 @@ export default function Content() {
 
             <Select.Root
               defaultValue={student.graduation ?? ''}
-              value={educationLevel}
-              onValueChange={(value) => setValue('educationLevel', value)}
+              value={graduation}
+              onValueChange={(value) => setValue('graduation', value)}
             >
               <Select.Trigger>
                 <Select.Value placeholder="Selecione o ensino" />
