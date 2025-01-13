@@ -20,7 +20,9 @@ export type CreateManyUsersParams = {
   students: CreateUserParams[]
 }
 
-export type GetUserByIdResponse = User
+export type UserPreview = User
+export type GetAllStudents = UserPreview
+export type GetUserByIdResponse = UserPreview
 
 export type UpdateUserParams = {
   cpf?: string

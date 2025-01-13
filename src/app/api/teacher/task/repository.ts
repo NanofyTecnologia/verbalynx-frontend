@@ -1,4 +1,4 @@
-import { Task } from '@prisma/client'
+import { Rubric, Task } from '@prisma/client'
 
 import { prisma } from '@/config/prisma'
 
@@ -16,7 +16,23 @@ function update(id: string, data: Partial<Task>) {
       id,
     },
     data,
+    select: {
+      rubric: {
+        select: {
+          id: true,
+        },
+      },
+    },
   })
 }
 
-export { findById, update }
+function updateRubric(id: string, data: Partial<Rubric>) {
+  return prisma.rubric.update({
+    where: {
+      id,
+    },
+    data,
+  })
+}
+
+export { findById, update, updateRubric }
