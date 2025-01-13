@@ -37,6 +37,8 @@ async function createFeedback(data: CreateFeedbackData) {
     taskId,
   })
 
+  await updateStudentTaskIsCompleted({ taskId, studentId })
+
   if (!hasFeedbackCreatedForStudent) {
     const createdFeedback = await create(
       { taskId, classId, studentId, teacherId },
@@ -49,8 +51,6 @@ async function createFeedback(data: CreateFeedbackData) {
   }
 
   const feedbackId = hasFeedbackCreatedForStudent.id
-
-  await updateStudentTaskIsCompleted({ taskId, studentId })
 
   for (const feedback of data.feedbacks) {
     await createRevaluation(feedbackId, { ...feedback, feedbackId })
