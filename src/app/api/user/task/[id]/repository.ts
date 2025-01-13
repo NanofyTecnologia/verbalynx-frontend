@@ -51,7 +51,7 @@ function updateTask(id: string, data: Partial<CreateTaskData>) {
   return prisma.studentTask.update({
     data: {
       ...data,
-      isCompleted: true,
+      isCompleted: false,
     },
     where: {
       id,
