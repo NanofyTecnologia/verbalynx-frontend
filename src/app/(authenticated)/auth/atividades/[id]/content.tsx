@@ -272,7 +272,7 @@ export default function Content() {
                       <Dialog.Description>
                         {task.feedback.length > 0 &&
                           'Esta atividade não pode ser excluída, pois já existem feedbacks enviados.'}
-
+                        <br />
                         {task.studentTask.length > 0 &&
                           'Esta atividade não pode ser excluída, pois um aluno já fez a entrega da atividade.'}
 

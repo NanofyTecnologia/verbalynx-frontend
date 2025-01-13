@@ -325,7 +325,9 @@ export default function Content() {
                 </Dialog.Header>
 
                 <Dialog.Footer className="gap-y-4">
-                  <Button variant="secondary">Cancelar</Button>
+                  <Dialog.Close asChild>
+                    <Button variant="secondary">Cancelar</Button>
+                  </Dialog.Close>
 
                   {!(team.students.length > 0) && (
                     <Button
