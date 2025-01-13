@@ -79,7 +79,7 @@ export default function Content() {
                       <div className="flex items-start gap-2">
                         <span className="size-8 rounded-full border-2"></span>
 
-                        <div className="space-y-1">
+                        <div className="space-y-1 text-sm">
                           <p className="font-semibold">
                             <Highlight text={item.name} search={search} />
                           </p>
@@ -93,7 +93,7 @@ export default function Content() {
 
                           <p>
                             Abertura:{' '}
-                            <span className="text-xs font-semibold">
+                            <span className="font-semibold">
                               {format(item.openingDate, 'dd/MM/yyyy - HH:mm')}
                             </span>
                           </p>
@@ -101,7 +101,7 @@ export default function Content() {
                           <p>
                             Fechamento:{' '}
                             <span
-                              className={`text-xs font-semibold ${
+                              className={`font-semibold ${
                                 isBeforeClosingDate ? '' : 'text-[#FF6B6B]' // Cor diferente para datas que já passaram
                               }`}
                             >

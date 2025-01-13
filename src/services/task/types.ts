@@ -37,6 +37,9 @@ export type GetTaskResponse = {
     updatedAt: Date
     student: {
       name: string
+      studentFeedback: {
+        id: string
+      }[]
     }
   }[]
   createdAt: string

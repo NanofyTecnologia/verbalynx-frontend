@@ -49,7 +49,7 @@ export interface IParams {
 export default function Content() {
   const { data: session } = useSession()
 
-  const { push } = useRouter()
+  const { push, back } = useRouter()
   const { slug } = useParams<IParams>()
   const { id } = normalizeSlug(slug)
 
@@ -106,7 +106,7 @@ export default function Content() {
   return (
     <>
       <div className="flex items-center justify-between">
-        <Button size="icon" onClick={() => push('/auth/turmas')}>
+        <Button size="icon" onClick={() => back()}>
           <ChevronLeft className="size-5" />
         </Button>
 
@@ -225,10 +225,6 @@ export default function Content() {
                               >
                                 <ContactRound className="size-5" /> Detalhes
                               </Link>
-                            </Dropdown.Item>
-
-                            <Dropdown.Item>
-                              <Pen className="size-5" /> Editar
                             </Dropdown.Item>
 
                             <Dropdown.Item asChild>

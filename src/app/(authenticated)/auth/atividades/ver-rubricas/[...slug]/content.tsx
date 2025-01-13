@@ -13,6 +13,7 @@ import { normalizeSlug } from '@/utils/normalize-slug'
 
 import { useGetTaskById } from '../../_hooks/use-get-task-by-id'
 import { useGetRubric } from '../_hooks/use-get-rubrics-by-id'
+import { useSession } from 'next-auth/react'
 
 export interface IParams {
   [key: string]: string[]
@@ -22,6 +23,7 @@ export default function Content() {
   const { back } = useRouter()
   const { slug } = useParams<IParams>()
   const { id } = normalizeSlug(slug)
+  const { data: session } = useSession()
 
   const { data: tasks } = useGetTaskById({ id })
   const { data: rubrics } = useGetRubric({ id })
@@ -47,7 +49,10 @@ export default function Content() {
 
         <h2 className="text-lg font-semibold">Rubricas da atividade</h2>
 
-        <button onClick={() => setShowDialogHelp(true)}>
+        <button
+          onClick={() => setShowDialogHelp(true)}
+          className={session?.user.role === 'PROFESSOR' ? '' : 'invisible'}
+        >
           <HelpCircle className="text-zinc-500" />
         </button>
       </div>
@@ -59,9 +64,9 @@ export default function Content() {
           </Dialog.Header>
 
           <div className="text-sm">
-            Esta página informa ao docente todas as rubricas vinculadas a
-            atividade em questão, incluindo informações vinculadas a ela como:
-            nome da turma, nome da atividade e as rubricas já criadas.
+            Esta página informa todas as rubricas vinculadas a atividade em
+            questão, incluindo informações vinculadas a ela como: nome da turma,
+            nome da atividade e as rubricas já criadas.
           </div>
 
           <Dialog.Footer>
@@ -92,7 +97,7 @@ export default function Content() {
         </div>
       </div>
 
-      <div className="mt-6 rounded-lg bg-white p-4">
+      <div className="mt-6 rounded-lg bg-white p-4 text-sm">
         <div className="text-center">
           <p>
             Tabela de informações da rubrica:{' '}

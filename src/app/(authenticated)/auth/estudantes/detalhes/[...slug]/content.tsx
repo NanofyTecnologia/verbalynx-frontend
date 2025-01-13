@@ -15,7 +15,7 @@ import { Table } from '@/components/ui/table'
 import { cn } from '@/lib/shadcn'
 
 export default function Content() {
-  const { back } = useRouter()
+  const { back, push } = useRouter()
   const params = useParams<IParams>()
   const { id } = normalizeSlug(params.slug)
 
@@ -34,10 +34,10 @@ export default function Content() {
 
         <h2 className="text-lg font-semibold">Detalhes do estudante</h2>
 
-        <div></div>
+        <div />
       </div>
 
-      <div className="mt-6 space-y-4">
+      <div className="mt-6 space-y-4 text-sm">
         <div className="space-y-0.5">
           <Label>Nome</Label>
 
@@ -72,7 +72,7 @@ export default function Content() {
           </div>
         </div>
 
-        <h2>Entregas</h2>
+        <h3 className="pt-6 text-base font-semibold">Entregas</h3>
         <div className="overflow-hidden rounded-md bg-white shadow-sm">
           <Table.Root>
             <Table.Header>
@@ -86,7 +86,10 @@ export default function Content() {
             <Table.Body>
               {student.StudentTask.map((item, index) => (
                 <Fragment key={index}>
-                  <Table.Row>
+                  <Table.Row
+                    onClick={() => push(`/auth/atividades/${item.task.id}`)}
+                    className="hover:cursor-pointer"
+                  >
                     <Table.Cell>{item.task.name}</Table.Cell>
                     <Table.Cell>{item.task.class.name}</Table.Cell>
                     <Table.Cell>

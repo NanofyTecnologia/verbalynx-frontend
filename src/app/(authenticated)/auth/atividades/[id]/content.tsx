@@ -25,7 +25,7 @@ export interface IParams {
 
 export default function Content() {
   const { data: session } = useSession()
-  const { push } = useRouter()
+  const { push, back } = useRouter()
   const { id } = useParams<IParams>()
 
   const { data: task } = useGetTaskById({ id })
@@ -43,7 +43,7 @@ export default function Content() {
   return (
     <>
       <div className="flex items-center justify-between">
-        <Button size="icon" onClick={() => push('/auth/atividades')}>
+        <Button size="icon" onClick={() => back()}>
           <ChevronLeft className="size-5" />
         </Button>
 
@@ -57,15 +57,13 @@ export default function Content() {
         </button>
       </div>
 
-      {session?.user.role === 'PROFESSOR' && (
-        <div className="mt-6 space-x-4 text-end">
-          <Button className="shadow" asChild>
-            <Link href={`/auth/atividades/ver-rubricas/${id}`}>
-              Ver rubricas <PencilLine size={20} />
-            </Link>
-          </Button>
-        </div>
-      )}
+      <div className="mt-6 space-x-4 text-end">
+        <Button className="shadow" asChild>
+          <Link href={`/auth/atividades/ver-rubricas/${id}`}>
+            Ver rubricas <PencilLine size={20} />
+          </Link>
+        </Button>
+      </div>
 
       <Dialog.Root open={showDialogHelp} onOpenChange={setShowDialogHelp}>
         <Dialog.Content>
@@ -204,14 +202,20 @@ export default function Content() {
                       .map((item) => (
                         <Fragment key={item.id}>
                           <Link
-                            href={{
-                              pathname: '/auth/estudantes/',
-                              query: {
-                                taskId: task.id,
-                                classId: task.classId,
-                                userId: item.studentId,
-                              },
-                            }}
+                            href={
+                              item.isCompleted
+                                ? {
+                                    pathname: `/auth/feedback-qualitativo/${item.student.studentFeedback[0].id}`,
+                                  }
+                                : {
+                                    pathname: '/auth/estudantes/',
+                                    query: {
+                                      taskId: task.id,
+                                      classId: task.classId,
+                                      userId: item.studentId,
+                                    },
+                                  }
+                            }
                             className="block"
                           >
                             <div className="rounded-md border p-4 text-sm transition-colors hover:border-gray-400">
