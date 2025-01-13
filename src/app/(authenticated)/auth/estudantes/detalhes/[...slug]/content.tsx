@@ -106,12 +106,12 @@ export default function Content() {
             <Label>CPF</Label>
 
             <Input
-            {...registerWithMask('cpf', ['999.999.999-99'], {
-              showMaskOnFocus: false,
-              showMaskOnHover: false,
-            })}
-            error={errors.cpf?.message}
-          />
+              {...registerWithMask('cpf', ['999.999.999-99'], {
+                showMaskOnFocus: false,
+                showMaskOnHover: false,
+              })}
+              error={errors.cpf?.message}
+            />
           </div>
 
           <div className="w-full space-y-0.5">
