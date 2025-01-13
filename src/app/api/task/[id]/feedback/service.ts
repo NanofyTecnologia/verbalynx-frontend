@@ -9,7 +9,7 @@ import { getByStudentAndTaskId } from './repository'
 async function getFeedback(taskId: string) {
   const session = await getServerSession(authOptions)
 
-  if (!session?.user.id || session.user.role !== 'STUDENT') {
+  if (!session?.user.id) {
     throw new HttpError('UNAUTHORIZED', HttpStatusCode.Unauthorized)
   }
 
