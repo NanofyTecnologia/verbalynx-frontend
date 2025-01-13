@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
+import { ThreeDots } from 'react-loader-spinner'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { AtSign, GraduationCap, User } from 'lucide-react'
 
@@ -11,7 +12,6 @@ import { Button } from '@/components/ui/button'
 
 import { RegisterData } from './_schema'
 import { useCreateUser } from './_hooks/use-create-user'
-import { ThreeDots } from 'react-loader-spinner'
 
 export default function Form() {
   const [isSubmitting, setIsSubmitting] = useState(false)

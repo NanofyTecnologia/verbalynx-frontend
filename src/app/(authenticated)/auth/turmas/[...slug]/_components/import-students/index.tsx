@@ -99,7 +99,7 @@ export default function ImportStudents() {
           {data.length > 0 && (
             <div className="space-y-1">
               <h2>Confira os estudantes:</h2>
-              <div className="rounded-md border">
+              <div className="overflow-x-auto rounded-md border">
                 <Table.Root>
                   <Table.Header>
                     <Table.Row>

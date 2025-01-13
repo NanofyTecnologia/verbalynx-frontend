@@ -23,6 +23,9 @@ export type CreateManyUsersParams = {
 export type GetUserByIdResponse = User
 
 export type UpdateUserParams = {
+  cpf?: string
+  name?: string
+  email?: string
   pronoun: string
 }
 
