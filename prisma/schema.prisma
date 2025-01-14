@@ -184,9 +184,9 @@ model Rubric {
 
 model Criterion {
   id          String   @id @unique @default(cuid())
-  name        String
-  description String
-  level       Int
+  name        String?
+  description String?
+  level       Int?
   score       Int[]
   rubricId    String?  @map("rubric_id")
   createdAt   DateTime @default(now()) @map("created_at")

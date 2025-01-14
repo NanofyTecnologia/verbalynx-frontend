@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "criteria" ALTER COLUMN "name" DROP NOT NULL,
+ALTER COLUMN "description" DROP NOT NULL,
+ALTER COLUMN "level" DROP NOT NULL;

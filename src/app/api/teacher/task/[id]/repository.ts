@@ -1,6 +1,7 @@
-import { Rubric, Task } from '@prisma/client'
+import { Criterion, Rubric, Task } from '@prisma/client'
 
 import { prisma } from '@/config/prisma'
+import { rubric } from '@/services/rubric'
 
 function findById(id: string) {
   return prisma.task.findUnique({
@@ -35,4 +36,31 @@ function updateRubric(id: string, data: Partial<Rubric>) {
   })
 }
 
-export { findById, update, updateRubric }
+function upsertCriterion(id: string, data: Partial<Criterion>[]) {
+  return prisma.$transaction(
+    data.map((item) =>
+      prisma.rubric.update({
+        where: {
+          id,
+        },
+        data: {
+          criterion: {
+            upsert: {
+              where: {
+                id: item.id,
+              },
+              create: {
+                ...item,
+              },
+              update: {
+                ...item,
+              },
+            },
+          },
+        },
+      }),
+    ),
+  )
+}
+
+export { findById, update, updateRubric, upsertCriterion }

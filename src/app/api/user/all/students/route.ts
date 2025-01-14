@@ -8,7 +8,6 @@ import { getAllStudents } from './service'
 export async function GET(req: NextRequest) {
   try {
     const allStudents = await getAllStudents()
-    console.log(allStudents)
 
     return NextResponse.json(allStudents, { status: HttpStatusCode.Ok })
   } catch (error) {

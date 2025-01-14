@@ -3,7 +3,7 @@ import { type ColumnDef } from '@tanstack/react-table'
 import { Checkbox } from '@/components/ui/checkbox'
 import { type UserPreview } from '@/services/user/types'
 
-export const columns: ColumnDef<UserPreview | []>[] = [
+export const columns: ColumnDef<UserPreview>[] = [
   {
     id: 'select',
     header: ({ table }) => (
@@ -29,20 +29,15 @@ export const columns: ColumnDef<UserPreview | []>[] = [
   {
     accessorKey: 'name',
     header: 'Estudante',
-    cell: ({ row }) => <div className="capitalize">{row.getValue('name')}</div>,
+    cell: ({ row }) => (
+      <div className="text-nowrap py-2 capitalize">{row.getValue('name')}</div>
+    ),
   },
   {
     accessorKey: 'email',
     header: 'E-mail',
-    cell: ({ row }) => <div>{row.getValue('email')}</div>,
-  },
-  {
-    id: 'actions',
-    enableHiding: false,
-    cell: ({ row }) => {
-      const student = row.original
-
-      return <>Ações</>
-    },
+    cell: ({ row }) => (
+      <div className="text-nowrap py-2">{row.getValue('email')}</div>
+    ),
   },
 ]

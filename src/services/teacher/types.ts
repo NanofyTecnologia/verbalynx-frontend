@@ -15,3 +15,8 @@ export type UpdateTaskParams = Partial<
 export type UpdateTaskResponse = {
   id: string
 }
+
+export type CreateStudentsInTeam = {
+  id: string
+  studentsIds: string[]
+}
