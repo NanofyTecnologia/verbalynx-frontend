@@ -235,7 +235,7 @@ export default function Content() {
                                 </div>
 
                                 <div className="flex gap-2">
-                                  <p className="font-semibold">Avaliação:</p>
+                                  <p className="font-semibold">Status:</p>
                                   <p
                                     className={
                                       item.isCompleted
@@ -243,9 +243,7 @@ export default function Content() {
                                         : 'text-[#FF6B6B]'
                                     }
                                   >
-                                    {item.isCompleted
-                                      ? 'Concluído'
-                                      : 'Pendente'}
+                                    {item.isCompleted ? 'Avaliado' : 'Pendente'}
                                   </p>
                                 </div>
                               </div>
