@@ -13,7 +13,12 @@ function findById(id: string) {
       feedback: true,
       openingDate: true,
       closingDate: true,
-      rubric: true,
+      rubric: {
+        select: {
+          name: true,
+          criterion: true,
+        },
+      },
       objective: true,
       teacherId: true,
       classId: true,

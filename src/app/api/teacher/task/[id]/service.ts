@@ -23,10 +23,15 @@ async function updateTask(
   const updatedTask = await update(id, restData)
 
   if (!updatedTask.rubric) {
-    return
+    return {
+      id,
+    }
   }
-
   await updateRubric(updatedTask.rubric.id, rubric)
+
+  return {
+    id,
+  }
 }
 
 async function validateUserIsOwner(taskId: string, userId: string) {
