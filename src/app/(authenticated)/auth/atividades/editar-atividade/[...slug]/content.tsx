@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { SubmitHandler, useForm, useFieldArray } from 'react-hook-form'
 import { ThreeDots } from 'react-loader-spinner'
 import { toast } from 'react-toastify'
-import { ChevronLeft } from 'lucide-react'
+import { ChevronLeft, CirclePlus } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
@@ -74,7 +74,10 @@ export default function Content() {
     resolver: zodResolver(taskEditSchema),
   })
   const { criterion } = watch()
-  const { fields } = useFieldArray<TaskEditData>({ control, name: 'criterion' })
+  const { fields, append, remove } = useFieldArray<TaskEditData>({
+    control,
+    name: 'criterion',
+  })
 
   const handleDefaultValues = () => {
     if (!tasks) {
@@ -192,6 +195,12 @@ export default function Content() {
         <div>
           {fields.map((field, index) => (
             <Fragment key={field.id}>
+              {index > 0 && (
+                <Button onClick={() => remove(index)} disabled={isSubmitting}>
+                  Excluir
+                </Button>
+              )}
+
               <div className="space-y-4">
                 <div className="space-y-0.5">
                   <Label>Criterio {index + 1}</Label>
@@ -274,6 +283,19 @@ export default function Content() {
               </div>
             </Fragment>
           ))}
+
+          {fields.length < 30 && (
+            <button
+              onClick={() =>
+                append({ name: '', description: '', level: 1, score: [] })
+              }
+              className="flex w-full items-center justify-center rounded-md border-2 border-dashed py-2 text-black/50"
+              disabled={isSubmitting}
+            >
+              <span>Adicionar Critério</span>
+              <CirclePlus className="ml-1" size={20} />
+            </button>
+          )}
         </div>
 
         <div className="pt-6">

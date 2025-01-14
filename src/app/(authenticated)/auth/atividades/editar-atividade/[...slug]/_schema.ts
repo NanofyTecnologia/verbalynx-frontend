@@ -10,7 +10,7 @@ export const taskEditSchema = z.object({
   rubric: rubricSchema,
   criterion: z.array(
     z.object({
-      id: z.string(),
+      id: z.string().optional(),
       name: z.string(),
       description: z.string(),
       level: z.number(),
