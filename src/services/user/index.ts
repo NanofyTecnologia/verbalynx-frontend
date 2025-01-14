@@ -12,12 +12,12 @@ import type {
   GetStudentByIdParams,
   GetStudentByIdResponse,
   SendStudentTask,
+  GetAllStudents,
 } from './types'
 
 export const user = {
   async getAll() {
-    const { data } =
-      await axios.get<GetUserByIdResponse[]>('/user/all/students')
+    const { data } = await axios.get<GetAllStudents>('/user/all/students')
 
     return data
   },

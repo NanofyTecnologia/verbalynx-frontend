@@ -1,12 +1,18 @@
-import { createMutation } from 'react-query-kit'
+import { createQuery } from 'react-query-kit'
+import { keepPreviousData } from '@tanstack/react-query'
 
 import { user } from '@/services/user'
 
 export function useGetAllStudents() {
-  const mutation = createMutation({
-    mutationKey: ['get-all-students'],
-    mutationFn: user.getAll,
+  const query = createQuery({
+    queryKey: ['get-all-students'],
+    fetcher: user.getAll,
+    placeholderData: keepPreviousData,
   })
 
-  return mutation()
+  const queryResponse = query()
+
+  return {
+    ...queryResponse,
+  }
 }

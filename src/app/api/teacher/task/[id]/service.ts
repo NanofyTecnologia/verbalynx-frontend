@@ -1,13 +1,16 @@
 import { HttpStatusCode } from 'axios'
 import { getServerSession } from 'next-auth'
-import { Task } from '@prisma/client'
+import { Rubric, Task } from '@prisma/client'
 
 import { authOptions } from '@/lib/next-auth'
 import { HttpError } from '@/helpers/http-error'
 
-import { findById, update } from './repository'
+import { findById, update, updateRubric } from './repository'
 
-async function updateTask(id: string, data: Partial<Task>) {
+async function updateTask(
+  id: string,
+  data: Partial<Task> & { rubric: Partial<Rubric> },
+) {
   const session = await getServerSession(authOptions)
 
   if (!session?.user.id || session.user.role !== 'PROFESSOR') {
@@ -16,7 +19,14 @@ async function updateTask(id: string, data: Partial<Task>) {
 
   await validateUserIsOwner(id, session.user.id)
 
-  return await update(id, data)
+  const { rubric, ...restData } = data
+  const updatedTask = await update(id, restData)
+
+  if (!updatedTask.rubric) {
+    return
+  }
+
+  await updateRubric(updatedTask.rubric.id, rubric)
 }
 
 async function validateUserIsOwner(taskId: string, userId: string) {

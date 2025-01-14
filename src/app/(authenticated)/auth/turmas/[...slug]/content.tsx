@@ -40,6 +40,7 @@ import { useCreateStudent } from './_hooks/use-create-student'
 
 import { FilterData, filterSchema, StudentData, studentSchema } from './_schema'
 import ImportStudents from './_components/import-students'
+import AllStudentsList from './_components/all-student-list'
 
 export interface IParams {
   [key: string]: string[]
@@ -63,6 +64,7 @@ export default function Content() {
   const { mutate: handleDeleteStudent } = useDeleteStudent()
 
   const [showDialog, setShowDialog] = useState(false)
+  const [showStudentsList, setShowStudentsList] = useState(true)
 
   const { register, handleSubmit, setValue } = useForm<StudentData>({
     resolver: zodResolver(studentSchema),
@@ -350,99 +352,103 @@ export default function Content() {
       </div>
 
       <Dialog.Root open={showDialog} onOpenChange={setShowDialog}>
-        <Dialog.Content>
+        <Dialog.Content className="flex h-full flex-col md:grid md:h-auto md:flex-row">
           <Dialog.Header>
             <Dialog.Title>Cadastrar novo estudante na turma</Dialog.Title>
             <Dialog.Description />
           </Dialog.Header>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div className="space-y-0.5">
-              <Label>Nome do estudante</Label>
+          {showStudentsList && <AllStudentsList />}
 
-              <div className="relative">
-                <Input {...register('name')} className="peer" />
-
-                <div className="invisible absolute left-0 top-4 w-full rounded-md bg-red-500 p-4 peer-focus:visible"></div>
-              </div>
-            </div>
-
-            <div className="space-y-0.5">
-              <Label>E-mail do estudante</Label>
-
-              <Input {...register('email')} />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
+          {!showStudentsList && (
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div className="space-y-0.5">
-                <Label>Turma</Label>
+                <Label>Nome do estudante</Label>
 
-                <Input value={team.name} disabled />
-              </div>
+                <div className="relative">
+                  <Input {...register('name')} className="peer" />
 
-              <div className="space-y-0.5">
-                <Label>Nível de Ensino</Label>
-
-                <Input value={team.educationLevel} disabled />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-0.5">
-                <Label className="text-sm">Código da Matrícula</Label>
-
-                <div className="relative flex items-center">
-                  <Input {...register('registrationCode')} />
-
-                  <button
-                    type="button"
-                    className="absolute right-1"
-                    onClick={() =>
-                      setValue('registrationCode', generateRegistrationCode())
-                    }
-                  >
-                    <Dices className="size-4" />
-                  </button>
+                  <div className="invisible absolute left-0 top-4 w-full rounded-md bg-red-500 p-4 peer-focus:visible"></div>
                 </div>
               </div>
 
               <div className="space-y-0.5">
-                <Label>Pronomes</Label>
+                <Label>E-mail do estudante</Label>
 
-                <RadioGroup.Root className="flex h-9 items-center gap-4">
-                  <div className="flex items-center gap-2">
-                    <RadioGroup.Item id="pronoun-1" value="ele/dele" />
-
-                    <Label htmlFor="pronoun-1" className="text-xs">
-                      Ele / Dele
-                    </Label>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <RadioGroup.Item id="pronoun-2" value="ela/dela" />
-
-                    <Label htmlFor="pronoun-2" className="text-xs">
-                      Ela / Dela
-                    </Label>
-                  </div>
-                </RadioGroup.Root>
+                <Input {...register('email')} />
               </div>
-            </div>
 
-            <div className="space-y-0.5">
-              <Label className="text-sm">Observação</Label>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-0.5">
+                  <Label>Turma</Label>
 
-              <Textarea {...register('observation')} />
-            </div>
+                  <Input value={team.name} disabled />
+                </div>
 
-            <Dialog.Footer className="gap-4">
-              <Dialog.Close asChild>
-                <Button variant="outline">Cancelar</Button>
-              </Dialog.Close>
+                <div className="space-y-0.5">
+                  <Label>Nível de Ensino</Label>
 
-              <Button type="submit">Salvar</Button>
-            </Dialog.Footer>
-          </form>
+                  <Input value={team.educationLevel} disabled />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-0.5">
+                  <Label className="text-sm">Código da Matrícula</Label>
+
+                  <div className="relative flex items-center">
+                    <Input {...register('registrationCode')} />
+
+                    <button
+                      type="button"
+                      className="absolute right-1"
+                      onClick={() =>
+                        setValue('registrationCode', generateRegistrationCode())
+                      }
+                    >
+                      <Dices className="size-4" />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-0.5">
+                  <Label>Pronomes</Label>
+
+                  <RadioGroup.Root className="flex h-9 items-center gap-4">
+                    <div className="flex items-center gap-2">
+                      <RadioGroup.Item id="pronoun-1" value="ele/dele" />
+
+                      <Label htmlFor="pronoun-1" className="text-xs">
+                        Ele / Dele
+                      </Label>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <RadioGroup.Item id="pronoun-2" value="ela/dela" />
+
+                      <Label htmlFor="pronoun-2" className="text-xs">
+                        Ela / Dela
+                      </Label>
+                    </div>
+                  </RadioGroup.Root>
+                </div>
+              </div>
+
+              <div className="space-y-0.5">
+                <Label className="text-sm">Observação</Label>
+
+                <Textarea {...register('observation')} />
+              </div>
+
+              <Dialog.Footer className="gap-4">
+                <Dialog.Close asChild>
+                  <Button variant="outline">Cancelar</Button>
+                </Dialog.Close>
+
+                <Button type="submit">Salvar</Button>
+              </Dialog.Footer>
+            </form>
+          )}
         </Dialog.Content>
       </Dialog.Root>
     </>
