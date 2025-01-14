@@ -47,7 +47,7 @@ function upsertCriterion(id: string, data: Partial<Criterion>[]) {
           criterion: {
             upsert: {
               where: {
-                id: item.id,
+                id: item.id ?? '',
               },
               create: {
                 ...item,

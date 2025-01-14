@@ -17,6 +17,6 @@ export type UpdateTaskResponse = {
 }
 
 export type CreateStudentsInTeam = {
-  id: string
+  id: string | undefined
   studentsIds: string[]
 }
