@@ -1,5 +1,6 @@
 'use client'
 
+import { useParams } from 'next/navigation'
 import { useState } from 'react'
 import {
   flexRender,
@@ -20,13 +21,21 @@ import { Table } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
 import { Dialog } from '@/components/ui/dialog'
 
+import { IParams } from '@/types/params'
 import { UserPreview } from '@/services/user/types'
+import { normalizeSlug } from '@/utils/normalize-slug'
 import { useGetAllStudents } from '@/hooks/services/use-get-all-students'
 
 import { columns } from './columns'
+import { useCreateStudentsInTeam } from './_hooks/use-create-students-in-team'
+import { toast } from 'react-toastify'
 
 export default function AllStudentsList() {
+  const params = useParams<IParams>()
+  const { id } = normalizeSlug(params.slug)
+
   const { data: students } = useGetAllStudents()
+  const { mutate: handleCreateStudentsInTeam } = useCreateStudentsInTeam()
 
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
@@ -63,6 +72,21 @@ export default function AllStudentsList() {
 
   const onSubmitSelectedStudents = () => {
     const selectedStudents = Object.keys(rowSelection)
+
+    handleCreateStudentsInTeam(
+      {
+        id,
+        studentsIds: selectedStudents,
+      },
+      {
+        onSuccess: () => {
+          toast.success('Estudantes cadastrados com sucesso!')
+        },
+        onError: () => {
+          toast.error('Houve um erro ao cadastrar os estudantes!')
+        },
+      },
+    )
 
     console.log(selectedStudents)
   }
