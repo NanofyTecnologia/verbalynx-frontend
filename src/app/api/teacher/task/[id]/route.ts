@@ -3,10 +3,10 @@ import { NextRequest, NextResponse } from 'next/server'
 
 import { HttpError } from '@/helpers/http-error'
 
-import { IParams } from '../../types'
+import { IParams } from '../../../types'
 import { updateTask } from './service'
 
-export async function POST(req: NextRequest, props: IParams) {
+export async function PUT(req: NextRequest, props: IParams) {
   const params = await props.params
   try {
     const id = params.id

@@ -16,7 +16,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 
 import { useGetTaskById } from '../../_hooks/use-get-task-by-id'
 import { TaskEditData, taskEditSchema } from './_schema'
-import { useEditTask } from './_hooks/use-edit-task'
+import { useUpdateTask } from './_hooks/use-update-task'
 
 export interface IParams {
   [key: string]: string[]
@@ -28,13 +28,13 @@ export default function Content() {
   const { id } = normalizeSlug(slug)
 
   const { data: tasks } = useGetTaskById({ id })
-  const { mutate: handleUpdateTask } = useEditTask()
+  const { mutate: handleUpdateTask } = useUpdateTask()
 
   const {
     reset,
     register,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = useForm<TaskEditData>({
     resolver: zodResolver(taskEditSchema),
   })
@@ -44,11 +44,18 @@ export default function Content() {
       return
     }
 
-    const { name, objective } = tasks
+    const { name, objective, openingDate, closingDate, rubric } = tasks
+
+    const formatTimestampToDate = (timestamp: Date) => {
+      return new Date(timestamp).toISOString().slice(0, 16)
+    }
 
     reset({
       name,
       objective: objective ?? '',
+      openingDate: formatTimestampToDate(openingDate),
+      closingDate: formatTimestampToDate(closingDate),
+      rubric,
     })
   }
 
@@ -56,7 +63,11 @@ export default function Content() {
     if (!id) return
 
     handleUpdateTask(
-      { id, ...data },
+      {
+        id,
+        ...data,
+        rubric: { ...data.rubric },
+      },
       {
         onSuccess: () => {
           toast.success('Perfil do estudante atualizado com sucesso!')
@@ -107,6 +118,35 @@ export default function Content() {
           <Input
             {...register('objective')}
             placeholder="Escreva o objetivo geral da atividade"
+            disabled={isSubmitting}
+          />
+        </div>
+
+        <div className="space-y-6 pt-2 md:flex md:gap-5 md:space-y-0 md:pt-0">
+          <div className="flex flex-col">
+            <Label>Data de abertura</Label>
+            <Input
+              {...register('openingDate')}
+              type="datetime-local"
+              disabled={isSubmitting}
+            />
+          </div>
+
+          <div className="flex flex-col">
+            <Label>Data de fechamento</Label>
+            <Input
+              {...register('closingDate')}
+              type="datetime-local"
+              disabled={isSubmitting}
+            />
+          </div>
+        </div>
+
+        <div className="space-y-0.5">
+          <Label>Nome da rubrica</Label>
+          <Input
+            {...register('rubric.name')}
+            placeholder="Insira o nome da rubrica"
             disabled={isSubmitting}
           />
         </div>

@@ -34,7 +34,7 @@ export interface IParams {
 }
 
 export default function Content() {
-  const { replace, back } = useRouter()
+  const { replace, push } = useRouter()
   const searchParams = useSearchParams()
 
   const { watch, setValue, register, control, handleSubmit } =
@@ -128,7 +128,7 @@ export default function Content() {
   return (
     <>
       <div className="flex items-center justify-between">
-        <Button size="icon" onClick={() => back()}>
+        <Button size="icon" onClick={() => push('/auth/estudantes')}>
           <ChevronLeft className="size-5" />
         </Button>
 

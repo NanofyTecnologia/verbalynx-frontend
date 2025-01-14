@@ -6,7 +6,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { Fragment, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { format } from 'date-fns'
-import { ChevronLeft, HelpCircle, PencilLine, ListTodo } from 'lucide-react'
+import { ChevronLeft, HelpCircle, PencilLine } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -25,7 +25,7 @@ export interface IParams {
 
 export default function Content() {
   const { data: session } = useSession()
-  const { push, back } = useRouter()
+  const { push } = useRouter()
   const { id } = useParams<IParams>()
 
   const { data: task } = useGetTaskById({ id })
@@ -43,7 +43,7 @@ export default function Content() {
   return (
     <>
       <div className="flex items-center justify-between">
-        <Button size="icon" onClick={() => back()}>
+        <Button size="icon" onClick={() => push('/auth/atividades')}>
           <ChevronLeft className="size-5" />
         </Button>
 

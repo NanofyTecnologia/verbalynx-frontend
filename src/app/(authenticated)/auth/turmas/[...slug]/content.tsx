@@ -48,7 +48,7 @@ export interface IParams {
 export default function Content() {
   const { data: session } = useSession()
 
-  const { push, back } = useRouter()
+  const { push } = useRouter()
   const { slug } = useParams<IParams>()
   const { id } = normalizeSlug(slug)
 
@@ -104,7 +104,7 @@ export default function Content() {
   return (
     <>
       <div className="flex items-center justify-between">
-        <Button size="icon" onClick={() => back()}>
+        <Button size="icon" onClick={() => push('/auth/turmas')}>
           <ChevronLeft className="size-5" />
         </Button>
 
