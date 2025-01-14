@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, Fragment, useState } from 'react'
+import { useEffect, Fragment } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { SubmitHandler, useForm, useFieldArray } from 'react-hook-form'
 import { ThreeDots } from 'react-loader-spinner'
@@ -73,7 +73,7 @@ export default function Content() {
   } = useForm<TaskEditData>({
     resolver: zodResolver(taskEditSchema),
   })
-  const { criterion } = watch()
+
   const { fields, append, remove } = useFieldArray<TaskEditData>({
     control,
     name: 'criterion',
@@ -118,7 +118,19 @@ export default function Content() {
     )
   }
 
+  const updateCriterion = (
+    index: number,
+    key: keyof Criterion,
+    value: string | number | number[],
+  ) => {
+    return fields.map((criterion, i) =>
+      i === index ? { ...criterion, [key]: value } : criterion,
+    )
+  }
+
   useEffect(handleDefaultValues, [tasks, reset])
+
+  const { criterion } = watch()
 
   if (!tasks) {
     return null
@@ -253,8 +265,12 @@ export default function Content() {
                         />
                         <Select.Root
                           onValueChange={(value) => {
-                            const updatedScores = [...field.score]
+                            const currentScores =
+                              watch(`criterion.${index}.score`) || []
+                            const updatedScores = [...currentScores]
                             updatedScores[levelIndex] = Number(value)
+                            updateCriterion(index, 'score', updatedScores)
+
                             setValue(`criterion.${index}.score`, updatedScores)
                           }}
                           disabled={isSubmitting}
@@ -286,6 +302,7 @@ export default function Content() {
 
           {fields.length < 30 && (
             <button
+              type="button"
               onClick={() =>
                 append({ name: '', description: '', level: 1, score: [] })
               }
