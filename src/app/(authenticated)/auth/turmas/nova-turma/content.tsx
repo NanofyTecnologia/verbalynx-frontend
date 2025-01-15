@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { ChevronLeft, Info } from 'lucide-react'
 import { ThreeDots } from 'react-loader-spinner'
@@ -16,7 +17,6 @@ import { Dialog } from '@/components/ui/dialog'
 
 import { ClassData, classSchema } from './schema'
 import { useCreateClass } from './_hooks/use-create-class'
-import { useState } from 'react'
 
 export default function Content() {
   const { back, replace } = useRouter()
@@ -123,13 +123,11 @@ export default function Content() {
               <Select.Value placeholder="Selecione o ensino" />
             </Select.Trigger>
             <Select.Content>
-              <Select.Item value="Ensino Fundamental">
-                Ensino Fundamental
-              </Select.Item>
+              <Select.Item value="Fundamental">Fundamental</Select.Item>
+
+              <Select.Item value="Ensino Médio">Ensino Médio</Select.Item>
 
               <Select.Item value="Ensino Superior">Ensino Superior</Select.Item>
-
-              <Select.Item value="Ensino Médio">Ensino Fundamental</Select.Item>
 
               <Select.Item value="Outro">Outro</Select.Item>
             </Select.Content>

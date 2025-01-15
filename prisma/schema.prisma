@@ -14,6 +14,28 @@ enum Role {
   PENDING_APPROVAL
 }
 
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+  @@map("accounts")
+}
+
 model User {
   id               String    @id @default(cuid())
   name             String?
@@ -41,31 +63,10 @@ model User {
   studentTasks    Task[]          @relation("StudentTasks")
   teacherTasks    Task[]          @relation("TeacherTasks")
 
-  taskId String?
+  taskId      String?
+  StudentTask StudentTask[]
 
   @@map("users")
-}
-
-model Account {
-  userId            String
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String?
-  access_token      String?
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String?
-  session_state     String?
-
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@id([provider, providerAccountId])
-  @@map("accounts")
 }
 
 model Task {
@@ -76,25 +77,38 @@ model Task {
   objective   String
   teacherId   String   @map("teacher_id")
   classId     String?  @map("class_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
-  rubric Rubric?
-
-  class    Class? @relation(fields: [classId], references: [id])
-  students User[] @relation("StudentTasks")
-  teacher  User   @relation("TeacherTasks", fields: [teacherId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime   @default(now()) @map("created_at")
-  updatedAt DateTime   @updatedAt @map("updated_at")
-  Feedback  Feedback[]
+  rubric      Rubric?
+  class       Class?        @relation(fields: [classId], references: [id])
+  students    User[]        @relation("StudentTasks")
+  teacher     User          @relation("TeacherTasks", fields: [teacherId], references: [id], onDelete: Cascade)
+  feedback    Feedback[]
+  studentTask StudentTask[]
 
   @@map("tasks")
 }
 
-model Videos {
-  id    String @id @default(cuid())
-  title String
-  url   String
+model StudentTask {
+  id          String   @id @default(cuid())
+  taskId      String
+  studentId   String
+  title       String?
+  url         String?
+  description String?
+  isCompleted Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
+  task    Task @relation(fields: [taskId], references: [id])
+  student User @relation(fields: [studentId], references: [id])
+}
+
+model Videos {
+  id        String   @id @default(cuid())
+  title     String
+  url       String
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -162,7 +176,7 @@ model Rubric {
   name   String
   taskId String @unique
 
-  task      Task        @relation(fields: [taskId], references: [id])
+  task      Task        @relation(fields: [taskId], references: [id], onDelete: Cascade)
   criterion Criterion[]
 
   @@map("rubrics")
@@ -170,9 +184,9 @@ model Rubric {
 
 model Criterion {
   id          String   @id @unique @default(cuid())
-  name        String
-  description String
-  level       Int
+  name        String?
+  description String?
+  level       Int?
   score       Int[]
   rubricId    String?  @map("rubric_id")
   createdAt   DateTime @default(now()) @map("created_at")
@@ -190,13 +204,14 @@ model Feedback {
   classId   String   @map("class_id")
   studentId String   @map("user_id")
   teacherId String   @map("teacher_id")
+  isClosed  Boolean  @default(false)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
   task              Task                @relation(fields: [taskId], references: [id])
   student           User                @relation("StudentFeedback", fields: [studentId], references: [id])
   teacher           User                @relation("TeacherFeedback", fields: [teacherId], references: [id])
-  class             Class[]
+  class             Class               @relation(fields: [classId], references: [id])
   feedbackCriterion FeedbackCriterion[]
 
   @@map("feedbacks")

@@ -60,6 +60,4 @@ async function getTaskByUser() {
   }
 }
 
-export { getTaskByUser }
-
-export { createTask }
+export { getTaskByUser, createTask }

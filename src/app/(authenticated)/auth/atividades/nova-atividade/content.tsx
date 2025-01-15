@@ -14,6 +14,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Dialog } from '@/components/ui/dialog'
 import { Select } from '@/components/ui/select'
+import { Textarea } from '@/components/ui/textarea'
 
 import { useGetClassesById } from '@/hooks/services/use-get-classes-by-id'
 
@@ -70,8 +71,6 @@ export default function Content() {
   const [criteria, setCriteria] = useState<Criterion[]>([
     { name: '', description: '', level: 1, score: [] },
   ])
-
-  console.log(criteria)
 
   const onSubmit: SubmitHandler<TaskData> = (data) => {
     handleCreateTask(
@@ -176,7 +175,7 @@ export default function Content() {
           <Label>Nome da Atividade</Label>
           <Input
             {...register('name')}
-            placeholder="Ex: Atividade Didática XX.X"
+            placeholder="Informe o nome para a nova atividade"
             disabled={isSubmitting}
           />
         </div>
@@ -203,23 +202,25 @@ export default function Content() {
 
         <div className="space-y-0.5">
           <Label>Objetivo Geral da Atividade</Label>
-          <Input {...register('objective')} disabled={isSubmitting} />
+          <Textarea
+            {...register('objective')}
+            disabled={isSubmitting}
+            placeholder="Escreva o objetivo geral da atividade"
+          />
         </div>
 
         <div className="space-y-0.5">
           <Label>Nome da Rubrica</Label>
           <Input
             {...register('rubric.name')}
-            placeholder="Ex: Atividade Didática XX.X"
+            placeholder="Insira o nome da rubrica"
             disabled={isSubmitting}
           />
         </div>
 
         <div className="space-y-6">
-          {/* Mapeamento da quantidade de critérios */}
           {criteria.map((criterion, index) => (
             <div key={index} className="relative space-y-4 border-b pb-4">
-              {/* Botão de Exclusão */}
               {index > 0 && (
                 <Button
                   onClick={() => removeCriterion(index)}
@@ -229,11 +230,10 @@ export default function Content() {
                 </Button>
               )}
 
-              {/* Nome do Critério */}
               <div className="space-y-0.5">
-                <Label>Critério {index + 1}</Label>
+                <Label> Título do Critério {index + 1}</Label>
                 <Input
-                  placeholder="Insira um nome para o critério..."
+                  placeholder="Insira o título do critério"
                   value={criterion.name}
                   onChange={(e) =>
                     updateCriterion(index, 'name', e.target.value)
@@ -245,7 +245,7 @@ export default function Content() {
               <div className="space-y-0.5">
                 <Label>Descrição do Critério {index + 1}</Label>
                 <Input
-                  placeholder="Ex: Este critério tem por finalidade..."
+                  placeholder="Descreva sobre o critério criado para a rubrica"
                   onChange={(e) =>
                     updateCriterion(index, 'description', e.target.value)
                   }
@@ -253,7 +253,6 @@ export default function Content() {
                 />
               </div>
 
-              {/* Seleção do Número de Níveis */}
               <div className="space-y-0.5">
                 <Label>N° de níveis</Label>
                 <Select.Root
@@ -275,7 +274,6 @@ export default function Content() {
                 </Select.Root>
               </div>
 
-              {/* Níveis e Pontuações */}
               <div className="space-y-2">
                 {Array.from({ length: criterion.level }, (_, levelIndex) => (
                   <div key={levelIndex} className="flex items-center gap-2">
@@ -315,19 +313,19 @@ export default function Content() {
             </div>
           ))}
 
-          {/* Botão Adicionar Critério */}
           {criteria.length < 30 && (
-            <button
+            <Button
+              variant="outline"
               onClick={(e) => {
                 e.preventDefault()
                 addCriterion()
               }}
-              className="flex w-full items-center justify-center rounded-md border-2 border-dashed py-2 text-black/50"
+              className="mt-4 h-10 w-full"
               disabled={isSubmitting}
             >
               <span>Adicionar Critério</span>
               <CirclePlus className="ml-1" size={20} />
-            </button>
+            </Button>
           )}
         </div>
 

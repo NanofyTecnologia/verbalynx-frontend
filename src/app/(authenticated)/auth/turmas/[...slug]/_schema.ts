@@ -7,4 +7,9 @@ export const studentSchema = z.object({
   observation: z.string(),
 })
 
+export const filterSchema = z.object({
+  search: z.string(),
+})
+
 export type StudentData = z.infer<typeof studentSchema>
+export type FilterData = z.infer<typeof filterSchema>

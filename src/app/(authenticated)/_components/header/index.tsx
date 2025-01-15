@@ -106,48 +106,24 @@ export default function Header() {
                     )
                     .map((item, index) => (
                       <Fragment key={index}>
-                        <Link href={item.href}>
-                          {item.icon}
-                          {item.label}
-                        </Link>
+                        <Sheet.Close asChild>
+                          <Link href={item.href}>
+                            {item.icon}
+                            {item.label}
+                          </Link>
+                        </Sheet.Close>
                       </Fragment>
                     ))}
-
-                <Button
-                  className="w-full"
-                  onClick={() => update({ role: 'ADMIN' })}
-                >
-                  Admin
-                </Button>
-
-                <Button
-                  className="w-full"
-                  onClick={() => update({ role: 'PROFESSOR' })}
-                >
-                  Professor
-                </Button>
-
-                <Button
-                  className="w-full"
-                  onClick={() => update({ role: 'STUDENT' })}
-                >
-                  Estudante
-                </Button>
-
-                <Button
-                  className="w-full"
-                  onClick={() => update({ role: 'PENDING_APPROVAL' })}
-                >
-                  Aguardando Aprovação
-                </Button>
               </div>
 
               <div className="mt-auto w-full space-y-2">
                 <div className="relative flex items-center">
-                  <Link href="/auth/perfil" className="relative w-full">
-                    <User />
-                    Meu Perfil
-                  </Link>
+                  <Sheet.Close asChild>
+                    <Link href="/auth/perfil" className="relative w-full">
+                      <User />
+                      Meu Perfil
+                    </Link>
+                  </Sheet.Close>
 
                   {!userDataIsCompleted() && (
                     <Tooltip.Provider disableHoverableContent>

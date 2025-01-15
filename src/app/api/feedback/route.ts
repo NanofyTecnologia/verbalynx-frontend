@@ -5,7 +5,7 @@ import { HttpError } from '@/helpers/http-error'
 
 import { createFeedback } from './service'
 
-export async function GET(req: NextRequest) {
+export async function POST(req: NextRequest) {
   try {
     const data = await req.json()
 

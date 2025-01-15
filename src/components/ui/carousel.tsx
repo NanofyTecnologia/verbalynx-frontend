@@ -24,8 +24,8 @@ type CarouselProps = {
 type CarouselContextProps = {
   carouselRef: ReturnType<typeof useEmblaCarousel>[0]
   api: ReturnType<typeof useEmblaCarousel>[1]
-  scrollPrev: () => void
-  scrollNext: () => void
+  scrollPrev: VoidFunction
+  scrollNext: VoidFunction
   canScrollPrev: boolean
   canScrollNext: boolean
 } & CarouselProps

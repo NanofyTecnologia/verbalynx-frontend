@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 
 import { NanoEye, NanoEyeClosed } from '@/assets/svgs'
+
 import { normalize } from '@/utils/normalize'
 import { Highlight } from '@/utils/highlight'
 import { compareDateWithToday } from '@/utils/compareDateWithToday'
@@ -78,12 +79,9 @@ export default function Content() {
                       <div className="flex items-start gap-2">
                         <span className="size-8 rounded-full border-2"></span>
 
-                        <div className="space-y-1">
-                          <p>
-                            Atividade:{' '}
-                            <span className="font-semibold">
-                              <Highlight text={item.name} search={search} />
-                            </span>
+                        <div className="space-y-1 text-sm">
+                          <p className="font-semibold">
+                            <Highlight text={item.name} search={search} />
                           </p>
 
                           <p>
@@ -95,7 +93,7 @@ export default function Content() {
 
                           <p>
                             Abertura:{' '}
-                            <span className="text-xs font-semibold">
+                            <span className="font-semibold">
                               {format(item.openingDate, 'dd/MM/yyyy - HH:mm')}
                             </span>
                           </p>
@@ -103,8 +101,10 @@ export default function Content() {
                           <p>
                             Fechamento:{' '}
                             <span
-                              className={`text-xs font-semibold ${
-                                isBeforeClosingDate ? '' : 'text-[#FF6B6B]' // Cor diferente para datas que já passaram
+                              className={`font-semibold ${
+                                isBeforeClosingDate
+                                  ? 'text-[#8ABF3B]'
+                                  : 'text-[#FF6B6B]' // Cor diferente para datas que já passaram
                               }`}
                             >
                               {format(item.closingDate, 'dd/MM/yyyy - HH:mm')}
@@ -119,7 +119,7 @@ export default function Content() {
                                 className={`flex items-center gap-2 rounded-md px-2 py-0.5 ${
                                   isBeforeClosingDate
                                     ? 'bg-[#8ABF3B]'
-                                    : 'bg-[#FF6B6B]' // Cor diferente para datas que já passaram
+                                    : 'bg-[#FF6B6B]'
                                 }`}
                               >
                                 {isBeforeClosingDate ? (

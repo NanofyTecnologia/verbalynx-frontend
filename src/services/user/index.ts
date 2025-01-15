@@ -1,17 +1,37 @@
 import axios from '@/lib/axios'
 
 import type {
+  CreateManyUsersParams,
   CreateUserParams,
   CreateUserResponse,
   GetTaskByStudentIdResponse,
   GetTasksByStudentId,
   GetUserByIdResponse,
   UpdateUserParams,
+  DeleteUserParams,
+  GetStudentByIdParams,
+  GetStudentByIdResponse,
+  SendStudentTask,
+  GetAllStudents,
 } from './types'
 
 export const user = {
+  async getAll() {
+    const { data } = await axios.get<GetAllStudents>('/user/all/students')
+
+    return data
+  },
+
   async getById() {
     const { data } = await axios.get<GetUserByIdResponse>('/user')
+
+    return data
+  },
+
+  async getStudentById(params: GetStudentByIdParams) {
+    const { data } = await axios.get<GetStudentByIdResponse>(
+      '/user/students/' + params.id,
+    )
 
     return data
   },
@@ -43,6 +63,28 @@ export const user = {
 
   async update(params: UpdateUserParams) {
     const { data } = await axios.put('/user', params)
+
+    return data
+  },
+
+  async createStudents(params: CreateManyUsersParams) {
+    const { data } = await axios.post(
+      '/user/students/' + params.id,
+      params.students,
+    )
+
+    return data
+  },
+
+  async delete(params: DeleteUserParams) {
+    const { data } = await axios.delete(`/user/${params.id}`)
+
+    return data
+  },
+
+  async sendTask(params: SendStudentTask) {
+    const { id, ...restParams } = params
+    const { data } = await axios.post(`/user/task/` + params.id, restParams)
 
     return data
   },

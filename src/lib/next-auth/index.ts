@@ -41,7 +41,7 @@ export const authOptions: NextAuthOptions = {
             url,
             host,
             theme,
-            name: user?.name ?? 'Aluno / Estudante',
+            name: user?.name ?? 'Estudante',
           }),
         })
 

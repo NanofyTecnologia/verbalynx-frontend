@@ -11,21 +11,46 @@ export type GetTaskResponse = {
   closingDate: Date
   rubric: {
     name: string
-    evaluation: {
+    criterion: {
       name: string
       description: string
       level: number
       score: number[]
-    }
+    }[]
   }
   objective: string
   teacherId: string
   classId: string
+  feedback: {
+    id: string
+    taskId: string
+    classId: string
+    studentId: string
+    isClosed: boolean
+  }[]
+  studentTask: {
+    id: string
+    title: string
+    studentId: string
+    isCompleted: boolean
+    createdAt: Date
+    updatedAt: Date
+    student: {
+      name: string
+      studentFeedback: {
+        id: string
+      }[]
+    }
+  }[]
   createdAt: string
   updatedAt: string
   class: {
     name: string
   }
+}
+
+export type GetFeedbackByTaskIdResponse = {
+  id: string
 }
 
 export type CreateTaskParams = Omit<
@@ -41,4 +66,8 @@ export type CreateTaskParams = Omit<
       score: number[]
     }[]
   }
+}
+
+export type DeleteTaskParams = {
+  id: string | undefined
 }

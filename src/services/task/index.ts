@@ -4,6 +4,8 @@ import type {
   GetTaskResponse,
   CreateTaskParams,
   GetTaskByIdParams,
+  GetFeedbackByTaskIdResponse,
+  DeleteTaskParams,
 } from './types'
 
 export const task = {
@@ -27,6 +29,14 @@ export const task = {
     return data
   },
 
+  async getFeedback(params: GetTaskByIdParams) {
+    const { data } = await axios.get<GetFeedbackByTaskIdResponse>(
+      '/task/' + params.id + '/feedback',
+    )
+
+    return data
+  },
+
   async create(params: CreateTaskParams) {
     const { data } = await axios.post<GetTaskResponse>('/task', params)
 
@@ -35,6 +45,12 @@ export const task = {
 
   async getRubric(params: GetTaskByIdParams) {
     const { data } = await axios.get(`/task/${params}/rubric`)
+
+    return data
+  },
+
+  async delete(params: DeleteTaskParams) {
+    const { data } = await axios.delete('/task/' + params.id)
 
     return data
   },
