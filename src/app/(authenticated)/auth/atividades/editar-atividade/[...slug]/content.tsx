@@ -12,12 +12,18 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Select } from '@/components/ui/select'
+import { Textarea } from '@/components/ui/textarea'
+
 import { normalizeSlug } from '@/utils/normalize-slug'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import { useGetTaskById } from '../../_hooks/use-get-task-by-id'
 import { TaskEditData, taskEditSchema } from './_schema'
 import { useUpdateTask } from './_hooks/use-update-task'
+import { useDeleteCriterion } from './_hooks/use-delete-criterion'
+import { AxiosError } from 'axios'
+import form from '@/app/(unauthenticated)/cadastro/form'
+import { error } from 'console'
 
 export interface IParams {
   [key: string]: string[]
@@ -61,6 +67,7 @@ export default function Content() {
 
   const { data: tasks } = useGetTaskById({ id })
   const { mutate: handleUpdateTask } = useUpdateTask()
+  const { mutate: handleDeleteCriterion } = useDeleteCriterion()
 
   const {
     watch,
@@ -207,111 +214,151 @@ export default function Content() {
         <div>
           {fields.map((field, index) => (
             <Fragment key={field.id}>
-              {index > 0 && (
-                <Button onClick={() => remove(index)} disabled={isSubmitting}>
-                  Excluir
-                </Button>
-              )}
+              <div className="mt-4 border-t border-zinc-700 pb-4 first:border-none">
+                {index > 0 && (
+                  <Button
+                    type="button"
+                    onClick={() => {
+                      if (criterion[index].id) {
+                        handleDeleteCriterion(
+                          { id: criterion[index].id },
+                          {
+                            onSuccess: () => {
+                              remove(index)
+                            },
+                            onError: (error) => {
+                              if (error instanceof AxiosError) {
+                                toast.error(
+                                  error.response?.status === 400
+                                    ? 'Ops! Há um feedback utilizando esse critério.'
+                                    : 'Ops! Houve um erro ao tentar remover o critério',
+                                )
+                              }
 
-              <div className="space-y-4">
-                <div className="space-y-0.5">
-                  <Label>Criterio {index + 1}</Label>
-                  <Input
-                    {...register(`criterion.${index}.name`)}
-                    placeholder=""
-                    disabled={isSubmitting}
-                  />
-                </div>
+                              return error
+                            },
+                          },
+                        )
 
-                <div className="space-y-0.5">
-                  <Label>Descrição do Critério {index + 1}</Label>
-                  <Input
-                    {...register(`criterion.${index}.description`)}
-                    placeholder=""
-                    disabled={isSubmitting}
-                  />
-                </div>
+                        return
+                      }
 
-                <div className="space-y-0.5">
-                  <Label>N° de níveis</Label>
-                  <Select.Root
-                    onValueChange={(value) => {
-                      setValue(`criterion.${index}.level`, Number(value))
+                      remove(index)
                     }}
+                    className="my-4"
                     disabled={isSubmitting}
                   >
-                    <Select.Trigger>
-                      <Select.Value placeholder={`${field.level}`} />
-                    </Select.Trigger>
-                    <Select.Content>
-                      {['1', '2', '3', '4', '5', '6'].map((num) => (
-                        <Select.Item key={num} value={num}>
-                          {num}
-                        </Select.Item>
-                      ))}
-                    </Select.Content>
-                  </Select.Root>
-                </div>
+                    Excluir
+                  </Button>
+                )}
 
-                <div className="space-y-2">
-                  {Array.from(
-                    { length: criterion[index].level },
-                    (_, levelIndex) => (
-                      <div key={levelIndex} className="flex items-center gap-2">
-                        <Input
-                          type="text"
-                          placeholder={`Nível ${levelIndex + 1}`}
-                          disabled
-                        />
-                        <Select.Root
-                          onValueChange={(value) => {
-                            const currentScores =
-                              watch(`criterion.${index}.score`) || []
-                            const updatedScores = [...currentScores]
-                            updatedScores[levelIndex] = Number(value)
-                            updateCriterion(index, 'score', updatedScores)
+                <div className="space-y-4">
+                  <div className="space-y-0.5">
+                    <Label>Criterio {index + 1}</Label>
+                    <Input
+                      {...register(`criterion.${index}.name`)}
+                      placeholder=""
+                      disabled={isSubmitting}
+                    />
+                  </div>
 
-                            setValue(`criterion.${index}.score`, updatedScores)
-                          }}
-                          disabled={isSubmitting}
+                  <div className="space-y-0.5">
+                    <Label>Descrição do Critério {index + 1}</Label>
+                    <Textarea
+                      {...register(`criterion.${index}.description`)}
+                      placeholder=""
+                      disabled={isSubmitting}
+                    />
+                  </div>
+
+                  <div className="space-y-0.5">
+                    <Label>N° de níveis</Label>
+                    <Select.Root
+                      onValueChange={(value) => {
+                        setValue(`criterion.${index}.level`, Number(value))
+                      }}
+                      disabled={isSubmitting}
+                    >
+                      <Select.Trigger>
+                        <Select.Value placeholder={`${field.level}`} />
+                      </Select.Trigger>
+                      <Select.Content>
+                        {['1', '2', '3', '4', '5', '6'].map((num) => (
+                          <Select.Item key={num} value={num}>
+                            {num}
+                          </Select.Item>
+                        ))}
+                      </Select.Content>
+                    </Select.Root>
+                  </div>
+
+                  <div className="space-y-2">
+                    {Array.from(
+                      { length: criterion[index].level },
+                      (_, levelIndex) => (
+                        <div
+                          key={levelIndex}
+                          className="flex items-center gap-2"
                         >
-                          <Select.Trigger>
-                            <Select.Value
-                              placeholder={
-                                field.score[levelIndex]
-                                  ? `${field.score[levelIndex]} pontos`
-                                  : '0 pontos'
-                              }
-                            />
-                          </Select.Trigger>
-                          <Select.Content>
-                            {points.map((num) => (
-                              <Select.Item key={num} value={num}>
-                                {num} pontos
-                              </Select.Item>
-                            ))}
-                          </Select.Content>
-                        </Select.Root>
-                      </div>
-                    ),
-                  )}
+                          <Input
+                            type="text"
+                            placeholder={`Nível ${levelIndex + 1}`}
+                            disabled
+                          />
+                          <Select.Root
+                            onValueChange={(value) => {
+                              const currentScores =
+                                watch(`criterion.${index}.score`) || []
+                              const updatedScores = [...currentScores]
+                              updatedScores[levelIndex] = Number(value)
+                              updateCriterion(index, 'score', updatedScores)
+
+                              setValue(
+                                `criterion.${index}.score`,
+                                updatedScores,
+                              )
+                            }}
+                            disabled={isSubmitting}
+                          >
+                            <Select.Trigger>
+                              <Select.Value
+                                placeholder={
+                                  field.score[levelIndex]
+                                    ? `${field.score[levelIndex]} pontos`
+                                    : '0 pontos'
+                                }
+                              />
+                            </Select.Trigger>
+                            <Select.Content>
+                              {points.map((num) => (
+                                <Select.Item key={num} value={num}>
+                                  {num} pontos
+                                </Select.Item>
+                              ))}
+                            </Select.Content>
+                          </Select.Root>
+                        </div>
+                      ),
+                    )}
+                  </div>
                 </div>
               </div>
             </Fragment>
           ))}
 
           {fields.length < 30 && (
-            <button
+            <Button
               type="button"
+              variant="outline"
               onClick={() =>
                 append({ name: '', description: '', level: 1, score: [] })
               }
-              className="flex w-full items-center justify-center rounded-md border-2 border-dashed py-2 text-black/50"
+              className="mt-4 h-10 w-full bg-white"
               disabled={isSubmitting}
             >
               <span>Adicionar Critério</span>
               <CirclePlus className="ml-1" size={20} />
-            </button>
+            </Button>
           )}
         </div>
 
@@ -326,7 +373,7 @@ export default function Content() {
                 ariaLabel="three-dots-loading"
               />
             ) : (
-              'Salvar'
+              'Atualizar'
             )}
           </Button>
         </div>

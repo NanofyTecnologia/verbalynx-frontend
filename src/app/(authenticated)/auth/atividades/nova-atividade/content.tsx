@@ -14,6 +14,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Dialog } from '@/components/ui/dialog'
 import { Select } from '@/components/ui/select'
+import { Textarea } from '@/components/ui/textarea'
 
 import { useGetClassesById } from '@/hooks/services/use-get-classes-by-id'
 
@@ -59,7 +60,7 @@ export default function Content() {
     register,
     setValue,
     handleSubmit,
-    formState: { isSubmitting, errors },
+    formState: { isSubmitting },
   } = useForm<TaskData>({
     resolver: zodResolver(taskSchema),
   })
@@ -201,7 +202,7 @@ export default function Content() {
 
         <div className="space-y-0.5">
           <Label>Objetivo Geral da Atividade</Label>
-          <Input
+          <Textarea
             {...register('objective')}
             disabled={isSubmitting}
             placeholder="Escreva o objetivo geral da atividade"
@@ -218,10 +219,8 @@ export default function Content() {
         </div>
 
         <div className="space-y-6">
-          {/* Mapeamento da quantidade de critérios */}
           {criteria.map((criterion, index) => (
             <div key={index} className="relative space-y-4 border-b pb-4">
-              {/* Botão de Exclusão */}
               {index > 0 && (
                 <Button
                   onClick={() => removeCriterion(index)}
@@ -231,7 +230,6 @@ export default function Content() {
                 </Button>
               )}
 
-              {/* Nome do Critério */}
               <div className="space-y-0.5">
                 <Label> Título do Critério {index + 1}</Label>
                 <Input
@@ -255,7 +253,6 @@ export default function Content() {
                 />
               </div>
 
-              {/* Seleção do Número de Níveis */}
               <div className="space-y-0.5">
                 <Label>N° de níveis</Label>
                 <Select.Root
@@ -277,7 +274,6 @@ export default function Content() {
                 </Select.Root>
               </div>
 
-              {/* Níveis e Pontuações */}
               <div className="space-y-2">
                 {Array.from({ length: criterion.level }, (_, levelIndex) => (
                   <div key={levelIndex} className="flex items-center gap-2">
@@ -317,19 +313,19 @@ export default function Content() {
             </div>
           ))}
 
-          {/* Botão Adicionar Critério */}
           {criteria.length < 30 && (
-            <button
+            <Button
+              variant="outline"
               onClick={(e) => {
                 e.preventDefault()
                 addCriterion()
               }}
-              className="flex w-full items-center justify-center rounded-md border-2 border-dashed py-2 text-black/50"
+              className="mt-4 h-10 w-full"
               disabled={isSubmitting}
             >
               <span>Adicionar Critério</span>
               <CirclePlus className="ml-1" size={20} />
-            </button>
+            </Button>
           )}
         </div>
 
