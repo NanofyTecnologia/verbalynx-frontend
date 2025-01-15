@@ -1,6 +1,5 @@
 'use client'
 
-import Link from 'next/link'
 import { Fragment, useEffect } from 'react'
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import { SubmitHandler, useFieldArray, useFormContext } from 'react-hook-form'
@@ -35,7 +34,6 @@ export interface IParams {
 
 export default function Content() {
   const { replace, push } = useRouter()
-  const searchParams = useSearchParams()
 
   const { watch, setValue, register, control, handleSubmit } =
     useFormContext<FeedbackData>()

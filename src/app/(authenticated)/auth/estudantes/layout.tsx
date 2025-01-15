@@ -1,6 +1,6 @@
 'use client'
 
-import { type PropsWithChildren } from 'react'
+import { Suspense, type PropsWithChildren } from 'react'
 import { useForm, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
@@ -29,5 +29,9 @@ export default function Layout({ children }: PropsWithChildren) {
     },
   })
 
-  return <FormProvider {...methods}>{children}</FormProvider>
+  return (
+    <FormProvider {...methods}>
+      <Suspense>{children}</Suspense>
+    </FormProvider>
+  )
 }
