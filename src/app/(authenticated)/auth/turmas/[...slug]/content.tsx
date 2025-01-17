@@ -115,7 +115,7 @@ export default function Content() {
         <div />
       </div>
 
-      <div className="mt-6 flex flex-col space-y-4 md:flex-row md:space-y-0">
+      <div className="mt-6 flex flex-col space-y-4 md:flex-row md:gap-x-4 md:space-y-0">
         <div className="flex w-full items-center gap-2 md:justify-start">
           <Badge className="w-full max-w-36 justify-center p-1.5">
             Nome da turma:
@@ -288,6 +288,14 @@ export default function Content() {
                   </Table.Row>
                 </Fragment>
               ))}
+
+              {visibleRows?.length === 0 && (
+                <Table.Row>
+                  <Table.Cell colSpan={3}>
+                    <div className="text-center">Nenhum aluno encontrado</div>
+                  </Table.Cell>
+                </Table.Row>
+              )}
             </Table.Body>
 
             <Table.Footer></Table.Footer>

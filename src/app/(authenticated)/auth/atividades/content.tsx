@@ -56,6 +56,14 @@ export default function Content() {
 
       <div className="mt-6">
         <div className="mt-2 flex flex-col space-y-2">
+          {filteredData?.length === 0 && (
+            <div className="text-center">
+              <p className="my-12 font-semibold">
+                Nenhuma atividade cadastrada
+              </p>
+            </div>
+          )}
+
           {isLoading &&
             Array.from({ length: 8 }).map((_, item) => (
               <Fragment key={item}>
