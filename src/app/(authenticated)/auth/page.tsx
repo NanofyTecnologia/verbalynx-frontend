@@ -62,6 +62,24 @@ export default async function Page() {
             </Link>
           </>
         )}
+
+        {session?.user.role === 'ADMIN' && (
+          <>
+            <Link
+              href="/auth/usuarios"
+              className="rounded-md bg-[#73D997] p-2 text-center font-semibold"
+            >
+              Usuários
+            </Link>
+
+            <Link
+              href="/auth/ajuda"
+              className="rounded-md bg-[#73D997] p-2 text-center font-semibold"
+            >
+              Ajuda
+            </Link>
+          </>
+        )}
       </div>
     </>
   )

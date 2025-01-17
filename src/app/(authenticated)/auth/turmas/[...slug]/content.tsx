@@ -366,7 +366,9 @@ export default function Content() {
             <Dialog.Description />
           </Dialog.Header>
 
-          {showStudentsList && <AllStudentsList />}
+          {showStudentsList && (
+            <AllStudentsList setShowStudentsList={setShowStudentsList} />
+          )}
 
           {!showStudentsList && (
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

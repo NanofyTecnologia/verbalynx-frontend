@@ -1,7 +1,6 @@
 'use client'
 
-import { useParams } from 'next/navigation'
-import { SetStateAction, useState, Dispatch } from 'react'
+import { useState } from 'react'
 import {
   flexRender,
   SortingState,
@@ -14,34 +13,20 @@ import {
   getFilteredRowModel,
   PaginationState,
 } from '@tanstack/react-table'
-import { toast } from 'react-toastify'
+
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 import { Input } from '@/components/ui/input'
 import { Table } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
-import { Dialog } from '@/components/ui/dialog'
 
-import { IParams } from '@/types/params'
 import { UserPreview } from '@/services/user/types'
-import { normalizeSlug } from '@/utils/normalize-slug'
 import { useGetAllStudents } from '@/hooks/services/use-get-all-students'
 
 import { columns } from './columns'
-import { useCreateStudentsInTeam } from './_hooks/use-create-students-in-team'
 
-type AllStudentsListProps = {
-  setShowStudentsList: Dispatch<SetStateAction<boolean>>
-}
-
-export default function AllStudentsList({
-  setShowStudentsList,
-}: AllStudentsListProps) {
-  const params = useParams<IParams>()
-  const { id } = normalizeSlug(params.slug)
-
+export default function Content() {
   const { data: students } = useGetAllStudents()
-  const { mutate: handleCreateStudentsInTeam } = useCreateStudentsInTeam()
 
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
@@ -78,23 +63,6 @@ export default function AllStudentsList({
 
   const onSubmitSelectedStudents = () => {
     const selectedStudents = Object.keys(rowSelection)
-
-    handleCreateStudentsInTeam(
-      {
-        id,
-        studentsIds: selectedStudents,
-      },
-      {
-        onSuccess: () => {
-          toast.success('Estudantes cadastrados com sucesso!')
-        },
-        onError: () => {
-          toast.error('Houve um erro ao cadastrar os estudantes!')
-        },
-      },
-    )
-
-    console.log(selectedStudents)
   }
 
   const selectedRowsLength = Object.keys(rowSelection).length
@@ -114,7 +82,7 @@ export default function AllStudentsList({
           />
         </div>
 
-        <div className="rounded-md border">
+        <div className="rounded-md border bg-white">
           <Table.Root>
             <Table.Header>
               {table.getHeaderGroups().map((headerGroup) => (
@@ -196,20 +164,6 @@ export default function AllStudentsList({
           </div>
         </div>
       </div>
-
-      <Dialog.Footer className="gap-y-4">
-        <Button onClick={() => setShowStudentsList((prev) => !prev)}>
-          Cadastrar novo estudante
-        </Button>
-
-        <Button
-          type="button"
-          className="w-full"
-          onClick={onSubmitSelectedStudents}
-        >
-          Cadastrar selecionados na turma
-        </Button>
-      </Dialog.Footer>
     </>
   )
 }

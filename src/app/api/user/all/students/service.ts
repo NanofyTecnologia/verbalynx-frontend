@@ -9,7 +9,7 @@ import { findAll } from './repository'
 async function getAllStudents() {
   const session = await getServerSession(authOptions)
 
-  if (!session?.user.id || session.user.role !== 'PROFESSOR') {
+  if (!session?.user.id || session.user.role === 'STUDENT') {
     throw new HttpError('UNAUTHORIZED', HttpStatusCode.Unauthorized)
   }
 
