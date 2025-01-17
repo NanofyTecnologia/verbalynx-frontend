@@ -101,7 +101,7 @@ export default function Content() {
           </div>
         </div>
 
-        {data?.user.role === 'ADMIN' && (
+        {data?.user.role === 'PROFESSOR' && (
           <div className="flex justify-end">
             <Button onClick={() => setShowDialog(!showDialog)}>
               Adicionar video <Plus />
@@ -126,7 +126,7 @@ export default function Content() {
             </Fragment>
           ))}
 
-        {!filteredVideos && (
+        {filteredVideos?.length === 0 && (
           <div className="text-center">
             <p className="my-12 font-semibold">Nenhum video encontrado</p>
           </div>
