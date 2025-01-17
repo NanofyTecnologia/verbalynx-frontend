@@ -1,5 +1,6 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import {
   flexRender,
@@ -24,8 +25,10 @@ import { UserPreview } from '@/services/user/types'
 import { useGetAllStudents } from '@/hooks/services/use-get-all-students'
 
 import { columns } from './columns'
+import { useUpdateUser } from './_hooks/use-update-user'
 
 export default function Content() {
+  const { back } = useRouter()
   const { data: students } = useGetAllStudents()
 
   const [pagination, setPagination] = useState<PaginationState>({
@@ -70,7 +73,17 @@ export default function Content() {
 
   return (
     <>
-      <div className="w-full space-y-4">
+      <div className="flex items-center justify-between">
+        <Button size="icon" onClick={() => back()}>
+          <ChevronLeft className="size-5" />
+        </Button>
+
+        <h2 className="text-lg font-semibold">Usuários no sistema</h2>
+
+        <div />
+      </div>
+
+      <div className="mt-4 w-full space-y-4">
         <div className="flex items-center">
           <Input
             placeholder="Pesquisar..."
@@ -78,7 +91,7 @@ export default function Content() {
             onChange={(event) =>
               table.getColumn('name')?.setFilterValue(event.target.value)
             }
-            className="h-10 max-w-sm"
+            className="h-10 w-full"
           />
         </div>
 
