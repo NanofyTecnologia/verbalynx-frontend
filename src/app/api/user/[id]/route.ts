@@ -6,7 +6,7 @@ import { HttpError } from '@/helpers/http-error'
 
 import { IParams } from '../../types'
 
-export async function UPDATE(req: NextRequest, props: IParams) {
+export async function PUT(req: NextRequest, props: IParams) {
   const params = await props.params
   try {
     const id = params.id
