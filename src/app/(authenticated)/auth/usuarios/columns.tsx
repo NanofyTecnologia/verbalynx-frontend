@@ -11,7 +11,7 @@ import { Dropdown } from '@/components/ui/dropdown-menu'
 
 import { type UserPreview } from '@/services/user/types'
 
-export const columns: ColumnDef<UserPreview>[] = (() => {
+export const Columns: ColumnDef<UserPreview>[] = (() => {
   const { mutate: handleUpdateUser } = useUpdateUser()
 
   return [
