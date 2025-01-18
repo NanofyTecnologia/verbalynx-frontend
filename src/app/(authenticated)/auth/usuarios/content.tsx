@@ -1,7 +1,7 @@
 'use client'
 
-import { useParams } from 'next/navigation'
-import { SetStateAction, useState, Dispatch } from 'react'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import {
   flexRender,
   SortingState,
@@ -14,34 +14,22 @@ import {
   getFilteredRowModel,
   PaginationState,
 } from '@tanstack/react-table'
-import { toast } from 'react-toastify'
+
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 import { Input } from '@/components/ui/input'
 import { Table } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
-import { Dialog } from '@/components/ui/dialog'
 
-import { IParams } from '@/types/params'
 import { UserPreview } from '@/services/user/types'
-import { normalizeSlug } from '@/utils/normalize-slug'
 import { useGetAllStudents } from '@/hooks/services/use-get-all-students'
 
 import { columns } from './columns'
-import { useCreateStudentsInTeam } from './_hooks/use-create-students-in-team'
+import { useUpdateUser } from './_hooks/use-update-user'
 
-type AllStudentsListProps = {
-  setShowStudentsList: Dispatch<SetStateAction<boolean>>
-}
-
-export default function AllStudentsList({
-  setShowStudentsList,
-}: AllStudentsListProps) {
-  const params = useParams<IParams>()
-  const { id } = normalizeSlug(params.slug)
-
+export default function Content() {
+  const { back } = useRouter()
   const { data: students } = useGetAllStudents()
-  const { mutate: handleCreateStudentsInTeam } = useCreateStudentsInTeam()
 
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
@@ -78,23 +66,6 @@ export default function AllStudentsList({
 
   const onSubmitSelectedStudents = () => {
     const selectedStudents = Object.keys(rowSelection)
-
-    handleCreateStudentsInTeam(
-      {
-        id,
-        studentsIds: selectedStudents,
-      },
-      {
-        onSuccess: () => {
-          toast.success('Estudantes cadastrados com sucesso!')
-        },
-        onError: () => {
-          toast.error('Houve um erro ao cadastrar os estudantes!')
-        },
-      },
-    )
-
-    console.log(selectedStudents)
   }
 
   const selectedRowsLength = Object.keys(rowSelection).length
@@ -102,7 +73,17 @@ export default function AllStudentsList({
 
   return (
     <>
-      <div className="w-full space-y-4">
+      <div className="flex items-center justify-between">
+        <Button size="icon" onClick={() => back()}>
+          <ChevronLeft className="size-5" />
+        </Button>
+
+        <h2 className="text-lg font-semibold">Usuários no sistema</h2>
+
+        <div />
+      </div>
+
+      <div className="mt-4 w-full space-y-4">
         <div className="flex items-center">
           <Input
             placeholder="Pesquisar..."
@@ -110,11 +91,11 @@ export default function AllStudentsList({
             onChange={(event) =>
               table.getColumn('name')?.setFilterValue(event.target.value)
             }
-            className="h-10 max-w-sm"
+            className="h-10 w-full"
           />
         </div>
 
-        <div className="rounded-md border">
+        <div className="rounded-md border bg-white">
           <Table.Root>
             <Table.Header>
               {table.getHeaderGroups().map((headerGroup) => (
@@ -196,20 +177,6 @@ export default function AllStudentsList({
           </div>
         </div>
       </div>
-
-      <Dialog.Footer className="gap-y-4">
-        <Button onClick={() => setShowStudentsList((prev) => !prev)}>
-          Cadastrar novo estudante
-        </Button>
-
-        <Button
-          type="button"
-          className="w-full"
-          onClick={onSubmitSelectedStudents}
-        >
-          Cadastrar selecionados na turma
-        </Button>
-      </Dialog.Footer>
     </>
   )
 }

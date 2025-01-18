@@ -31,6 +31,11 @@ export type UpdateUserParams = {
   pronoun: string
 }
 
+export type AdminUpdateParams = {
+  id: string
+  data: Partial<User>
+}
+
 export type DeleteUserParams = {
   id: string
 }

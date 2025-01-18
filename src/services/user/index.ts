@@ -13,6 +13,7 @@ import type {
   GetStudentByIdResponse,
   SendStudentTask,
   GetAllStudents,
+  AdminUpdateParams,
 } from './types'
 
 export const user = {
@@ -63,6 +64,12 @@ export const user = {
 
   async update(params: UpdateUserParams) {
     const { data } = await axios.put('/user', params)
+
+    return data
+  },
+
+  async adminUpdate(params: AdminUpdateParams) {
+    const { data } = await axios.put('/user/' + params.id, params.data)
 
     return data
   },
