@@ -1,3 +1,6 @@
+'use client'
+
+import { toast } from 'react-toastify'
 import { EllipsisVertical, User } from 'lucide-react'
 import { type ColumnDef } from '@tanstack/react-table'
 import { useUpdateUser } from './_hooks/use-update-user'
@@ -7,7 +10,6 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Dropdown } from '@/components/ui/dropdown-menu'
 
 import { type UserPreview } from '@/services/user/types'
-import { toast } from 'react-toastify'
 
 export const columns: ColumnDef<UserPreview>[] = (() => {
   const { mutate: handleUpdateUser } = useUpdateUser()

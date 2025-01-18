@@ -25,7 +25,6 @@ import { UserPreview } from '@/services/user/types'
 import { useGetAllStudents } from '@/hooks/services/use-get-all-students'
 
 import { columns } from './columns'
-import { useUpdateUser } from './_hooks/use-update-user'
 
 export default function Content() {
   const { back } = useRouter()
