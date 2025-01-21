@@ -110,28 +110,25 @@ export default function Content() {
         </div>
 
         <div className="mx-auto mt-4 overflow-auto">
-          <table className="w-full border-2 border-black text-center">
+          <table className="mt-12 w-full border-2 border-black text-center">
             <thead className="text-nowrap border-b-2 border-black bg-[#73D997]">
               <tr>
-                <th className="border-r-2 border-black"></th>
-                {rubrics.map((item) => (
-                  <th
-                    className="border-r-2 border-black px-3 font-semibold"
-                    key={item.name}
-                  >
-                    {item.name}
+                <th className="border-r-2 border-black" />
+                {Array.from({ length: maxLevel }, (_, level) => (
+                  <th key={level} className="border-r-2 border-black">
+                    Nível {level + 1}
                   </th>
                 ))}
               </tr>
             </thead>
             <tbody>
-              {Array.from({ length: maxLevel }, (_, level) => (
-                <tr className="border-b-2 border-black" key={level + 1}>
+              {rubrics.map((item, index) => (
+                <tr className="border-b-2 border-black" key={item.name}>
                   <td className="text-nowrap border-r-2 border-black bg-[#73D997] px-3 font-semibold">
-                    Nível {level + 1}
+                    {item.name}
                   </td>
-                  {rubrics.map((item) => (
-                    <td className="border-r-2 border-black" key={item.name}>
+                  {Array.from({ length: maxLevel }, (_, level) => (
+                    <td className="border-r-2 border-black" key={level}>
                       {item.score[level] !== undefined ? item.score[level] : 0}{' '}
                       pontos
                     </td>
