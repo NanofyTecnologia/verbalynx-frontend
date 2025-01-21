@@ -1,17 +1,20 @@
-export const compareDateWithToday = (inputDate: string): boolean => {
-  const [datePart, timePart] = inputDate.split(' - ')
+export const compareDateWithRange = (
+  startDate: string,
+  endDate: string,
+): boolean => {
+  const parseDate = (dateString: string): Date => {
+    const [datePart, timePart] = dateString.split(' - ')
 
-  const [day, month, year] = datePart.split('/').map(Number)
+    const [day, month, year] = datePart.split('/').map(Number)
+    const [hours, minutes] = timePart.split(':').map(Number)
 
-  const [hours, minutes] = timePart.split(':').map(Number)
+    return new Date(year, month - 1, day, hours, minutes)
+  }
 
-  const dateToCompare = new Date(year, month - 1, day, hours, minutes)
+  const start = parseDate(startDate)
+  const end = parseDate(endDate)
 
   const now = new Date()
 
-  if (dateToCompare > now) {
-    return true
-  } else {
-    return false
-  }
+  return now >= start && now <= end
 }

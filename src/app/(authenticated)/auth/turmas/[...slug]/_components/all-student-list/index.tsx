@@ -31,16 +31,20 @@ import { columns } from './columns'
 import { useCreateStudentsInTeam } from './_hooks/use-create-students-in-team'
 
 type AllStudentsListProps = {
+  refetch: () => void
+  setShowDialog: Dispatch<SetStateAction<boolean>>
   setShowStudentsList: Dispatch<SetStateAction<boolean>>
 }
 
 export default function AllStudentsList({
+  refetch,
+  setShowDialog,
   setShowStudentsList,
 }: AllStudentsListProps) {
   const params = useParams<IParams>()
   const { id } = normalizeSlug(params.slug)
 
-  const { data: students } = useGetAllStudents()
+  const { data: students } = useGetAllStudents({ teamId: id })
   const { mutate: handleCreateStudentsInTeam } = useCreateStudentsInTeam()
 
   const [pagination, setPagination] = useState<PaginationState>({
@@ -86,7 +90,9 @@ export default function AllStudentsList({
       },
       {
         onSuccess: () => {
+          refetch()
           toast.success('Estudantes cadastrados com sucesso!')
+          setShowDialog(false)
         },
         onError: () => {
           toast.error('Houve um erro ao cadastrar os estudantes!')
@@ -198,8 +204,16 @@ export default function AllStudentsList({
       </div>
 
       <Dialog.Footer className="gap-y-4">
-        <Button onClick={() => setShowStudentsList((prev) => !prev)}>
-          Cadastrar novo estudante
+        <Dialog.Close asChild>
+          <Button variant="outline">Cancelar</Button>
+        </Dialog.Close>
+
+        <Button
+          variant="secondary"
+          className="bg-zinc-200 hover:bg-zinc-200/80"
+          onClick={() => setShowStudentsList((prev) => !prev)}
+        >
+          Novo estudante
         </Button>
 
         <Button
@@ -207,7 +221,7 @@ export default function AllStudentsList({
           className="w-full"
           onClick={onSubmitSelectedStudents}
         >
-          Cadastrar selecionados na turma
+          Cadastrar selecionados
         </Button>
       </Dialog.Footer>
     </>

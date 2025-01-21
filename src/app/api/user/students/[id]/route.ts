@@ -31,9 +31,9 @@ export async function POST(req: NextRequest, props: IParams) {
     const id = params.id
     const body = await req.json()
 
-    const students = await createManyStudents(body, id)
+    await createManyStudents(body, id)
 
-    return NextResponse.json(students, { status: HttpStatusCode.Ok })
+    return NextResponse.json('', { status: HttpStatusCode.Ok })
   } catch (error) {
     if (error instanceof HttpError) {
       return NextResponse.json(error.message, { status: error.status })

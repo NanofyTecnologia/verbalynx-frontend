@@ -1,7 +1,7 @@
 import * as XLXS from 'xlsx'
 import { toast } from 'react-toastify'
 import { useParams } from 'next/navigation'
-import { ChangeEvent, useCallback, useState } from 'react'
+import { ChangeEvent, useCallback, useRef, useState } from 'react'
 
 import { Input } from '@/components/ui/input'
 import { Table } from '@/components/ui/table'
@@ -17,7 +17,9 @@ export default function ImportStudents() {
   const params = useParams<IParams>()
   const { id } = normalizeSlug(params.slug)
 
+  const [isLoading, setIsLoading] = useState(false)
   const [data, setData] = useState<string[][]>([])
+  const dialogCloseRef = useRef<HTMLButtonElement>(null)
 
   const { mutate: handleCreateStudents } = useCreateStudents()
 
@@ -47,19 +49,28 @@ export default function ImportStudents() {
   const transformToObjects = (data: string[][]) => {
     if (data.length < 2) return []
 
-    const headers = ['name', 'email', 'cpf', 'observation']
-    return data.map((row) => {
+    const headers = ['name', 'email', 'cpf', 'registrationCode', 'observation']
+
+    const filteredData = data.filter((row) =>
+      row.some((cell) => cell && cell.trim()),
+    )
+
+    return filteredData.map((row) => {
       return headers.reduce(
         (obj, header, index) => {
-          obj[header] = row[index] || null
+          if (header === 'registrationCode') {
+            obj[header] = row[index] !== undefined ? String(row[index]) : null
+          } else {
+            obj[header] = row[index] || null
+          }
           return obj
         },
         {} as Record<string, unknown>,
       )
     })
   }
-
   const handleAddStudents = useCallback(() => {
+    setIsLoading(true)
     const students = transformToObjects(data.slice(1))
 
     handleCreateStudents(
@@ -67,6 +78,14 @@ export default function ImportStudents() {
       {
         onSuccess: () => {
           toast.success('Estudantes importados com sucesso!')
+          dialogCloseRef.current?.click()
+          setIsLoading(false)
+        },
+        onError: () => {
+          toast.error(
+            'Ops! Houve um erro desconhecido ao importar os estudantes.',
+          )
+          setIsLoading(false)
         },
       },
     )
@@ -81,7 +100,7 @@ export default function ImportStudents() {
           </Button>
         </Dialog.Trigger>
 
-        <Dialog.Content className="flex h-full flex-col">
+        <Dialog.Content className="flex h-full flex-col md:max-h-96 md:overflow-y-auto">
           <Dialog.Header>
             <Dialog.Title>Importar lista de estudantes</Dialog.Title>
             <Dialog.Description>
@@ -91,7 +110,7 @@ export default function ImportStudents() {
           </Dialog.Header>
 
           {data.length === 0 && (
-            <div className="rounded-md border p-2 text-center">
+            <div className="rounded-md p-2 text-center font-semibold">
               Nenhum arquivo selecionado
             </div>
           )}
@@ -130,9 +149,23 @@ export default function ImportStudents() {
           <div className="mt-auto space-y-4">
             <Input type="file" onChange={handleFileUpload} />
 
-            <Button className="w-full" onClick={handleAddStudents}>
-              Adicionar estudantes
+            <Button
+              className="w-full"
+              disabled={isLoading}
+              onClick={handleAddStudents}
+            >
+              {isLoading ? (
+                <>Importando lista de estudantes...</>
+              ) : (
+                'Adicionar estudantes'
+              )}
             </Button>
+
+            <Dialog.Close asChild ref={dialogCloseRef}>
+              <Button variant="outline" className="w-full" disabled={isLoading}>
+                Cancelar
+              </Button>
+            </Dialog.Close>
           </div>
         </Dialog.Content>
       </Dialog.Root>

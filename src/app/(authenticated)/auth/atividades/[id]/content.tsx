@@ -12,7 +12,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Dialog } from '@/components/ui/dialog'
 
-import { compareDateWithToday } from '@/utils/compareDateWithToday'
+import { compareDateWithRange } from '@/utils/compareDateWithToday'
 
 import FormSendTask from './_components/form-send-task'
 import { useDeleteTask } from '../_hooks/use-delete-task'
@@ -38,6 +38,7 @@ export default function Content() {
     return null
   }
 
+  const formattedOpeningDate = format(task.openingDate, 'dd/MM/yyyy - HH:mm')
   const formattedClosingDate = format(task.closingDate, 'dd/MM/yyyy - HH:mm')
 
   return (
@@ -139,7 +140,10 @@ export default function Content() {
             <Badge variant="outline" className="w-full bg-white p-1.5">
               {(() => {
                 const isBeforeClosingDate =
-                  compareDateWithToday(formattedClosingDate) === true
+                  compareDateWithRange(
+                    formattedOpeningDate,
+                    formattedClosingDate,
+                  ) === true
 
                 return (
                   <span
@@ -161,7 +165,10 @@ export default function Content() {
           )}
 
           {session?.user.role === 'STUDENT' &&
-            (compareDateWithToday(formattedClosingDate) ? (
+            (compareDateWithRange(
+              formattedOpeningDate,
+              formattedClosingDate,
+            ) ? (
               <>
                 <Dialog.Root>
                   <Dialog.Trigger asChild>

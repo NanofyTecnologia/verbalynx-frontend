@@ -93,7 +93,7 @@ export default function Content() {
         </div>
 
         <div className="space-y-0.5">
-          <Label>Período</Label>
+          <Label>Turno</Label>
 
           <Select.Root
             value={period}
@@ -113,17 +113,17 @@ export default function Content() {
         </div>
 
         <div className="space-y-0.5">
-          <Label>Ensino </Label>
+          <Label>Nível</Label>
 
           <Select.Root
             value={educationLevel}
             onValueChange={(value) => setValue('educationLevel', value)}
           >
             <Select.Trigger disabled={isSubmitting}>
-              <Select.Value placeholder="Selecione o ensino" />
+              <Select.Value placeholder="Selecione o Nível de Ensino" />
             </Select.Trigger>
             <Select.Content>
-              <Select.Item value="Fundamental">Fundamental</Select.Item>
+              <Select.Item value="Fundamental">Ensino Fundamental</Select.Item>
 
               <Select.Item value="Ensino Médio">Ensino Médio</Select.Item>
 

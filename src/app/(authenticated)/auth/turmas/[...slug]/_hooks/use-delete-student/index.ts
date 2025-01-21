@@ -5,7 +5,7 @@ import { user } from '@/services/user'
 export function useDeleteStudent() {
   const mutation = createMutation({
     mutationKey: ['delete-student'],
-    mutationFn: user.delete,
+    mutationFn: user.deleteTeam,
   })
 
   return mutation()

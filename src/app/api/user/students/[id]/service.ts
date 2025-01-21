@@ -5,7 +5,14 @@ import { authOptions } from '@/lib/next-auth'
 import { HttpError } from '@/helpers/http-error'
 
 import { sendEmail } from '../_utils/send-email'
-import { findById, createMany, type CreateManyData } from './repository'
+import {
+  findById,
+  createMany,
+  type CreateManyData,
+  findByClassId,
+  create,
+  findByEmail,
+} from './repository'
 
 async function getStudentById(id: string) {
   const session = await getServerSession(authOptions)
@@ -24,13 +31,21 @@ async function createManyStudents(data: CreateManyData, classId: string) {
     throw new HttpError('UNAUTHORIZED', HttpStatusCode.Unauthorized)
   }
 
-  const students = await createMany(data, classId)
+  const team = await findByClassId(classId)
 
-  for (const student of students) {
-    await sendEmail(student, session.user.name as string)
+  const tasks = team ? (team.tasks.length === 0 ? [] : team?.tasks) : []
+
+  for (const student of data) {
+    const isEmailDuplicated = await findByEmail(student.email)
+
+    if (isEmailDuplicated) {
+      continue
+    }
+
+    const createdStudent = await create(student, classId, tasks)
+
+    await sendEmail(createdStudent, session.user.name as string)
   }
-
-  return students
 }
 
 export { getStudentById, createManyStudents }
