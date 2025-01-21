@@ -14,7 +14,7 @@ import { NanoEye, NanoEyeClosed } from '@/assets/svgs'
 
 import { normalize } from '@/utils/normalize'
 import { Highlight } from '@/utils/highlight'
-import { compareDateWithToday } from '@/utils/compareDateWithToday'
+import { compareDateWithRange } from '@/utils/compareDateWithToday'
 
 import { useGetTasks } from './_hooks/use-get-tasks'
 
@@ -76,7 +76,9 @@ export default function Content() {
           {!isLoading &&
             filteredData?.map((item) => {
               const isBeforeClosingDate =
-                compareDateWithToday(
+                compareDateWithRange(
+                  format(item.openingDate, 'dd/MM/yyyy - HH:mm'),
+
                   format(item.closingDate, 'dd/MM/yyyy - HH:mm'),
                 ) === true
 
@@ -112,7 +114,7 @@ export default function Content() {
                               className={`font-semibold ${
                                 isBeforeClosingDate
                                   ? 'text-[#8ABF3B]'
-                                  : 'text-[#FF6B6B]' // Cor diferente para datas que já passaram
+                                  : 'text-[#FF6B6B]'
                               }`}
                             >
                               {format(item.closingDate, 'dd/MM/yyyy - HH:mm')}
