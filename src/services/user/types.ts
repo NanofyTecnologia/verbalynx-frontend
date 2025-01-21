@@ -21,7 +21,12 @@ export type CreateManyUsersParams = {
 }
 
 export type UserPreview = User
-export type GetAllStudents = UserPreview
+
+export type GetAllStudentsParams = {
+  teamId: string | undefined
+}
+export type GetAllStudentsResponse = UserPreview
+
 export type GetUserByIdResponse = UserPreview
 
 export type UpdateUserParams = {
@@ -38,6 +43,11 @@ export type AdminUpdateParams = {
 
 export type DeleteUserParams = {
   id: string
+}
+
+export type DeleteUserTeamParams = {
+  userId: string
+  teamId: string
 }
 
 export type GetStudentByIdParams = {

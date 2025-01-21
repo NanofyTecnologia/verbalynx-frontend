@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     default: 'Verbalynx',
     template: '%s | Verbalynx',
   },
-  description: 'Avaliação de alunos e feedbacks de atividades',
+  description: 'Avaliação de estudantes e feedbacks de atividades',
 }
 
 export default function RootLayout({

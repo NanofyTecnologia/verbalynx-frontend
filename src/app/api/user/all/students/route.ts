@@ -7,7 +7,8 @@ import { getAllStudents } from './service'
 
 export async function GET(req: NextRequest) {
   try {
-    const allStudents = await getAllStudents()
+    const teamId = req.nextUrl.searchParams.get('teamId')
+    const allStudents = await getAllStudents({ teamId })
 
     return NextResponse.json(allStudents, { status: HttpStatusCode.Ok })
   } catch (error) {

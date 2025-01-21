@@ -19,4 +19,19 @@ function createStudents(id: string, data: string[]) {
   )
 }
 
-export { createStudents }
+function deleteStudent(id: string, userId: string) {
+  return prisma.class.update({
+    where: {
+      id,
+    },
+    data: {
+      students: {
+        disconnect: {
+          id: userId,
+        },
+      },
+    },
+  })
+}
+
+export { createStudents, deleteStudent }

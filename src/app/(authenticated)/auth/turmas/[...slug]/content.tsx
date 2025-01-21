@@ -18,6 +18,7 @@ import {
   EllipsisVertical,
 } from 'lucide-react'
 import { toast } from 'react-toastify'
+import { useHookFormMask } from 'use-mask-input'
 
 import { Table } from '@/components/ui/table'
 import { Input } from '@/components/ui/input'
@@ -63,28 +64,43 @@ export default function Content() {
   const { mutate: handleCreateStudent } = useCreateStudent()
   const { mutate: handleDeleteStudent } = useDeleteStudent()
 
+  const [isLoadingNewStudent, setShowIsLoadingNewStudent] = useState(false)
   const [showDialog, setShowDialog] = useState(false)
   const [showStudentsList, setShowStudentsList] = useState(true)
 
   const { register, handleSubmit, setValue } = useForm<StudentData>({
     resolver: zodResolver(studentSchema),
   })
+  const registerWithMask = useHookFormMask(register)
 
   const onSubmit: SubmitHandler<StudentData> = (data) => {
+    setShowIsLoadingNewStudent(true)
     if (!team) return
 
     handleCreateStudent(
       {
-        ...data,
-        graduation: team.educationLevel,
-        classId: team.id,
-        role: 'STUDENT',
+        id,
+        students: [
+          {
+            ...data,
+            graduation: team.educationLevel,
+            classId: team.id,
+            role: 'STUDENT',
+          },
+        ],
       },
       {
         onSuccess: () => {
           refetch()
           setShowDialog(false)
+          setShowIsLoadingNewStudent(false)
           toast.success('Estudante cadastrado com sucesso!')
+        },
+        onError: () => {
+          setShowIsLoadingNewStudent(false)
+          toast.error(
+            'Ops! Algo deu errado ao tentar cadastrar novo estudante.',
+          )
         },
       },
     )
@@ -187,7 +203,7 @@ export default function Content() {
                     session?.user.role === 'PROFESSOR' ? '' : 'invisible'
                   }
                 >
-                  Ações
+                  <div className="text-center">Ações</div>
                 </Table.Head>
               </Table.Row>
             </Table.Header>
@@ -254,17 +270,20 @@ export default function Content() {
                                         type="button"
                                         onClick={() => {
                                           handleDeleteStudent(
-                                            { id: student.id },
+                                            {
+                                              teamId: id ?? '',
+                                              userId: student.id,
+                                            },
                                             {
                                               onSuccess: () => {
                                                 refetch()
                                                 toast.success(
-                                                  'Estudante deletado com sucesso!',
+                                                  'Estudante removido da turma com sucesso!',
                                                 )
                                               },
                                               onError: (err) => {
                                                 toast.error(
-                                                  'Houve um erro ao excluir o estudante. Tente novamente mais tarde.',
+                                                  'Houve um erro ao remover o estudante. Tente novamente mais tarde.',
                                                 )
 
                                                 return err
@@ -367,18 +386,40 @@ export default function Content() {
           </Dialog.Header>
 
           {showStudentsList && (
-            <AllStudentsList setShowStudentsList={setShowStudentsList} />
+            <AllStudentsList
+              refetch={refetch}
+              setShowDialog={setShowDialog}
+              setShowStudentsList={setShowStudentsList}
+            />
           )}
 
           {!showStudentsList && (
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              <div className="space-y-0.5">
-                <Label>Nome do estudante</Label>
+              <div className="grid md:grid-cols-2 md:gap-4">
+                <div className="space-y-0.5">
+                  <Label>Nome do estudante</Label>
 
-                <div className="relative">
-                  <Input {...register('name')} className="peer" />
+                  <div className="relative">
+                    <Input {...register('name')} className="peer" />
 
-                  <div className="invisible absolute left-0 top-4 w-full rounded-md bg-red-500 p-4 peer-focus:visible"></div>
+                    <div className="invisible absolute left-0 top-4 w-full rounded-md bg-red-500 p-4 peer-focus:visible"></div>
+                  </div>
+                </div>
+
+                <div className="space-y-0.5">
+                  <Label>CPF do estudante</Label>
+
+                  <div className="relative">
+                    <Input
+                      {...registerWithMask('cpf', ['999.999.999-99'], {
+                        showMaskOnFocus: false,
+                        showMaskOnHover: false,
+                      })}
+                      className="peer"
+                    />
+
+                    <div className="invisible absolute left-0 top-4 w-full rounded-md bg-red-500 p-4 peer-focus:visible"></div>
+                  </div>
                 </div>
               </div>
 
@@ -407,7 +448,10 @@ export default function Content() {
                   <Label className="text-sm">Código da Matrícula</Label>
 
                   <div className="relative flex items-center">
-                    <Input {...register('registrationCode')} />
+                    <Input
+                      autoComplete="off"
+                      {...register('registrationCode')}
+                    />
 
                     <button
                       type="button"
@@ -450,12 +494,22 @@ export default function Content() {
                 <Textarea {...register('observation')} />
               </div>
 
-              <Dialog.Footer className="gap-4">
+              <Dialog.Footer className="gap-y-4">
                 <Dialog.Close asChild>
                   <Button variant="outline">Cancelar</Button>
                 </Dialog.Close>
 
-                <Button type="submit">Salvar</Button>
+                <Button
+                  variant="secondary"
+                  className="bg-zinc-200 hover:bg-zinc-200/80"
+                  onClick={() => setShowStudentsList((prev) => !prev)}
+                >
+                  Visualizar lista de estudantes
+                </Button>
+
+                <Button type="submit" disabled={isLoadingNewStudent}>
+                  {isLoadingNewStudent ? 'Adicionando estudante...' : 'Salvar'}
+                </Button>
               </Dialog.Footer>
             </form>
           )}
