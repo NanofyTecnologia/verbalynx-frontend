@@ -45,16 +45,6 @@ export default function Content() {
 
   return (
     <>
-      {data?.user.role === 'PROFESSOR' && (
-        <div className="mt-6 text-end">
-          <Button className="shadow" asChild>
-            <Link href="">
-              Novo estudante <SquarePlus />
-            </Link>
-          </Button>
-        </div>
-      )}
-
       <div className="mt-6 space-y-6">
         <div className="space-y-0.5">
           <Label>Turma</Label>

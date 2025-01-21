@@ -53,17 +53,30 @@ export default function Content() {
   const onSubmit: SubmitHandler<UserData> = (data) => {
     const { name, email, pronoun } = data
 
-    handleUpdateUser(
-      {
-        pronoun,
-      },
-      {
-        onSuccess: () => {
-          update({ name, email })
-          toast.success('Perfil atualizado com sucesso!')
+    if (session?.user.role === 'PROFESSOR') {
+      handleUpdateUser(
+        {
+          ...data,
         },
-      },
-    )
+        {
+          onSuccess: () => {
+            update({ name, email })
+            toast.success('Perfil atualizado com sucesso!')
+          },
+        },
+      )
+    } else {
+      handleUpdateUser(
+        {
+          pronoun,
+        },
+        {
+          onSuccess: () => {
+            toast.success('Perfil atualizado com sucesso!')
+          },
+        },
+      )
+    }
   }
 
   const { pronoun } = watch()
