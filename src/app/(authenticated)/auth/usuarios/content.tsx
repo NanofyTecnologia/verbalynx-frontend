@@ -31,7 +31,7 @@ import { useGetAllStudents } from '@/hooks/services/use-get-all-students'
 
 export default function Content() {
   const { back } = useRouter()
-  const { data: students } = useGetAllStudents()
+  const { data: students } = useGetAllStudents({ teamId: '' })
   const { mutate: handleUpdateUser } = useUpdateUser()
 
   const [pagination, setPagination] = useState<PaginationState>({
