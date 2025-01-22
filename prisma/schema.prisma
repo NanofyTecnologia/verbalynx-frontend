@@ -188,6 +188,7 @@ model Criterion {
   description String?
   level       Int?
   score       Int[]
+  comment     String[]
   rubricId    String?  @map("rubric_id")
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
