@@ -152,6 +152,18 @@ export default function Content() {
           />
         </div>
 
+        {session?.user.role === 'STUDENT' && (
+          <div className="space-y-0.5">
+            <Label>Matrícula</Label>
+
+            <Input
+              error={errors.cpf?.message}
+              disabled={session?.user.role === 'STUDENT'}
+              defaultValue={user?.registrationCode ?? ''}
+            />
+          </div>
+        )}
+
         <div className="space-y-0.5">
           <Label>Pronome</Label>
 
