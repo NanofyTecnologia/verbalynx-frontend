@@ -101,21 +101,16 @@ export default function Content() {
         </div>
       </div>
 
-      <div className="mt-6 rounded-lg bg-white p-4 text-sm">
-        <div className="text-center">
-          <p>
-            Tabela de informações da rubrica:{' '}
-            <span className="font-semibold">{tasks.rubric.name}</span>
-          </p>
-        </div>
+      <div className="mt-6 rounded-lg bg-white p-4 text-sm md:mt-10">
+        <p className="text-center font-semibold">{tasks.rubric.name}</p>
 
-        <div className="mx-auto mt-4 overflow-auto">
-          <table className="mt-12 w-full border-2 border-black text-center">
-            <thead className="text-nowrap border-b-2 border-black bg-[#73D997]">
-              <tr>
-                <th className="border-r-2 border-black" />
+        <div className="mx-auto overflow-auto">
+          <table className="mt-5 w-full border-[1px] border-black text-center">
+            <thead className="text-nowrap border-b-[1px] border-black bg-[#73D997]">
+              <tr className="">
+                <th className="border-r-[1px] border-black" />
                 {Array.from({ length: maxLevel }, (_, level) => (
-                  <th key={level} className="border-r-2 border-black">
+                  <th key={level} className="border-r-[1px] border-black py-1">
                     Nível {level + 1}
                   </th>
                 ))}
@@ -123,12 +118,12 @@ export default function Content() {
             </thead>
             <tbody>
               {rubrics.map((item, index) => (
-                <tr className="border-b-2 border-black" key={item.name}>
-                  <td className="text-nowrap border-r-2 border-black bg-[#73D997] px-3 font-semibold">
+                <tr className="border-b-[1px] border-black" key={item.name}>
+                  <td className="max-w-20 text-wrap border-r-[1px] border-black bg-[#73D997] px-2 py-3 font-semibold">
                     {item.name}
                   </td>
                   {Array.from({ length: maxLevel }, (_, level) => (
-                    <td className="border-r-2 border-black" key={level}>
+                    <td className="border-r-[1px] border-black" key={level}>
                       {item.score[level] !== undefined ? item.score[level] : 0}{' '}
                       pontos
                     </td>

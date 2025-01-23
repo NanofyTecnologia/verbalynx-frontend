@@ -15,6 +15,7 @@ export type GetTaskResponse = {
       name: string
       description: string
       level: number
+      comment: string[]
       score: number[]
     }[]
   }
@@ -63,6 +64,7 @@ export type CreateTaskParams = Omit<
       name: string
       description: string
       level: number
+      comment: string[]
       score: number[]
     }[]
   }

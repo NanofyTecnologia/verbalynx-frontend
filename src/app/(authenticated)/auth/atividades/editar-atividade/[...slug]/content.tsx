@@ -22,8 +22,7 @@ import { TaskEditData, taskEditSchema } from './_schema'
 import { useUpdateTask } from './_hooks/use-update-task'
 import { useDeleteCriterion } from './_hooks/use-delete-criterion'
 import { AxiosError } from 'axios'
-import form from '@/app/(unauthenticated)/cadastro/form'
-import { error } from 'console'
+import json from '@/data/points.json'
 
 export interface IParams {
   [key: string]: string[]
@@ -36,29 +35,7 @@ interface Criterion {
   score: number[]
 }
 
-const points = [
-  '0',
-  '5',
-  '10',
-  '15',
-  '20',
-  '25',
-  '30',
-  '35',
-  '40',
-  '45',
-  '50',
-  '55',
-  '60',
-  '65',
-  '70',
-  '75',
-  '80',
-  '85',
-  '90',
-  '95',
-  '100',
-]
+const points = json.points
 
 export default function Content() {
   const { replace, back } = useRouter()

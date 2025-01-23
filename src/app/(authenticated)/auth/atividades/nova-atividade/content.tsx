@@ -20,37 +20,17 @@ import { useGetClassesById } from '@/hooks/services/use-get-classes-by-id'
 
 import { TaskData, taskSchema } from './_schema'
 import { useCreateTask } from './_hooks/use-create-task'
-
-const points = [
-  '0',
-  '5',
-  '10',
-  '15',
-  '20',
-  '25',
-  '30',
-  '35',
-  '40',
-  '45',
-  '50',
-  '55',
-  '60',
-  '65',
-  '70',
-  '75',
-  '80',
-  '85',
-  '90',
-  '95',
-  '100',
-]
+import json from '@/data/points.json'
 
 interface Criterion {
   name: string
   description: string
   level: number
   score: number[]
+  comment: string[]
 }
+
+const points = json.points
 
 export default function Content() {
   const { back, replace } = useRouter()
@@ -69,8 +49,10 @@ export default function Content() {
   const [showDialog, setShowDialog] = useState(false)
 
   const [criteria, setCriteria] = useState<Criterion[]>([
-    { name: '', description: '', level: 1, score: [] },
+    { name: '', description: '', level: 1, score: [], comment: [] },
   ])
+
+  console.log('data: ', criteria)
 
   const onSubmit: SubmitHandler<TaskData> = (data) => {
     handleCreateTask(
@@ -94,7 +76,7 @@ export default function Content() {
     if (criteria.length < 30) {
       setCriteria((prev) => [
         ...prev,
-        { name: '', description: '', level: 1, score: [] },
+        { name: '', description: '', level: 1, score: [], comment: [] },
       ])
     }
   }
@@ -106,7 +88,7 @@ export default function Content() {
   const updateCriterion = (
     index: number,
     key: keyof Criterion,
-    value: string | number | number[],
+    value: string | number | number[] | string[],
   ) => {
     setCriteria((prev) =>
       prev.map((criterion, i) =>
@@ -172,7 +154,7 @@ export default function Content() {
         </div>
 
         <div className="space-y-0.5">
-          <Label>Nome da Atividade</Label>
+          <Label>Nome da atividade</Label>
           <Input
             {...register('name')}
             placeholder="Informe o nome para a nova atividade"
@@ -201,7 +183,7 @@ export default function Content() {
         </div>
 
         <div className="space-y-0.5">
-          <Label>Objetivo Geral da Atividade</Label>
+          <Label>Objetivo geral da atividade</Label>
           <Textarea
             {...register('objective')}
             disabled={isSubmitting}
@@ -210,7 +192,7 @@ export default function Content() {
         </div>
 
         <div className="space-y-0.5">
-          <Label>Nome da Rubrica</Label>
+          <Label>Nome da rubrica</Label>
           <Input
             {...register('rubric.name')}
             placeholder="Insira o nome da rubrica"
@@ -220,7 +202,7 @@ export default function Content() {
 
         <div className="space-y-6">
           {criteria.map((criterion, index) => (
-            <div key={index} className="relative space-y-4 border-b pb-4">
+            <div key={index} className="relative space-y-6 border-b pb-4">
               {index > 0 && (
                 <Button
                   onClick={() => removeCriterion(index)}
@@ -231,7 +213,7 @@ export default function Content() {
               )}
 
               <div className="space-y-0.5">
-                <Label> Título do Critério {index + 1}</Label>
+                <Label> Título do critério {index + 1}</Label>
                 <Input
                   placeholder="Insira o título do critério"
                   value={criterion.name}
@@ -243,7 +225,7 @@ export default function Content() {
               </div>
 
               <div className="space-y-0.5">
-                <Label>Descrição do Critério {index + 1}</Label>
+                <Label>Descrição do critério {index + 1}</Label>
                 <Input
                   placeholder="Descreva sobre o critério criado para a rubrica"
                   onChange={(e) =>
@@ -254,7 +236,7 @@ export default function Content() {
               </div>
 
               <div className="space-y-0.5">
-                <Label>N° de níveis</Label>
+                <Label>N° de níveis de qualidade</Label>
                 <Select.Root
                   onValueChange={(value) => {
                     updateCriterion(index, 'level', Number(value))
@@ -274,40 +256,58 @@ export default function Content() {
                 </Select.Root>
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-6">
                 {Array.from({ length: criterion.level }, (_, levelIndex) => (
-                  <div key={levelIndex} className="flex items-center gap-2">
-                    <Input
-                      type="text"
-                      placeholder={`Nível ${levelIndex + 1}`}
-                      disabled
-                    />
-                    <Select.Root
-                      onValueChange={(value) => {
-                        const updatedScores = [...criterion.score]
-                        updatedScores[levelIndex] = Number(value)
-                        updateCriterion(index, 'score', updatedScores)
-                      }}
-                      disabled={isSubmitting}
-                    >
-                      <Select.Trigger>
-                        <Select.Value
-                          placeholder={
-                            criterion.score[levelIndex]
-                              ? `${criterion.score[levelIndex]} pontos`
-                              : '0 pontos'
-                          }
-                        />
-                      </Select.Trigger>
-                      <Select.Content>
-                        {points.map((num) => (
-                          <Select.Item key={num} value={num}>
-                            {num} pontos
-                          </Select.Item>
-                        ))}
-                      </Select.Content>
-                    </Select.Root>
-                  </div>
+                  <>
+                    <div key={levelIndex} className="flex items-center gap-2">
+                      <Input
+                        type="text"
+                        placeholder={`Nível de Qualidade ${levelIndex + 1}`}
+                        disabled
+                      />
+
+                      <Select.Root
+                        onValueChange={(value) => {
+                          const updatedScores = [...criterion.score]
+                          updatedScores[levelIndex] = Number(value)
+                          updateCriterion(index, 'score', updatedScores)
+                        }}
+                        disabled={isSubmitting}
+                      >
+                        <Select.Trigger>
+                          <Select.Value
+                            placeholder={
+                              criterion.score[levelIndex]
+                                ? `${criterion.score[levelIndex]} pontos`
+                                : '0 pontos'
+                            }
+                          />
+                        </Select.Trigger>
+                        <Select.Content>
+                          {points.map((num) => (
+                            <Select.Item key={num} value={num}>
+                              {num} pontos
+                            </Select.Item>
+                          ))}
+                        </Select.Content>
+                      </Select.Root>
+                    </div>
+
+                    <div className="space-y-0.5">
+                      <Label>
+                        Comentário do nível de qualidade {levelIndex + 1}
+                      </Label>
+                      <Textarea
+                        onChange={(prev) => {
+                          const updateComment = [...criterion.comment]
+                          updateComment[levelIndex] = String(prev.target.value)
+                          updateCriterion(index, 'comment', updateComment)
+                        }}
+                        placeholder={`Faça um comentário acerca do nível de qualidade ${levelIndex + 1}`}
+                        disabled={isSubmitting}
+                      />
+                    </div>
+                  </>
                 ))}
               </div>
             </div>
@@ -323,7 +323,7 @@ export default function Content() {
               className="mt-4 h-10 w-full"
               disabled={isSubmitting}
             >
-              <span>Adicionar Critério</span>
+              <span>Adicionar critério</span>
               <CirclePlus className="ml-1" size={20} />
             </Button>
           )}
