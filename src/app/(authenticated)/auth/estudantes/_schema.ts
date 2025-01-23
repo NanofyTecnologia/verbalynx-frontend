@@ -12,6 +12,7 @@ export const feedbackSchema = z.object({
         description: z.string().min(1),
         level: z.number(),
         comment: z.array(z.string()),
+        selectedComment: z.string(),
         score: z.array(z.number()),
       }),
       criterionId: z.string(),

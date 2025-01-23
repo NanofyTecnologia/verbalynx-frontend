@@ -39,8 +39,6 @@ export default function Content() {
     useFormContext<FeedbackData>()
   const { teamId, userId, taskId, feedback } = watch()
 
-  console.log(feedback)
-
   const { data: feedbackDetails } = useGetFeedbackDetails({
     userId,
     teamId,
@@ -58,6 +56,7 @@ export default function Content() {
       comment: '',
       criterion: {
         id: '',
+        selectedComment: '',
         description: '',
         score: [],
         comment: [],
@@ -77,7 +76,9 @@ export default function Content() {
   })
 
   const onSubmit: SubmitHandler<FeedbackData> = (data) => {
-    const { userId, teamId, taskId } = data
+    // eslint-disable-next-line
+    // @ts-ignore
+    const { userId, teamId, taskId, selectedComment } = data
 
     handleCreateFeedback(
       {
@@ -271,12 +272,19 @@ export default function Content() {
                                     Number(value) - 1
                                   ],
                                 )
-                                // setValue(
-                                //   `feedback.${index}.criterion.comment`,
-                                //   feedback[index].criterion.comment[
-                                //     Number(value) - 1
-                                //   ],
-                                // )
+
+                                console.log(
+                                  feedback[index].criterion.comment[
+                                    Number(value) - 1
+                                  ],
+                                )
+
+                                setValue(
+                                  `feedback.${index}.criterion.selectedComment`,
+                                  feedback[index].criterion.comment[
+                                    Number(value) - 1
+                                  ],
+                                )
                               }}
                             >
                               <Select.Trigger
@@ -317,7 +325,9 @@ export default function Content() {
 
                           <Textarea
                             disabled
-                            {...register(`feedback.${index}.criterion.comment`)}
+                            {...register(
+                              `feedback.${index}.criterion.selectedComment`,
+                            )}
                           />
                         </div>
 

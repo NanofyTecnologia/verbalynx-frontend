@@ -62,11 +62,11 @@ export default function Header() {
 
             <div className="ms-auto">
               <div className="flex items-center gap-4">
-                <div className="text-sm font-medium">
-                  <b>Cód. Matrícula:</b>{' '}
-                  {session?.user.role === 'PROFESSOR' &&
-                    session?.user.registrationCode}
-                </div>
+                {session?.user.role === 'STUDENT' && (
+                  <div className="text-sm font-medium">
+                    <b>Cód. Matrícula:</b> {session?.user.registrationCode}
+                  </div>
+                )}
                 <UserCircle className="size-6" />
               </div>
             </div>
