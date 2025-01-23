@@ -12,7 +12,6 @@ import {
   Dices,
   Search,
   UserPlus,
-  HelpCircle,
   ChevronLeft,
   ContactRound,
   EllipsisVertical,
@@ -26,12 +25,13 @@ import { Badge } from '@/components/ui/badge'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Dialog } from '@/components/ui/dialog'
+import { Tooltip } from '@/components/ui/tooltip'
 import { Textarea } from '@/components/ui/textarea'
 import { RadioGroup } from '@/components/ui/radio-group'
 import { Dropdown } from '@/components/ui/dropdown-menu'
 
 import { normalizeSlug } from '@/utils/normalize-slug'
-import { generateRegistrationCode } from '@/utils/generate-student-code'
+import { generateRegistrationCode } from '@/utils/generate-registration-code'
 
 import { useDeleteClass } from '../_hooks/use-delete-class'
 import { useGetClassById } from '../_hooks/use-get-class-by-id'
@@ -379,7 +379,7 @@ export default function Content() {
       </div>
 
       <Dialog.Root open={showDialog} onOpenChange={setShowDialog}>
-        <Dialog.Content className="flex h-full flex-col md:grid md:h-auto md:flex-row">
+        <Dialog.Content className="flex h-full flex-col md:grid md:h-auto md:max-w-2xl md:flex-row">
           <Dialog.Header>
             <Dialog.Title>Cadastrar novo estudante na turma</Dialog.Title>
             <Dialog.Description />
@@ -453,15 +453,28 @@ export default function Content() {
                       {...register('registrationCode')}
                     />
 
-                    <button
-                      type="button"
-                      className="absolute right-1"
-                      onClick={() =>
-                        setValue('registrationCode', generateRegistrationCode())
-                      }
-                    >
-                      <Dices className="size-4" />
-                    </button>
+                    <Tooltip.Provider>
+                      <Tooltip.Root>
+                        <Tooltip.Trigger asChild>
+                          <button
+                            type="button"
+                            className="absolute right-1"
+                            onClick={() =>
+                              setValue(
+                                'registrationCode',
+                                generateRegistrationCode(),
+                              )
+                            }
+                          >
+                            <Dices className="size-4" />
+                          </button>
+                        </Tooltip.Trigger>
+
+                        <Tooltip.Content>
+                          Gerar código de estudante
+                        </Tooltip.Content>
+                      </Tooltip.Root>
+                    </Tooltip.Provider>
                   </div>
                 </div>
 

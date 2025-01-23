@@ -6,21 +6,23 @@ import { useParams, useRouter } from 'next/navigation'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useHookFormMask } from 'use-mask-input'
-import { ChevronLeft } from 'lucide-react'
+import { ChevronLeft, Dices } from 'lucide-react'
 
 import { Label } from '@/components/ui/label'
 import { Select } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Table } from '@/components/ui/table'
-import { normalizeSlug } from '@/utils/normalize-slug'
-import { cn } from '@/lib/shadcn'
 
+import { cn } from '@/lib/shadcn'
+import { normalizeSlug } from '@/utils/normalize-slug'
+import { generateRegistrationCode } from '@/utils/generate-registration-code'
 import { type IParams } from '@/types/params'
 
 import { StudentData, studentSchema } from './_schema'
 import { useUpdateStudent } from './_hooks/use-update-student-by-id'
 import { useGetStudentById } from './_hooks/use-get-student-by-id'
+import { Tooltip } from '@/components/ui/tooltip'
 
 export default function Content() {
   const { push, back } = useRouter()
@@ -47,12 +49,13 @@ export default function Content() {
       return
     }
 
-    const { name, email, cpf, graduation } = student
+    const { name, email, cpf, graduation, registrationCode } = student
 
     reset({
       name: name ?? '',
       email,
       cpf: cpf ?? '',
+      registrationCode: registrationCode ?? '',
       graduation: graduation ?? '',
     })
   }
@@ -97,22 +100,13 @@ export default function Content() {
           <Input {...register('name')} error={errors.name?.message} />
         </div>
 
-        <div className="space-y-0.5">
-          <Label>E-mail</Label>
-
-          <Input {...register('email')} error={errors.email?.message} />
-        </div>
-
-        <div className="flex items-center justify-between gap-4">
-          <div className="w-full space-y-0.5">
-            <Label>CPF</Label>
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-0.5">
+            <Label>E-mail</Label>
 
             <Input
-              {...registerWithMask('cpf', ['999.999.999-99'], {
-                showMaskOnFocus: false,
-                showMaskOnHover: false,
-              })}
-              error={errors.cpf?.message}
+              {...register('email')}
+              error={errors.registrationCode?.message}
             />
           </div>
 
@@ -139,6 +133,46 @@ export default function Content() {
                 <Select.Item value="Outro">Outro</Select.Item>
               </Select.Content>
             </Select.Root>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div className="w-full space-y-0.5">
+            <Label>CPF</Label>
+
+            <Input
+              {...registerWithMask('cpf', ['999.999.999-99'], {
+                showMaskOnFocus: false,
+                showMaskOnHover: false,
+              })}
+              error={errors.cpf?.message}
+            />
+          </div>
+
+          <div className="space-y-0.5">
+            <Label className="text-sm">Código da Matrícula</Label>
+
+            <div className="relative flex items-center">
+              <Input autoComplete="off" {...register('registrationCode')} />
+
+              <Tooltip.Provider>
+                <Tooltip.Root>
+                  <Tooltip.Trigger asChild>
+                    <button
+                      type="button"
+                      className="absolute right-1"
+                      onClick={() =>
+                        setValue('registrationCode', generateRegistrationCode())
+                      }
+                    >
+                      <Dices className="size-4" />
+                    </button>
+                  </Tooltip.Trigger>
+
+                  <Tooltip.Content>Gerar código de estudante</Tooltip.Content>
+                </Tooltip.Root>
+              </Tooltip.Provider>
+            </div>
           </div>
         </div>
 
