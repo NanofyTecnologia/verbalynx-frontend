@@ -15,6 +15,7 @@ function findById(id: string, teacherId: string) {
       cpf: true,
       pronoun: true,
       graduation: true,
+      registrationCode: true,
       class: {
         select: {
           name: true,

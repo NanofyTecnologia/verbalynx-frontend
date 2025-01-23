@@ -218,7 +218,7 @@ export default function AllStudentsList({
 
         <Button
           type="button"
-          className="w-full"
+          className="w-full md:w-auto"
           onClick={onSubmitSelectedStudents}
         >
           Cadastrar selecionados

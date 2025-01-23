@@ -8,6 +8,7 @@ export const studentSchema = z.object({
     .string()
     .min(1, 'Insira seu CPF')
     .refine((value) => CPF.isValid(value), 'CPF Inválido'),
+  registrationCode: z.string().min(1, 'Insira o Nº matrícula'),
   graduation: z.string().min(1, 'Insira o ensino do estudante'),
 })
 
