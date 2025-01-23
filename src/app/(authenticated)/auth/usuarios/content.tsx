@@ -16,9 +16,8 @@ import {
 } from '@tanstack/react-table'
 
 import { toast } from 'react-toastify'
-import { EllipsisVertical, User, ChevronLeft, ChevronRight } from 'lucide-react'
+import { EllipsisVertical, ChevronLeft, ChevronRight } from 'lucide-react'
 import { type ColumnDef } from '@tanstack/react-table'
-import { useUpdateUser } from './_hooks/use-update-user'
 
 import { Checkbox } from '@/components/ui/checkbox'
 import { Dropdown } from '@/components/ui/dropdown-menu'
@@ -28,6 +27,16 @@ import { Button } from '@/components/ui/button'
 
 import { type UserPreview } from '@/services/user/types'
 import { useGetAllStudents } from '@/hooks/services/use-get-all-students'
+
+import { useUpdateUser } from './_hooks/use-update-user'
+import { Select } from '@/components/ui/select'
+
+const roleMap: { [key: string]: string } = {
+  ADMIN: 'Administrador',
+  STUDENT: 'Estudante',
+  PROFESSOR: 'Professor(a)',
+  PENDING_APPROVAL: 'Aguardando aprovação',
+}
 
 export default function Content() {
   const { back } = useRouter()
@@ -85,6 +94,15 @@ export default function Content() {
         header: 'E-mail',
         cell: ({ row }) => (
           <div className="text-nowrap py-2">{row.getValue('email')}</div>
+        ),
+      },
+      {
+        accessorKey: 'role',
+        header: 'Função',
+        cell: ({ row }) => (
+          <div className="text-nowrap py-2">
+            {roleMap[row.getValue('role') as string]}
+          </div>
         ),
       },
       {
@@ -174,10 +192,6 @@ export default function Content() {
     },
   })
 
-  const onSubmitSelectedStudents = () => {
-    const selectedStudents = Object.keys(rowSelection)
-  }
-
   const selectedRowsLength = Object.keys(rowSelection).length
   const totalPages = Math.ceil(data.length / pagination.pageSize)
 
@@ -194,15 +208,37 @@ export default function Content() {
       </div>
 
       <div className="mt-4 w-full space-y-4">
-        <div className="flex items-center">
+        <div className="flex items-center gap-4">
           <Input
-            placeholder="Pesquisar..."
+            placeholder="Pesquisar por nome..."
             value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
             onChange={(event) =>
               table.getColumn('name')?.setFilterValue(event.target.value)
             }
             className="h-10 w-full"
           />
+
+          <Select.Root
+            onValueChange={(value) => {
+              table
+                .getColumn('role')
+                ?.setFilterValue(value === 'ALL' ? '' : value)
+            }}
+          >
+            <Select.Trigger className="h-10 max-w-48">
+              <Select.Value placeholder="Filtrar função" />
+            </Select.Trigger>
+
+            <Select.Content>
+              <Select.Item value="ALL">Todos</Select.Item>
+
+              {Object.keys(roleMap).map((item) => (
+                <Select.Item key={item} value={String(item)}>
+                  {roleMap[item]}
+                </Select.Item>
+              ))}
+            </Select.Content>
+          </Select.Root>
         </div>
 
         <div className="rounded-md border bg-white">

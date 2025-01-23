@@ -6,6 +6,7 @@ import { authOptions } from '@/lib/next-auth'
 import { HttpError } from '@/helpers/http-error'
 
 import { create, findByEmail, findById, update } from './repository'
+import { generateRegistrationCode } from '@/utils/generate-registration-code'
 
 export type CreateUserData = Omit<User, 'id' | 'createdAt' | 'updatedAt'> & {
   classId: string
@@ -36,8 +37,11 @@ async function createUser(data: CreateUserData) {
 
   await validateEmailExistsOrFail(email)
 
+  const registrationCode = generateRegistrationCode()
+
   await create({
     ...data,
+    registrationCode,
     role: data.role ?? 'PENDING_APPROVAL',
   })
 }
