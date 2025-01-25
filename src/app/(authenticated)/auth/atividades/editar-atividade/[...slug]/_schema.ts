@@ -14,6 +14,8 @@ export const taskEditSchema = z.object({
       name: z.string(),
       description: z.string(),
       level: z.number(),
+      comment: z.array(z.string()),
+      selectedComment: z.string(),
       score: z.array(z.number()),
     }),
   ),

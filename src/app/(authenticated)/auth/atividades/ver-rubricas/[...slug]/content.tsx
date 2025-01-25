@@ -119,13 +119,19 @@ export default function Content() {
             <tbody>
               {rubrics.map((item, index) => (
                 <tr className="border-b-[1px] border-black" key={item.name}>
-                  <td className="max-w-20 text-wrap border-r-[1px] border-black bg-[#73D997] px-2 py-3 font-semibold">
+                  <td className="w-52 text-wrap border-r-[1px] border-black bg-[#73D997] px-2 py-4 font-semibold">
                     {item.name}
                   </td>
                   {Array.from({ length: maxLevel }, (_, level) => (
-                    <td className="border-r-[1px] border-black" key={level}>
+                    <td
+                      className="text-wrap border-r-[1px] border-black"
+                      key={level}
+                    >
                       {item.score[level] !== undefined ? item.score[level] : 0}{' '}
                       pontos
+                      {session?.user.role === 'PROFESSOR' && (
+                        <div className="mt-2 block">{item.comment[level]}</div>
+                      )}
                     </td>
                   ))}
                 </tr>
