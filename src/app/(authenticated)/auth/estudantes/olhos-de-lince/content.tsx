@@ -321,7 +321,7 @@ export default function Content() {
                         </div>
 
                         <div className="space-y-0.5">
-                          <Label>Comentário do criterio</Label>
+                          <Label>Comentário do nivel</Label>
 
                           <Textarea
                             disabled

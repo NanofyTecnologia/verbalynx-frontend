@@ -116,6 +116,7 @@ export default function Content() {
                 ))}
               </tr>
             </thead>
+
             <tbody>
               {rubrics.map((item, index) => (
                 <tr className="border-b-[1px] border-black" key={item.name}>
@@ -127,11 +128,15 @@ export default function Content() {
                       className="text-wrap border-r-[1px] border-black"
                       key={level}
                     >
-                      {item.score[level] !== undefined ? item.score[level] : 0}{' '}
-                      pontos
                       {session?.user.role === 'PROFESSOR' && (
-                        <div className="mt-2 block">{item.comment[level]}</div>
+                        <div className="block border-b border-black py-2">
+                          {item.comment[level]}
+                        </div>
                       )}
+
+                      <div className="py-2">
+                        {item.score[level] ? item.score[level] : 0} pontos
+                      </div>
                     </td>
                   ))}
                 </tr>

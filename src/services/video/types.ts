@@ -8,3 +8,7 @@ export type GetVideoResponse = Video[]
 
 export type CreateVideoParams = Partial<Video>
 export type CreateVideoResponse = Video
+
+export type DeleteVideoParams = {
+  id: string
+}

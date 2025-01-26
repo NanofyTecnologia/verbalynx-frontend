@@ -7,9 +7,11 @@ import { User, Menu, CircleAlert, UserCircle } from 'lucide-react'
 
 import { Sheet } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
+import { Select } from '@/components/ui/select'
 import { Tooltip } from '@/components/ui/tooltip'
 
 import { links } from '@/data/links'
+import { env } from '@/lib/env/index.mjs'
 import Logo from '@/assets/images/verbalynx-logo.png'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { useGetUser } from '@/hooks/services/use-get-user'
@@ -17,7 +19,7 @@ import { useGetUser } from '@/hooks/services/use-get-user'
 import Link from '../active-link'
 
 export default function Header() {
-  const { data: session } = useSession()
+  const { data: session, update } = useSession()
   const { data: user } = useGetUser()
   const isMobile = useIsMobile()
 
@@ -62,11 +64,31 @@ export default function Header() {
 
             <div className="ms-auto">
               <div className="flex items-center gap-4">
+                {env.NEXT_PUBLIC_NODE_ENV !== 'production' && (
+                  <Select.Root
+                    value={session?.user.role}
+                    onValueChange={(value) => {
+                      update({ role: value })
+                    }}
+                  >
+                    <Select.Trigger>
+                      <Select.Value />
+                    </Select.Trigger>
+
+                    <Select.Content>
+                      <Select.Item value="ADMIN">Administrador</Select.Item>
+                      <Select.Item value="PROFESSOR">Professor</Select.Item>
+                      <Select.Item value="STUDENT">Estudante</Select.Item>
+                    </Select.Content>
+                  </Select.Root>
+                )}
+
                 {session?.user.role === 'STUDENT' && (
                   <div className="text-sm font-medium">
                     <b>Cód. Matrícula:</b> {session?.user.registrationCode}
                   </div>
                 )}
+
                 <UserCircle className="size-6" />
               </div>
             </div>
