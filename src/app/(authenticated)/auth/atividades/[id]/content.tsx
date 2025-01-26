@@ -61,7 +61,7 @@ export default function Content() {
       <div className="mt-6 space-x-4 text-end">
         <Button className="shadow" asChild>
           <Link href={`/auth/atividades/ver-rubricas/${id}`}>
-            Ver rubricas <PencilLine size={20} />
+            Ver rubrica <PencilLine size={20} />
           </Link>
         </Button>
       </div>
@@ -327,6 +327,10 @@ export default function Content() {
                     </Dialog.Footer>
                   </Dialog.Content>
                 </Dialog.Root>
+
+                <Button className="w-full" variant="outline">
+                  Arquivar atividade
+                </Button>
               </div>
             </>
           )}

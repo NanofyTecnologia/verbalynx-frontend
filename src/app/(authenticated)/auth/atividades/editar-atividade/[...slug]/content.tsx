@@ -1,10 +1,11 @@
 'use client'
 
-import { useEffect, Fragment } from 'react'
+import { useEffect, useState, Fragment } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { SubmitHandler, useForm, useFieldArray } from 'react-hook-form'
 import { ThreeDots } from 'react-loader-spinner'
 import { toast } from 'react-toastify'
+import { AxiosError } from 'axios'
 import { ChevronLeft, CirclePlus } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
@@ -21,9 +22,7 @@ import { useGetTaskById } from '../../_hooks/use-get-task-by-id'
 import { TaskEditData, taskEditSchema } from './_schema'
 import { useUpdateTask } from './_hooks/use-update-task'
 import { useDeleteCriterion } from './_hooks/use-delete-criterion'
-import { AxiosError } from 'axios'
-import form from '@/app/(unauthenticated)/cadastro/form'
-import { error } from 'console'
+import json from '@/data/points.json'
 
 export interface IParams {
   [key: string]: string[]
@@ -33,32 +32,11 @@ interface Criterion {
   name: string
   description: string
   level: number
+  comment: string[]
   score: number[]
 }
 
-const points = [
-  '0',
-  '5',
-  '10',
-  '15',
-  '20',
-  '25',
-  '30',
-  '35',
-  '40',
-  '45',
-  '50',
-  '55',
-  '60',
-  '65',
-  '70',
-  '75',
-  '80',
-  '85',
-  '90',
-  '95',
-  '100',
-]
+const points = json.points
 
 export default function Content() {
   const { replace, back } = useRouter()
@@ -110,6 +88,8 @@ export default function Content() {
   const onSubmit: SubmitHandler<TaskEditData> = (data) => {
     if (!id) return
 
+    // const { selectedComment } = data
+
     handleUpdateTask(
       {
         id,
@@ -128,7 +108,7 @@ export default function Content() {
   const updateCriterion = (
     index: number,
     key: keyof Criterion,
-    value: string | number | number[],
+    value: string | number | number[] | string[],
   ) => {
     return fields.map((criterion, i) =>
       i === index ? { ...criterion, [key]: value } : criterion,
@@ -165,7 +145,7 @@ export default function Content() {
 
       <form onSubmit={handleSubmit(onSubmit)} className="mt-4 space-y-4">
         <div className="space-y-0.5">
-          <Label>Nome da Atividade</Label>
+          <Label>Nome da atividade</Label>
           <Input
             {...register('name')}
             placeholder="Informe o nome para a nova atividade"
@@ -174,7 +154,7 @@ export default function Content() {
         </div>
 
         <div className="space-y-0.5">
-          <Label>Objetivo Geral da Atividade</Label>
+          <Label>Objetivo geral da atividade</Label>
           <Input
             {...register('objective')}
             placeholder="Escreva o objetivo geral da atividade"
@@ -263,7 +243,7 @@ export default function Content() {
                   </div>
 
                   <div className="space-y-0.5">
-                    <Label>Descrição do Critério {index + 1}</Label>
+                    <Label>Descrição do critério {index + 1}</Label>
                     <Textarea
                       {...register(`criterion.${index}.description`)}
                       placeholder=""
@@ -272,7 +252,7 @@ export default function Content() {
                   </div>
 
                   <div className="space-y-0.5">
-                    <Label>N° de níveis</Label>
+                    <Label>N° de níveis de qualidade</Label>
                     <Select.Root
                       onValueChange={(value) => {
                         setValue(`criterion.${index}.level`, Number(value))
@@ -296,48 +276,56 @@ export default function Content() {
                     {Array.from(
                       { length: criterion[index].level },
                       (_, levelIndex) => (
-                        <div
-                          key={levelIndex}
-                          className="flex items-center gap-2"
-                        >
-                          <Input
-                            type="text"
-                            placeholder={`Nível ${levelIndex + 1}`}
-                            disabled
-                          />
-                          <Select.Root
-                            onValueChange={(value) => {
-                              const currentScores =
-                                watch(`criterion.${index}.score`) || []
-                              const updatedScores = [...currentScores]
-                              updatedScores[levelIndex] = Number(value)
-                              updateCriterion(index, 'score', updatedScores)
+                        <Fragment key={levelIndex}>
+                          <div className="flex items-center gap-2">
+                            <Input
+                              type="text"
+                              placeholder={`Nível ${levelIndex + 1}`}
+                              disabled
+                            />
+                            <Select.Root
+                              onValueChange={(value) => {
+                                const currentScores =
+                                  watch(`criterion.${index}.score`) || []
+                                const updatedScores = [...currentScores]
+                                updatedScores[levelIndex] = Number(value)
+                                updateCriterion(index, 'score', updatedScores)
 
-                              setValue(
-                                `criterion.${index}.score`,
-                                updatedScores,
-                              )
-                            }}
-                            disabled={isSubmitting}
-                          >
-                            <Select.Trigger>
-                              <Select.Value
-                                placeholder={
-                                  field.score[levelIndex]
-                                    ? `${field.score[levelIndex]} pontos`
-                                    : '0 pontos'
-                                }
-                              />
-                            </Select.Trigger>
-                            <Select.Content>
-                              {points.map((num) => (
-                                <Select.Item key={num} value={num}>
-                                  {num} pontos
-                                </Select.Item>
-                              ))}
-                            </Select.Content>
-                          </Select.Root>
-                        </div>
+                                setValue(
+                                  `criterion.${index}.score`,
+                                  updatedScores,
+                                )
+                              }}
+                              disabled={isSubmitting}
+                            >
+                              <Select.Trigger>
+                                <Select.Value
+                                  placeholder={
+                                    field.score[levelIndex]
+                                      ? `${field.score[levelIndex]} pontos`
+                                      : '0 pontos'
+                                  }
+                                />
+                              </Select.Trigger>
+                              <Select.Content>
+                                {points.map((num) => (
+                                  <Select.Item key={num} value={num}>
+                                    {num} pontos
+                                  </Select.Item>
+                                ))}
+                              </Select.Content>
+                            </Select.Root>
+                          </div>
+
+                          <div className="space-y-0.5 pb-4">
+                            <Label>Comentário do nível {levelIndex + 1}</Label>
+                            <Textarea
+                              {...register(
+                                `criterion.${index}.comment.${levelIndex}`,
+                              )}
+                            />
+                          </div>
+                        </Fragment>
                       ),
                     )}
                   </div>
@@ -351,12 +339,18 @@ export default function Content() {
               type="button"
               variant="outline"
               onClick={() =>
-                append({ name: '', description: '', level: 1, score: [] })
+                append({
+                  name: '',
+                  description: '',
+                  level: 1,
+                  score: [],
+                  comment: [],
+                })
               }
-              className="mt-4 h-10 w-full bg-white"
+              className="h-10 w-full bg-white"
               disabled={isSubmitting}
             >
-              <span>Adicionar Critério</span>
+              <span>Adicionar critério</span>
               <CirclePlus className="ml-1" size={20} />
             </Button>
           )}

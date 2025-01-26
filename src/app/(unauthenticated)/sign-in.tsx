@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { signIn, useSession } from 'next-auth/react'
 import { ThreeDots } from 'react-loader-spinner'
@@ -12,7 +13,6 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 
 import { signInSchema, type SignInData } from './_schema'
-import Link from 'next/link'
 
 export default function SignIn() {
   const { data } = useSession()

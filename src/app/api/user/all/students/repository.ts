@@ -7,7 +7,6 @@ export type GetAllStudentsParams = {
 function findAll(params?: GetAllStudentsParams) {
   return prisma.user.findMany({
     where: {
-      role: 'STUDENT',
       ...(params?.teamId && {
         studentClasses: {
           none: {

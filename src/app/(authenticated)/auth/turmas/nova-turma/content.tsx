@@ -36,7 +36,7 @@ export default function Content() {
 
   const onSubmit: SubmitHandler<ClassData> = (data) => {
     handleCreateClass(
-      { ...data },
+      { ...data, isActive: true },
       {
         onSuccess: () => {
           toast.success('Turma adicionada com sucesso!')

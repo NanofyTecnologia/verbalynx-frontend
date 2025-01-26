@@ -75,6 +75,7 @@ model Task {
   openingDate DateTime @map("opening_date")
   closingDate DateTime @map("closing_date")
   objective   String
+  isActive    Boolean  @default(true)
   teacherId   String   @map("teacher_id")
   classId     String?  @map("class_id")
   createdAt   DateTime @default(now()) @map("created_at")
@@ -153,11 +154,12 @@ model Authenticator {
 }
 
 model Class {
-  id             String @id @unique @default(cuid())
+  id             String  @id @unique @default(cuid())
   name           String
-  educationLevel String @map("education_level")
+  educationLevel String  @map("education_level")
   period         String
-  teacherId      String @map("teacher_id")
+  isActive       Boolean @default(true)
+  teacherId      String  @map("teacher_id")
 
   tasks     Task[]
   user      User[]
@@ -188,6 +190,7 @@ model Criterion {
   description String?
   level       Int?
   score       Int[]
+  comment     String[]
   rubricId    String?  @map("rubric_id")
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")

@@ -14,6 +14,9 @@ export const env = createEnv({
   client: {
     NEXT_PUBLIC_APP: z.string().min(1),
     NEXT_PUBLIC_API: z.string().min(1),
+    NEXT_PUBLIC_NODE_ENV: z
+      .enum(['development', 'test', 'production'])
+      .default('development'),
   },
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
@@ -23,5 +26,6 @@ export const env = createEnv({
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     NEXT_PUBLIC_APP: process.env.NEXT_PUBLIC_APP,
     NEXT_PUBLIC_API: process.env.NEXT_PUBLIC_API,
+    NEXT_PUBLIC_NODE_ENV: process.env.NEXT_PUBLIC_NODE_ENV,
   },
 })

@@ -56,8 +56,10 @@ export default function Content() {
       comment: '',
       criterion: {
         id: '',
+        selectedComment: '',
         description: '',
         score: [],
+        comment: [],
         level: 0,
         name: '',
       },
@@ -74,7 +76,9 @@ export default function Content() {
   })
 
   const onSubmit: SubmitHandler<FeedbackData> = (data) => {
-    const { userId, teamId, taskId } = data
+    // eslint-disable-next-line
+    // @ts-ignore
+    const { userId, teamId, taskId, selectedComment } = data
 
     handleCreateFeedback(
       {
@@ -213,7 +217,14 @@ export default function Content() {
                             </Select.Trigger>
                             <Select.Content>
                               {criteria?.map(
-                                ({ id, name, description, level, score }) => (
+                                ({
+                                  id,
+                                  name,
+                                  description,
+                                  comment,
+                                  level,
+                                  score,
+                                }) => (
                                   <Fragment key={id + new Date().toISOString()}>
                                     <Select.Item
                                       value={JSON.stringify({
@@ -221,6 +232,7 @@ export default function Content() {
                                         name,
                                         score,
                                         level,
+                                        comment,
                                         description,
                                       })}
                                     >
@@ -260,6 +272,19 @@ export default function Content() {
                                     Number(value) - 1
                                   ],
                                 )
+
+                                console.log(
+                                  feedback[index].criterion.comment[
+                                    Number(value) - 1
+                                  ],
+                                )
+
+                                setValue(
+                                  `feedback.${index}.criterion.selectedComment`,
+                                  feedback[index].criterion.comment[
+                                    Number(value) - 1
+                                  ],
+                                )
                               }}
                             >
                               <Select.Trigger
@@ -296,7 +321,18 @@ export default function Content() {
                         </div>
 
                         <div className="space-y-0.5">
-                          <Label>Comentário</Label>
+                          <Label>Comentário do nivel</Label>
+
+                          <Textarea
+                            disabled
+                            {...register(
+                              `feedback.${index}.criterion.selectedComment`,
+                            )}
+                          />
+                        </div>
+
+                        <div className="space-y-0.5">
+                          <Label>Comentário complementar</Label>
 
                           <Textarea
                             {...register(`feedback.${index}.comment`)}

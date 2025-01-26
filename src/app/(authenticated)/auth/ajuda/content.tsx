@@ -6,6 +6,8 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import { Fragment, useState } from 'react'
 import { Plus, Search } from 'lucide-react'
 import { useSession } from 'next-auth/react'
+import { toast } from 'react-toastify'
+import { ThreeDots } from 'react-loader-spinner'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import { Input } from '@/components/ui/input'
@@ -19,15 +21,18 @@ import { normalize } from '@/utils/normalize'
 import { VideoData, videoSchema } from './_schema'
 import { useGetVideos } from './_hooks/use-get-videos'
 import { useCreateVideo } from './_hooks/use-create-video'
+import { useDeleteVideo } from './_hooks/use-delete-video'
 
 export default function Content() {
-  const { data } = useSession()
+  const { data: session } = useSession()
 
   const [search, setSearch] = useState('')
   const [showDialog, setShowDialog] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const { data: videos, refetch } = useGetVideos()
   const { mutate: handleCreateVideo } = useCreateVideo()
+  const { mutate: handleDeleteVideo } = useDeleteVideo()
 
   const { register, handleSubmit } = useForm<VideoData>({
     resolver: zodResolver(videoSchema),
@@ -73,6 +78,8 @@ export default function Content() {
   }
 
   const onSubmit: SubmitHandler<VideoData> = (data) => {
+    setIsSubmitting(true)
+
     handleCreateVideo(
       {
         ...data,
@@ -81,6 +88,11 @@ export default function Content() {
         onSuccess: () => {
           refetch()
           setShowDialog(false)
+          setIsSubmitting(false)
+        },
+        onError: () => {
+          setIsSubmitting(false)
+          toast.error('Ops! Houve um problema ao adicionar o tutorial!')
         },
       },
     )
@@ -101,7 +113,7 @@ export default function Content() {
           </div>
         </div>
 
-        {data?.user.role === 'PROFESSOR' && (
+        {session?.user.role === 'ADMIN' && (
           <div className="flex justify-end">
             <Button onClick={() => setShowDialog(!showDialog)}>
               Adicionar video <Plus />
@@ -112,17 +124,49 @@ export default function Content() {
         {filteredVideos &&
           filteredVideos?.map((video, index) => (
             <Fragment key={index}>
-              <Link href={video.url} className="block" target="blank">
-                <div className="rounded-md bg-white p-4 shadow">
-                  <div className="flex justify-center rounded-md bg-[#8ABF3B]/30 py-6">
-                    <Image src={Logo} alt="" />
-                  </div>
+              <div>
+                <Link href={video.url} className="block" target="blank">
+                  <div className="rounded-md bg-white p-4 shadow">
+                    <div className="flex justify-center rounded-md bg-[#8ABF3B]/30 py-6">
+                      <Image src={Logo} alt="" />
+                    </div>
 
-                  <h2 className="mt-4 font-semibold uppercase">
-                    {highLight(video.title, search)}
-                  </h2>
-                </div>
-              </Link>
+                    <div className="mt-4 flex items-center">
+                      <h2 className="font-semibold uppercase">
+                        {highLight(video.title, search)}
+                      </h2>
+                    </div>
+                  </div>
+                </Link>
+
+                {session?.user.role === 'ADMIN' && (
+                  <div className="flex justify-end">
+                    <Button
+                      onClick={() =>
+                        handleDeleteVideo(
+                          {
+                            id: video.id,
+                          },
+                          {
+                            onSuccess: () => {
+                              toast.success('Tutorial deletado com sucesso!')
+                            },
+                            onError: () => {
+                              toast.error(
+                                'Ops! Houve um problema ao deletar o tutorial',
+                              )
+                            },
+                          },
+                        )
+                      }
+                      variant="link"
+                      className="p-0 text-xs"
+                    >
+                      Remover video
+                    </Button>
+                  </div>
+                )}
+              </div>
             </Fragment>
           ))}
 
@@ -149,6 +193,7 @@ export default function Content() {
                 id="title"
                 {...register('title')}
                 placeholder="Insira um título para o vídeo"
+                disabled={isSubmitting}
               />
             </div>
 
@@ -159,11 +204,22 @@ export default function Content() {
                 id="url"
                 {...register('url')}
                 placeholder="Insira a URL do vídeo"
+                disabled={isSubmitting}
               />
             </div>
 
-            <Button type="submit" className="w-full">
-              Enviar
+            <Button type="submit" className="w-full" disabled={isSubmitting}>
+              {isSubmitting ? (
+                <ThreeDots
+                  width={35}
+                  height={35}
+                  color="#fff"
+                  visible={true}
+                  ariaLabel="three-dots-loading"
+                />
+              ) : (
+                'Enviar'
+              )}
             </Button>
           </form>
         </Dialog.Content>
