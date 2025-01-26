@@ -52,12 +52,11 @@ export default function Content() {
     { name: '', description: '', level: 1, score: [], comment: [] },
   ])
 
-  console.log('data: ', criteria)
-
   const onSubmit: SubmitHandler<TaskData> = (data) => {
     handleCreateTask(
       {
         ...data,
+        isActive: true,
         rubric: {
           ...data.rubric,
           evaluation: criteria,
@@ -202,115 +201,121 @@ export default function Content() {
 
         <div className="space-y-6">
           {criteria.map((criterion, index) => (
-            <div key={index} className="relative space-y-6 border-b pb-4">
-              {index > 0 && (
-                <Button
-                  onClick={() => removeCriterion(index)}
-                  disabled={isSubmitting}
-                >
-                  Excluir
-                </Button>
-              )}
+            <Fragment key={index}>
+              <div className="relative space-y-6 border-b pb-4">
+                {index > 0 && (
+                  <Button
+                    onClick={() => removeCriterion(index)}
+                    disabled={isSubmitting}
+                  >
+                    Excluir
+                  </Button>
+                )}
 
-              <div className="space-y-0.5">
-                <Label> Título do critério {index + 1}</Label>
-                <Input
-                  placeholder="Insira o título do critério"
-                  value={criterion.name}
-                  onChange={(e) =>
-                    updateCriterion(index, 'name', e.target.value)
-                  }
-                  disabled={isSubmitting}
-                />
+                <div className="space-y-0.5">
+                  <Label> Título do critério {index + 1}</Label>
+                  <Input
+                    placeholder="Insira o título do critério"
+                    value={criterion.name}
+                    onChange={(e) =>
+                      updateCriterion(index, 'name', e.target.value)
+                    }
+                    disabled={isSubmitting}
+                  />
+                </div>
+
+                <div className="space-y-0.5">
+                  <Label>Descrição do critério {index + 1}</Label>
+                  <Input
+                    placeholder="Descreva sobre o critério criado para a rubrica"
+                    onChange={(e) =>
+                      updateCriterion(index, 'description', e.target.value)
+                    }
+                    disabled={isSubmitting}
+                  />
+                </div>
+
+                <div className="space-y-0.5">
+                  <Label>N° de níveis de qualidade</Label>
+                  <Select.Root
+                    onValueChange={(value) => {
+                      updateCriterion(index, 'level', Number(value))
+                    }}
+                    disabled={isSubmitting}
+                  >
+                    <Select.Trigger>
+                      <Select.Value placeholder={`${criterion.level}`} />
+                    </Select.Trigger>
+                    <Select.Content>
+                      {['1', '2', '3', '4', '5', '6'].map((num) => (
+                        <Fragment key={num}>
+                          <Select.Item value={num}>{num}</Select.Item>
+                        </Fragment>
+                      ))}
+                    </Select.Content>
+                  </Select.Root>
+                </div>
+
+                <div className="space-y-6">
+                  {Array.from({ length: criterion.level }, (_, levelIndex) => (
+                    <Fragment key={levelIndex}>
+                      <div className="flex items-center gap-2">
+                        <Input
+                          type="text"
+                          placeholder={`Nível de Qualidade ${levelIndex + 1}`}
+                          disabled
+                        />
+
+                        <Select.Root
+                          onValueChange={(value) => {
+                            const updatedScores = [...criterion.score]
+                            updatedScores[levelIndex] = Number(value)
+                            updateCriterion(index, 'score', updatedScores)
+                          }}
+                          disabled={isSubmitting}
+                        >
+                          <Select.Trigger>
+                            <Select.Value
+                              placeholder={
+                                criterion.score[levelIndex]
+                                  ? `${criterion.score[levelIndex]} pontos`
+                                  : '0 pontos'
+                              }
+                            />
+                          </Select.Trigger>
+                          <Select.Content>
+                            {points.map((num) => (
+                              <Fragment key={num + new Date().toISOString()}>
+                                <Select.Item value={num}>
+                                  {num} pontos
+                                </Select.Item>
+                              </Fragment>
+                            ))}
+                          </Select.Content>
+                        </Select.Root>
+                      </div>
+
+                      <div className="space-y-0.5">
+                        <Label>
+                          Comentário do nível de qualidade {levelIndex + 1}
+                        </Label>
+                        <Textarea
+                          onChange={(prev) => {
+                            const updateComment = [...criterion.comment]
+                            updateComment[levelIndex] = String(
+                              prev.target.value,
+                            )
+                            updateCriterion(index, 'comment', updateComment)
+                          }}
+                          placeholder={`Faça um comentário acerca do nível de qualidade ${levelIndex + 1}`}
+                          disabled={isSubmitting}
+                        />
+                      </div>
+                    </Fragment>
+                  ))}
+                </div>
               </div>
-
-              <div className="space-y-0.5">
-                <Label>Descrição do critério {index + 1}</Label>
-                <Input
-                  placeholder="Descreva sobre o critério criado para a rubrica"
-                  onChange={(e) =>
-                    updateCriterion(index, 'description', e.target.value)
-                  }
-                  disabled={isSubmitting}
-                />
-              </div>
-
-              <div className="space-y-0.5">
-                <Label>N° de níveis de qualidade</Label>
-                <Select.Root
-                  onValueChange={(value) => {
-                    updateCriterion(index, 'level', Number(value))
-                  }}
-                  disabled={isSubmitting}
-                >
-                  <Select.Trigger>
-                    <Select.Value placeholder={`${criterion.level}`} />
-                  </Select.Trigger>
-                  <Select.Content>
-                    {['1', '2', '3', '4', '5', '6'].map((num) => (
-                      <Select.Item key={num} value={num}>
-                        {num}
-                      </Select.Item>
-                    ))}
-                  </Select.Content>
-                </Select.Root>
-              </div>
-
-              <div className="space-y-6">
-                {Array.from({ length: criterion.level }, (_, levelIndex) => (
-                  <>
-                    <div key={levelIndex} className="flex items-center gap-2">
-                      <Input
-                        type="text"
-                        placeholder={`Nível de Qualidade ${levelIndex + 1}`}
-                        disabled
-                      />
-
-                      <Select.Root
-                        onValueChange={(value) => {
-                          const updatedScores = [...criterion.score]
-                          updatedScores[levelIndex] = Number(value)
-                          updateCriterion(index, 'score', updatedScores)
-                        }}
-                        disabled={isSubmitting}
-                      >
-                        <Select.Trigger>
-                          <Select.Value
-                            placeholder={
-                              criterion.score[levelIndex]
-                                ? `${criterion.score[levelIndex]} pontos`
-                                : '0 pontos'
-                            }
-                          />
-                        </Select.Trigger>
-                        <Select.Content>
-                          {points.map((num) => (
-                            <Select.Item key={num} value={num}>
-                              {num} pontos
-                            </Select.Item>
-                          ))}
-                        </Select.Content>
-                      </Select.Root>
-                    </div>
-
-                    <div className="space-y-0.5">
-                      <Label>
-                        Comentário do nível de qualidade {levelIndex + 1}
-                      </Label>
-                      <Textarea
-                        onChange={(prev) => {
-                          const updateComment = [...criterion.comment]
-                          updateComment[levelIndex] = String(prev.target.value)
-                          updateCriterion(index, 'comment', updateComment)
-                        }}
-                        placeholder={`Faça um comentário acerca do nível de qualidade ${levelIndex + 1}`}
-                        disabled={isSubmitting}
-                      />
-                    </div>
-                  </>
-                ))}
-              </div>
-            </div>
+            </Fragment>
           ))}
 
           {criteria.length < 30 && (
