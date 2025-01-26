@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { SubmitHandler, useForm, useFieldArray } from 'react-hook-form'
 import { ThreeDots } from 'react-loader-spinner'
 import { toast } from 'react-toastify'
+import { AxiosError } from 'axios'
 import { ChevronLeft, CirclePlus } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
@@ -21,9 +22,7 @@ import { useGetTaskById } from '../../_hooks/use-get-task-by-id'
 import { TaskEditData, taskEditSchema } from './_schema'
 import { useUpdateTask } from './_hooks/use-update-task'
 import { useDeleteCriterion } from './_hooks/use-delete-criterion'
-import { AxiosError } from 'axios'
 import json from '@/data/points.json'
-import { feedback } from '@/services/feedback'
 
 export interface IParams {
   [key: string]: string[]
@@ -43,7 +42,6 @@ export default function Content() {
   const { replace, back } = useRouter()
   const { slug } = useParams<IParams>()
   const { id } = normalizeSlug(slug)
-  const [comments, setComments] = useState<string[]>([])
 
   const { data: tasks } = useGetTaskById({ id })
   const { mutate: handleUpdateTask } = useUpdateTask()
@@ -258,10 +256,6 @@ export default function Content() {
                     <Select.Root
                       onValueChange={(value) => {
                         setValue(`criterion.${index}.level`, Number(value))
-                        setValue(
-                          `criterion.${index}.selectedComment`,
-                          criterion[index].comment[Number(value) - 1],
-                        )
                       }}
                       disabled={isSubmitting}
                     >
@@ -324,10 +318,10 @@ export default function Content() {
                           </div>
 
                           <div className="space-y-0.5 pb-4">
-                            <Label>Comentário do critério {index + 1}</Label>
+                            <Label>Comentário do nível {levelIndex + 1}</Label>
                             <Textarea
                               {...register(
-                                `criterion.${index}.selectedComment`,
+                                `criterion.${index}.comment.${levelIndex}`,
                               )}
                             />
                           </div>
@@ -351,7 +345,6 @@ export default function Content() {
                   level: 1,
                   score: [],
                   comment: [],
-                  selectedComment: '',
                 })
               }
               className="h-10 w-full bg-white"
