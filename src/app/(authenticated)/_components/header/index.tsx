@@ -64,7 +64,7 @@ export default function Header() {
 
             <div className="ms-auto">
               <div className="flex items-center gap-4">
-                {env.NEXT_PUBLIC_NODE_ENV !== 'production' && (
+                {env.NEXT_PUBLIC_NODE_ENV === 'development' && (
                   <Select.Root
                     value={session?.user.role}
                     onValueChange={(value) => {
