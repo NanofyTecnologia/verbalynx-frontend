@@ -6,7 +6,13 @@ import { useParams, useRouter } from 'next/navigation'
 import { Fragment, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { format } from 'date-fns'
-import { ChevronLeft, HelpCircle, PencilLine } from 'lucide-react'
+import {
+  BadgeCheck,
+  Check,
+  ChevronLeft,
+  HelpCircle,
+  PencilLine,
+} from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -58,7 +64,13 @@ export default function Content() {
         </button>
       </div>
 
-      <div className="mt-6 space-x-4 text-end">
+      <div className="mt-6 flex justify-between space-x-4 text-end">
+        {task.studentTask.length > 0 && (
+          <p className="flex items-center gap-2">
+            <BadgeCheck className="size-6 text-[#73D997]" /> Atividade entregue
+          </p>
+        )}
+
         <Button className="shadow" asChild>
           <Link href={`/auth/atividades/ver-rubricas/${id}`}>
             Ver rubrica <PencilLine size={20} />

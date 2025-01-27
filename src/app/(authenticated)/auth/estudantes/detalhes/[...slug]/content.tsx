@@ -13,6 +13,7 @@ import { Select } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Table } from '@/components/ui/table'
+import { Tooltip } from '@/components/ui/tooltip'
 
 import { cn } from '@/lib/shadcn'
 import { normalizeSlug } from '@/utils/normalize-slug'
@@ -22,7 +23,6 @@ import { type IParams } from '@/types/params'
 import { StudentData, studentSchema } from './_schema'
 import { useUpdateStudent } from './_hooks/use-update-student-by-id'
 import { useGetStudentById } from './_hooks/use-get-student-by-id'
-import { Tooltip } from '@/components/ui/tooltip'
 
 export default function Content() {
   const { push, back } = useRouter()
@@ -77,10 +77,6 @@ export default function Content() {
 
   const { graduation } = watch()
 
-  if (!student) {
-    return null
-  }
-
   return (
     <>
       <div className="flex items-center justify-between">
@@ -114,7 +110,7 @@ export default function Content() {
             <Label>Nível de Ensino</Label>
 
             <Select.Root
-              defaultValue={student.graduation ?? ''}
+              defaultValue={student?.graduation ?? ''}
               value={graduation}
               onValueChange={(value) => setValue('graduation', value)}
             >
@@ -194,7 +190,7 @@ export default function Content() {
             </Table.Header>
 
             <Table.Body>
-              {student.StudentTask.map((item, index) => (
+              {student?.StudentTask.map((item, index) => (
                 <Fragment key={index}>
                   <Table.Row
                     onClick={() => push(`/auth/atividades/${item.task.id}`)}
