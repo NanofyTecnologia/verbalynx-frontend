@@ -32,6 +32,10 @@ export const authOptions: NextAuthOptions = {
           },
         })
 
+        if (!user) {
+          throw new Error('User Not Found')
+        }
+
         const result = await transport.sendMail({
           to: identifier,
           from: 'no-reply@nanofy.com.br',
