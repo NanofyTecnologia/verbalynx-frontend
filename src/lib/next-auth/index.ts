@@ -18,7 +18,7 @@ export const authOptions: NextAuthOptions = {
           user: env.SMTP_USER,
           pass: env.SMTP_PASS,
         },
-        from: 'contato@nanofy.com.br',
+        from: 'administrador@nanofy.com.br',
       },
       async sendVerificationRequest(params) {
         const { identifier, url, provider, theme } = params
