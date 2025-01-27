@@ -12,6 +12,7 @@ import {
   FolderCheck,
   Link2,
   ChevronLeft,
+  Play,
 } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
@@ -31,7 +32,7 @@ export interface IParams {
 
 const tipElement: { [key: string]: ReactNode } = {
   '1': <FolderCheck className="size-4" />,
-  '2': <BoomBox className="size-4" />,
+  '2': <Play className="size-4" />,
   '3': <Camera className="size-4" />,
   '4': <Link2 className="size-4" />,
 }
@@ -129,21 +130,25 @@ export default function Content() {
           {feedback?.feedbackCriterion.map((item, index) => (
             <Fragment key={index}>
               <div className="space-y-2">
-                <p className="text-sm">
-                  <span className="font-semibold">
-                    Comentário {item.criterion.name}
-                  </span>{' '}
-                  {item.comment}
-                </p>
+                <p className="text-sm">{item.comment}</p>
 
                 <div className="flex items-center gap-4">
-                  {item.tips.map((tip) => (
-                    <Fragment key={tip}>
-                      <div className="rounded-full border border-muted-foreground p-2">
-                        {tipElement[tip]}
-                      </div>
-                    </Fragment>
-                  ))}
+                  {item.tips.map((tip) => {
+                    const tipIndex = tip.split('_')[0]
+                    const url = tip.split('_')[1]
+
+                    return (
+                      <Fragment key={tip}>
+                        <Link
+                          href={url ?? '#'}
+                          target="_"
+                          className="rounded-full border border-muted-foreground p-2"
+                        >
+                          {tipElement[tipIndex]}
+                        </Link>
+                      </Fragment>
+                    )
+                  })}
                 </div>
               </div>
             </Fragment>
