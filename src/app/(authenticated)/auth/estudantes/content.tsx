@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-import { Fragment, useEffect } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { useSession } from 'next-auth/react'
 
@@ -19,8 +19,8 @@ import { useGetTasksByStudentId } from './_hooks/use-get-tasks-by-student-id'
 import { useGetStudentsByClassId } from './_hooks/use-get-students-by-class-id'
 
 export default function Content() {
-  const { data } = useSession()
   const searchParams = useSearchParams()
+  const [mounted, setMounted] = useState(false)
 
   const taskId = searchParams.get('taskId')
   const classId = searchParams.get('classId')
@@ -42,6 +42,14 @@ export default function Content() {
     setValue('userId', studentId ?? '')
     setValue('taskId', taskId ?? '')
   }, [setValue, classId, studentId, taskId])
+
+  useEffect(() => {
+    if (!mounted) {
+      setMounted(true)
+    }
+  }, [])
+
+  if (!mounted) return <></>
 
   return (
     <>
