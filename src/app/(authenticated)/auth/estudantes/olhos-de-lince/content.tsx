@@ -1,15 +1,18 @@
 'use client'
 
-import { Fragment, useEffect } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import { SubmitHandler, useFieldArray, useFormContext } from 'react-hook-form'
 import {
   BoomBox,
   Camera,
+  Check,
   ChevronLeft,
   CircleHelp,
   FolderCheck,
   Link2,
+  Play,
+  Plus,
 } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
@@ -20,13 +23,17 @@ import { Select } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { Carousel } from '@/components/ui/carousel'
 
+import { task } from '@/services/task'
+import { team } from '@/services/class'
 import { useGetByRubricId } from '@/hooks/services/use-get-rubric-by-id'
 
 import { FeedbackData } from '../_schema'
 import { useCreateFeedback } from './_hooks/use-create-feedback'
 import { useGetFeedbackDetails } from './_hooks/use-get-feedback-details'
-import { team } from '@/services/class'
-import { task } from '@/services/task'
+import { Popover } from '@/components/ui/popover'
+import { Dialog } from '@/components/ui/dialog'
+import { Tooltip } from '@/components/ui/tooltip'
+import Link from 'next/link'
 
 export interface IParams {
   [key: string]: string[]
@@ -35,6 +42,7 @@ export interface IParams {
 export default function Content() {
   const { replace, push } = useRouter()
 
+  const [selectedTip, setSelectedTip] = useState('')
   const { watch, setValue, register, control, handleSubmit } =
     useFormContext<FeedbackData>()
   const { teamId, userId, taskId, feedback } = watch()
@@ -44,6 +52,8 @@ export default function Content() {
     teamId,
     taskId,
   })
+
+  const inputTipRef = useRef<HTMLInputElement>(null)
 
   const { mutate: handleCreateFeedback } = useCreateFeedback()
   const { fields, append, remove } = useFieldArray<FeedbackData>({
@@ -126,6 +136,8 @@ export default function Content() {
   if (!team || !userId || !task) {
     return <></>
   }
+
+  console.log(watch(`feedback.${0}`))
 
   return (
     <>
@@ -342,42 +354,126 @@ export default function Content() {
                         <div className="space-y-0.5">
                           <Label>Dicas para o critério</Label>
 
-                          <div className="flex items-center gap-4">
-                            <button
-                              type="button"
-                              data-active={isSelectedTip('1', index)}
-                              onClick={() => onSelectTip('1', index)}
-                              className="rounded-full border border-muted-foreground p-2 data-[active=true]:bg-muted-foreground data-[active=true]:text-white"
-                            >
-                              <FolderCheck className="size-5" />
-                            </button>
+                          <div className="flex items-center gap-2">
+                            {feedback[index].tips.map((item) => {
+                              const tip = item.split('_')[0]
+                              const url = item.split('_')[1]
 
-                            <button
-                              type="button"
-                              data-active={isSelectedTip('2', index)}
-                              onClick={() => onSelectTip('2', index)}
-                              className="rounded-full border border-muted-foreground p-2 data-[active=true]:bg-muted-foreground data-[active=true]:text-white"
-                            >
-                              <BoomBox className="size-5" />
-                            </button>
+                              return (
+                                <Fragment key={item}>
+                                  <Tooltip.Provider>
+                                    <Tooltip.Root>
+                                      <Tooltip.Trigger>
+                                        <Link
+                                          href={url}
+                                          target="_blank"
+                                          className="block rounded-full border border-muted-foreground p-2 data-[active=true]:bg-muted-foreground data-[active=true]:text-white"
+                                        >
+                                          {tip === '1' ? (
+                                            <FolderCheck className="size-4" />
+                                          ) : tip === '2' ? (
+                                            <Play className="size-4" />
+                                          ) : tip === '3' ? (
+                                            <Camera className="size-4" />
+                                          ) : (
+                                            <Link2 className="size-4" />
+                                          )}
+                                        </Link>
+                                      </Tooltip.Trigger>
 
-                            <button
-                              type="button"
-                              data-active={isSelectedTip('3', index)}
-                              onClick={() => onSelectTip('3', index)}
-                              className="rounded-full border border-muted-foreground p-2 data-[active=true]:bg-muted-foreground data-[active=true]:text-white"
-                            >
-                              <Camera className="size-5" />
-                            </button>
+                                      <Tooltip.Content>{url}</Tooltip.Content>
+                                    </Tooltip.Root>
+                                  </Tooltip.Provider>
+                                </Fragment>
+                              )
+                            })}
 
-                            <button
-                              type="button"
-                              data-active={isSelectedTip('4', index)}
-                              onClick={() => onSelectTip('4', index)}
-                              className="rounded-full border border-muted-foreground p-2 data-[active=true]:bg-muted-foreground data-[active=true]:text-white"
-                            >
-                              <Link2 className="size-5" />
-                            </button>
+                            <Dialog.Root>
+                              <Dialog.Trigger asChild>
+                                <button
+                                  type="button"
+                                  data-active={isSelectedTip('1', index)}
+                                  className="rounded-full border border-dashed border-muted-foreground p-2 data-[active=true]:bg-muted-foreground data-[active=true]:text-white"
+                                >
+                                  <Plus className="size-4" />
+                                </button>
+                              </Dialog.Trigger>
+
+                              <Dialog.Content>
+                                <Dialog.Header>
+                                  <Dialog.Title className="text-base">
+                                    Insira a dica para o aluno
+                                  </Dialog.Title>
+                                  <Dialog.Description />
+                                </Dialog.Header>
+
+                                <div className="flex items-center gap-4">
+                                  <button
+                                    type="button"
+                                    data-active={selectedTip === '1'}
+                                    onClick={() => setSelectedTip('1')}
+                                    className="rounded-full border border-muted-foreground p-2 data-[active=true]:bg-muted-foreground data-[active=true]:text-white"
+                                  >
+                                    <FolderCheck className="size-4" />
+                                  </button>
+
+                                  <button
+                                    type="button"
+                                    data-active={selectedTip === '2'}
+                                    onClick={() => setSelectedTip('2')}
+                                    className="rounded-full border border-muted-foreground p-2 data-[active=true]:bg-muted-foreground data-[active=true]:text-white"
+                                  >
+                                    <Play className="size-4" />
+                                  </button>
+
+                                  <button
+                                    type="button"
+                                    data-active={selectedTip === '3'}
+                                    onClick={() => setSelectedTip('3')}
+                                    className="rounded-full border border-muted-foreground p-2 data-[active=true]:bg-muted-foreground data-[active=true]:text-white"
+                                  >
+                                    <Camera className="size-4" />
+                                  </button>
+
+                                  <button
+                                    type="button"
+                                    data-active={selectedTip === '4'}
+                                    onClick={() => setSelectedTip('4')}
+                                    className="rounded-full border border-muted-foreground p-2 data-[active=true]:bg-muted-foreground data-[active=true]:text-white"
+                                  >
+                                    <Link2 className="size-4" />
+                                  </button>
+                                </div>
+
+                                <Input placeholder="URL" ref={inputTipRef} />
+
+                                <Dialog.Footer>
+                                  <Dialog.Close asChild>
+                                    <Button variant="secondary">
+                                      Cancelar
+                                    </Button>
+                                  </Dialog.Close>
+
+                                  <Dialog.Close asChild>
+                                    <Button
+                                      onClick={() => {
+                                        if (!inputTipRef.current) return
+
+                                        setValue(`feedback.${index}.tips`, [
+                                          ...watch(`feedback.${index}.tips`),
+                                          `${selectedTip}_${inputTipRef.current?.value}`,
+                                        ])
+
+                                        setSelectedTip('')
+                                        inputTipRef.current.value = ''
+                                      }}
+                                    >
+                                      Salvar
+                                    </Button>
+                                  </Dialog.Close>
+                                </Dialog.Footer>
+                              </Dialog.Content>
+                            </Dialog.Root>
                           </div>
                         </div>
                       </div>
