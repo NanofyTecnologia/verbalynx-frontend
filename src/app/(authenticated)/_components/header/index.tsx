@@ -64,25 +64,6 @@ export default function Header() {
 
             <div className="ms-auto">
               <div className="flex items-center gap-4">
-                {env.NEXT_PUBLIC_NODE_ENV === 'development' && (
-                  <Select.Root
-                    value={session?.user.role}
-                    onValueChange={(value) => {
-                      update({ role: value })
-                    }}
-                  >
-                    <Select.Trigger>
-                      <Select.Value />
-                    </Select.Trigger>
-
-                    <Select.Content>
-                      <Select.Item value="ADMIN">Administrador</Select.Item>
-                      <Select.Item value="PROFESSOR">Professor</Select.Item>
-                      <Select.Item value="STUDENT">Estudante</Select.Item>
-                    </Select.Content>
-                  </Select.Root>
-                )}
-
                 {session?.user.role === 'STUDENT' && (
                   <div className="text-sm font-medium">
                     <b>Cód. Matrícula:</b> {session?.user.registrationCode}
