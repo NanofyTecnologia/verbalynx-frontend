@@ -66,7 +66,7 @@ export default function Content() {
           <div className="text-sm">
             Esta página informa todas as rubricas vinculadas a atividade em
             questão, incluindo informações vinculadas a ela como: nome da turma,
-            nome da atividade e as rubricas já criadas.
+            nome da atividade e a rubrica criada.
           </div>
 
           <Dialog.Footer>
@@ -84,7 +84,7 @@ export default function Content() {
       <div className="mt-6 space-y-2 text-sm">
         <div className="flex items-center gap-2">
           <Badge className="w-full max-w-36 justify-center p-1.5">
-            Nome da atividade:
+            Atividade:
           </Badge>
 
           <Badge variant="outline" className="w-full bg-white p-1.5">
@@ -129,7 +129,7 @@ export default function Content() {
                       key={level}
                     >
                       {session?.user.role === 'PROFESSOR' && (
-                        <div className="block border-b border-black py-2">
+                        <div className="block border-b border-black/40 py-2">
                           {item.comment[level]}
                         </div>
                       )}

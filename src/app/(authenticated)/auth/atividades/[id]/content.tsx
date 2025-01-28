@@ -106,7 +106,7 @@ export default function Content() {
         <div className="space-y-4">
           <div className="flex items-center gap-2">
             <Badge className="w-full max-w-36 justify-center p-1.5">
-              Nome da atividade:
+              Atividade:
             </Badge>
 
             <Badge variant="outline" className="w-full bg-white p-1.5">

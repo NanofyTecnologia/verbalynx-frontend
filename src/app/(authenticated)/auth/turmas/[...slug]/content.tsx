@@ -133,9 +133,7 @@ export default function Content() {
 
       <div className="mt-6 flex flex-col space-y-4 md:flex-row md:gap-x-4 md:space-y-0">
         <div className="flex w-full items-center gap-2 md:justify-start">
-          <Badge className="w-full max-w-36 justify-center p-1.5">
-            Nome da turma:
-          </Badge>
+          <Badge className="w-full max-w-36 justify-center p-1.5">Turma:</Badge>
 
           <Badge
             variant="outline"
@@ -174,7 +172,7 @@ export default function Content() {
 
       <div className="mt-4 space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="font-semibold">Estudantes da Turma</h2>
+          <h2 className="font-semibold">Estudantes da turma</h2>
 
           {session?.user.role === 'PROFESSOR' && (
             <Button onClick={() => setShowDialog(true)} size="sm">

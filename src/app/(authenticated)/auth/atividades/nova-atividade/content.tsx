@@ -119,7 +119,7 @@ export default function Content() {
           <div className="text-sm">
             Crie atividades personalizadas para cada turma, escolhendo um nome
             que identifique a atividade, selecionando a rubrica de avaliação,
-            definindo os níveis de desempenho e descrevendo o objetivo geral da
+            definindo os níveis de qualidade e descrevendo o objetivo geral da
             aprendizagem.
           </div>
 
@@ -140,7 +140,7 @@ export default function Content() {
             disabled={isSubmitting}
           >
             <Select.Trigger>
-              <Select.Value placeholder="Seleciona a turma" />
+              <Select.Value placeholder="Selecione a turma" />
             </Select.Trigger>
             <Select.Content>
               {teams?.map((team) => (
@@ -156,7 +156,7 @@ export default function Content() {
           <Label>Nome da atividade</Label>
           <Input
             {...register('name')}
-            placeholder="Informe o nome para a nova atividade"
+            placeholder="Informe o nome da atividade"
             disabled={isSubmitting}
           />
         </div>
@@ -220,13 +220,14 @@ export default function Content() {
                     onChange={(e) =>
                       updateCriterion(index, 'name', e.target.value)
                     }
+                    error={`Insira um título para o critério ${index + 1}`}
                     disabled={isSubmitting}
                   />
                 </div>
 
                 <div className="space-y-0.5">
                   <Label>Descrição do critério {index + 1}</Label>
-                  <Input
+                  <Textarea
                     placeholder="Descreva sobre o critério criado para a rubrica"
                     onChange={(e) =>
                       updateCriterion(index, 'description', e.target.value)
