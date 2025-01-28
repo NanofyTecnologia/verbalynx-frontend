@@ -14,6 +14,7 @@ export type GetFeedbackByIdResponse = {
     rubric: {
       criterion: {
         score: number[]
+        comment: string[]
       }[]
     }
   }
@@ -25,6 +26,7 @@ export type GetFeedbackByIdResponse = {
     comment: string
     criterion: {
       name: string
+      comment: string[]
     }
   }[]
 }
@@ -55,7 +57,7 @@ export type CreateFeedbackParams = {
   studentId: string
   feedbacks: {
     tips: string[]
-    comment: string
+    comment?: string
     criterionId: string
     level: number
     score: number

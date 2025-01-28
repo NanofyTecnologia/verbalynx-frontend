@@ -43,6 +43,7 @@ function findById(id: string) {
           criterion: {
             select: {
               name: true,
+              comment: true,
             },
           },
         },
@@ -65,12 +66,12 @@ function findStudentAndTaskByFeedbackId(id: string) {
 
 export type UpdateData = Partial<Feedback>
 
-function update(id: string, data: UpdateData) {
+function update(id: string, data: Partial<UpdateData>) {
   return prisma.feedback.update({
     where: {
       id,
     },
-    data: {},
+    data,
   })
 }
 

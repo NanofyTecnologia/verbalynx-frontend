@@ -5,15 +5,7 @@ import { Fragment, ReactNode, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { useParams, useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
-import {
-  BoomBox,
-  Camera,
-  CircleHelp,
-  FolderCheck,
-  Link2,
-  ChevronLeft,
-  Play,
-} from 'lucide-react'
+import { Camera, FolderCheck, Link2, ChevronLeft, Play } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -127,32 +119,39 @@ export default function Content() {
         <h2 className="text-sm font-semibold">Olá, {studentFirstName}!</h2>
 
         <div className="mt-6 space-y-2">
-          {feedback?.feedbackCriterion.map((item, index) => (
-            <Fragment key={index}>
-              <div className="space-y-2">
-                <p className="text-sm">{item.comment}</p>
+          {feedback?.feedbackCriterion.map((item, index) => {
+            console.log(item)
 
-                <div className="flex items-center gap-4">
-                  {item.tips.map((tip) => {
-                    const tipIndex = tip.split('_')[0]
-                    const url = tip.split('_')[1]
+            return (
+              <Fragment key={index}>
+                <div className="space-y-2">
+                  <p className="text-sm">
+                    {item.criterion.comment[item.level]}
+                  </p>
+                  <p className="text-sm">{item.comment}</p>
 
-                    return (
-                      <Fragment key={tip}>
-                        <Link
-                          href={url ?? '#'}
-                          target="_"
-                          className="rounded-full border border-muted-foreground p-2"
-                        >
-                          {tipElement[tipIndex]}
-                        </Link>
-                      </Fragment>
-                    )
-                  })}
+                  <div className="flex items-center gap-4">
+                    {item.tips.map((tip) => {
+                      const tipIndex = tip.split('_')[0]
+                      const url = tip.split('_')[1]
+
+                      return (
+                        <Fragment key={tip}>
+                          <Link
+                            href={url ?? '#'}
+                            target="_"
+                            className="rounded-full border border-muted-foreground p-2"
+                          >
+                            {tipElement[tipIndex]}
+                          </Link>
+                        </Fragment>
+                      )
+                    })}
+                  </div>
                 </div>
-              </div>
-            </Fragment>
-          ))}
+              </Fragment>
+            )
+          })}
         </div>
 
         <div className="flex justify-end">

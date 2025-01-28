@@ -26,21 +26,30 @@ export default function Content() {
     setValue,
     register,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { errors },
   } = useForm<ClassData>({
     resolver: zodResolver(classSchema),
   })
 
-  const { mutate: handleCreateClass } = useCreateClass()
   const [showDialog, setShowDialog] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const { mutate: handleCreateClass } = useCreateClass()
 
   const onSubmit: SubmitHandler<ClassData> = (data) => {
+    setIsSubmitting(true)
+
     handleCreateClass(
       { ...data, isActive: true },
       {
         onSuccess: () => {
+          setIsSubmitting(false)
           toast.success('Turma adicionada com sucesso!')
           replace('/auth/turmas')
+        },
+        onError: () => {
+          setIsSubmitting(false)
+
+          toast.error('Ops! Houve algum problema ao cadastrar a nova turma.')
         },
       },
     )
@@ -70,7 +79,7 @@ export default function Content() {
 
           <div className="text-sm">
             Crie novas turmas e organize seu ambiente de ensino. Informe o nome
-            da turma, o período letivo e o nível de ensino.
+            da turma, o turno e o nível de ensino.
           </div>
 
           <Dialog.Footer>
@@ -86,8 +95,9 @@ export default function Content() {
           <Label>Nome</Label>
 
           <Input
+            error={errors.name?.message}
             {...register('name')}
-            placeholder="Ex: Turma 8ºB"
+            placeholder="Insira o nome da turma"
             disabled={isSubmitting}
           />
         </div>
@@ -99,7 +109,10 @@ export default function Content() {
             value={period}
             onValueChange={(value) => setValue('period', value)}
           >
-            <Select.Trigger disabled={isSubmitting}>
+            <Select.Trigger
+              error={errors.period?.message}
+              disabled={isSubmitting}
+            >
               <Select.Value placeholder="Selecione o período" />
             </Select.Trigger>
             <Select.Content>
@@ -113,13 +126,16 @@ export default function Content() {
         </div>
 
         <div className="space-y-0.5">
-          <Label>Nível</Label>
+          <Label>Nível de Ensino</Label>
 
           <Select.Root
             value={educationLevel}
             onValueChange={(value) => setValue('educationLevel', value)}
           >
-            <Select.Trigger disabled={isSubmitting}>
+            <Select.Trigger
+              error={errors.educationLevel?.message}
+              disabled={isSubmitting}
+            >
               <Select.Value placeholder="Selecione o Nível de Ensino" />
             </Select.Trigger>
             <Select.Content>
@@ -144,7 +160,7 @@ export default function Content() {
               ariaLabel="three-dots-loading"
             />
           ) : (
-            'Salvar'
+            'Criar turma'
           )}
         </Button>
       </form>
