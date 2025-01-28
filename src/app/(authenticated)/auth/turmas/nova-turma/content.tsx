@@ -26,21 +26,30 @@ export default function Content() {
     setValue,
     register,
     handleSubmit,
-    formState: { isSubmitting, errors },
+    formState: { errors },
   } = useForm<ClassData>({
     resolver: zodResolver(classSchema),
   })
 
-  const { mutate: handleCreateClass } = useCreateClass()
   const [showDialog, setShowDialog] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const { mutate: handleCreateClass } = useCreateClass()
 
   const onSubmit: SubmitHandler<ClassData> = (data) => {
+    setIsSubmitting(true)
+
     handleCreateClass(
       { ...data, isActive: true },
       {
         onSuccess: () => {
+          setIsSubmitting(false)
           toast.success('Turma adicionada com sucesso!')
           replace('/auth/turmas')
+        },
+        onError: () => {
+          setIsSubmitting(false)
+
+          toast.error('Ops! Houve algum problema ao cadastrar a nova turma.')
         },
       },
     )
