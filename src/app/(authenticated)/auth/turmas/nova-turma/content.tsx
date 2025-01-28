@@ -26,7 +26,7 @@ export default function Content() {
     setValue,
     register,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = useForm<ClassData>({
     resolver: zodResolver(classSchema),
   })
@@ -86,6 +86,7 @@ export default function Content() {
           <Label>Nome</Label>
 
           <Input
+            error={errors.name?.message}
             {...register('name')}
             placeholder="Insira o nome da turma"
             disabled={isSubmitting}
@@ -99,8 +100,11 @@ export default function Content() {
             value={period}
             onValueChange={(value) => setValue('period', value)}
           >
-            <Select.Trigger disabled={isSubmitting}>
-              <Select.Value placeholder="Selecione o turno" />
+            <Select.Trigger
+              error={errors.period?.message}
+              disabled={isSubmitting}
+            >
+              <Select.Value placeholder="Selecione o período" />
             </Select.Trigger>
             <Select.Content>
               <Select.Item value="Manhã">Manhã</Select.Item>
@@ -119,8 +123,11 @@ export default function Content() {
             value={educationLevel}
             onValueChange={(value) => setValue('educationLevel', value)}
           >
-            <Select.Trigger disabled={isSubmitting}>
-              <Select.Value placeholder="Selecione o nível de ensino" />
+            <Select.Trigger
+              error={errors.educationLevel?.message}
+              disabled={isSubmitting}
+            >
+              <Select.Value placeholder="Selecione o Nível de Ensino" />
             </Select.Trigger>
             <Select.Content>
               <Select.Item value="Fundamental">Ensino Fundamental</Select.Item>

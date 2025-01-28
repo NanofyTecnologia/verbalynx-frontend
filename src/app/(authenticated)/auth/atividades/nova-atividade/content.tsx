@@ -199,10 +199,10 @@ export default function Content() {
           />
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-6 border-t border-muted-foreground pt-4">
           {criteria.map((criterion, index) => (
             <Fragment key={index}>
-              <div className="relative space-y-6 border-b pb-4">
+              <div className="relative space-y-6 border-b border-muted-foreground pb-4">
                 {index > 0 && (
                   <Button
                     onClick={() => removeCriterion(index)}

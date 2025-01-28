@@ -71,7 +71,7 @@ export default function Content() {
           </p>
         )}
 
-        <Button className="shadow" asChild>
+        <Button className="ms-auto shadow" asChild>
           <Link href={`/auth/atividades/ver-rubricas/${id}`}>
             Ver rubrica <PencilLine size={20} />
           </Link>
