@@ -40,7 +40,7 @@ export default function Content() {
     register,
     setValue,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = useForm<TaskData>({
     resolver: zodResolver(taskSchema),
   })
@@ -135,11 +135,11 @@ export default function Content() {
         <div className="space-y-0.5">
           <Label>Turma</Label>
 
-          <Select.Root
-            onValueChange={(value) => setValue('classId', value)}
-            disabled={isSubmitting}
-          >
-            <Select.Trigger>
+          <Select.Root onValueChange={(value) => setValue('classId', value)}>
+            <Select.Trigger
+              error={errors.classId?.message}
+              disabled={isSubmitting}
+            >
               <Select.Value placeholder="Selecione a turma" />
             </Select.Trigger>
             <Select.Content>
@@ -157,6 +157,7 @@ export default function Content() {
           <Input
             {...register('name')}
             placeholder="Informe o nome da atividade"
+            error={errors.name?.message}
             disabled={isSubmitting}
           />
         </div>
@@ -186,6 +187,7 @@ export default function Content() {
           <Textarea
             {...register('objective')}
             disabled={isSubmitting}
+            error={errors.objective?.message}
             placeholder="Escreva o objetivo geral da atividade"
           />
         </div>
@@ -195,6 +197,7 @@ export default function Content() {
           <Input
             {...register('rubric.name')}
             placeholder="Insira o nome da rubrica"
+            error={errors.rubric?.name?.message}
             disabled={isSubmitting}
           />
         </div>
@@ -220,7 +223,7 @@ export default function Content() {
                     onChange={(e) =>
                       updateCriterion(index, 'name', e.target.value)
                     }
-                    error={`Insira um título para o critério ${index + 1}`}
+                    error={errors.rubric?.criterion?.title?.message}
                     disabled={isSubmitting}
                   />
                 </div>
@@ -232,6 +235,7 @@ export default function Content() {
                     onChange={(e) =>
                       updateCriterion(index, 'description', e.target.value)
                     }
+                    error={errors.rubric?.criterion?.description?.message}
                     disabled={isSubmitting}
                   />
                 </div>
@@ -242,9 +246,8 @@ export default function Content() {
                     onValueChange={(value) => {
                       updateCriterion(index, 'level', Number(value))
                     }}
-                    disabled={isSubmitting}
                   >
-                    <Select.Trigger>
+                    <Select.Trigger disabled={isSubmitting}>
                       <Select.Value placeholder={`${criterion.level}`} />
                     </Select.Trigger>
                     <Select.Content>
@@ -273,9 +276,11 @@ export default function Content() {
                             updatedScores[levelIndex] = Number(value)
                             updateCriterion(index, 'score', updatedScores)
                           }}
-                          disabled={isSubmitting}
                         >
-                          <Select.Trigger>
+                          <Select.Trigger
+                            error={errors.rubric?.criterion?.points?.message}
+                            disabled={isSubmitting}
+                          >
                             <Select.Value
                               placeholder={
                                 criterion.score[levelIndex]
@@ -309,6 +314,7 @@ export default function Content() {
                             updateCriterion(index, 'comment', updateComment)
                           }}
                           placeholder={`Faça um comentário acerca do nível de qualidade ${levelIndex + 1}`}
+                          error={errors.rubric?.criterion?.comment?.message}
                           disabled={isSubmitting}
                         />
                       </div>
