@@ -120,8 +120,6 @@ export default function Content() {
 
         <div className="mt-6 space-y-2">
           {feedback?.feedbackCriterion.map((item, index) => {
-            console.log(item)
-
             return (
               <Fragment key={index}>
                 <div className="space-y-2">
