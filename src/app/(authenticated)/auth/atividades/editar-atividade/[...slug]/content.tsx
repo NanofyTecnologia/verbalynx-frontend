@@ -367,7 +367,7 @@ export default function Content() {
                 ariaLabel="three-dots-loading"
               />
             ) : (
-              'Atualizar'
+              'Atualizar atividade'
             )}
           </Button>
         </div>
