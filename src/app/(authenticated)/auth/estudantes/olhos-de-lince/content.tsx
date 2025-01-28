@@ -1,25 +1,25 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { Fragment, useEffect, useRef, useState } from 'react'
-import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import { SubmitHandler, useFieldArray, useFormContext } from 'react-hook-form'
 import {
-  BoomBox,
+  Plus,
+  Play,
+  Link2,
   Camera,
-  Check,
-  ChevronLeft,
   CircleHelp,
   FolderCheck,
-  Link2,
-  Play,
-  Plus,
+  ChevronLeft,
 } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
 import { Select } from '@/components/ui/select'
+import { Dialog } from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Tooltip } from '@/components/ui/tooltip'
 import { Textarea } from '@/components/ui/textarea'
 import { Carousel } from '@/components/ui/carousel'
 
@@ -30,10 +30,10 @@ import { useGetByRubricId } from '@/hooks/services/use-get-rubric-by-id'
 import { FeedbackData } from '../_schema'
 import { useCreateFeedback } from './_hooks/use-create-feedback'
 import { useGetFeedbackDetails } from './_hooks/use-get-feedback-details'
-import { Popover } from '@/components/ui/popover'
-import { Dialog } from '@/components/ui/dialog'
-import { Tooltip } from '@/components/ui/tooltip'
+
 import Link from 'next/link'
+import { toast } from 'react-toastify'
+import { ThreeDots } from 'react-loader-spinner'
 
 export interface IParams {
   [key: string]: string[]
@@ -42,9 +42,17 @@ export interface IParams {
 export default function Content() {
   const { replace, push } = useRouter()
 
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [selectedTip, setSelectedTip] = useState('')
-  const { watch, setValue, register, control, handleSubmit } =
-    useFormContext<FeedbackData>()
+
+  const {
+    watch,
+    control,
+    setValue,
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useFormContext<FeedbackData>()
   const { teamId, userId, taskId, feedback } = watch()
 
   const { data: feedbackDetails } = useGetFeedbackDetails({
@@ -86,39 +94,31 @@ export default function Content() {
   })
 
   const onSubmit: SubmitHandler<FeedbackData> = (data) => {
-    // eslint-disable-next-line
-    // @ts-ignore
-    const { userId, teamId, taskId, selectedComment } = data
+    setIsSubmitting(true)
+    const { userId, teamId, taskId } = data
 
     handleCreateFeedback(
       {
         taskId,
         classId: teamId,
         studentId: userId,
-        feedbacks: data.feedback.map(({ criterion, ...restItem }) => ({
+        feedbacks: data.feedback.map(({ criterion: _, ...restItem }) => ({
           ...restItem,
         })),
       },
       {
         onSuccess: (data) => {
+          setIsSubmitting(false)
+          toast.success('Feedback enviado com sucesso!')
+
           replace(`/auth/feedback-qualitativo/${data.id}`)
+        },
+        onError: () => {
+          setIsSubmitting(false)
+          toast.error('Ops! Houve um erro ao enviar seu feedback.')
         },
       },
     )
-  }
-
-  const onSelectTip = (tip: string, index: number) => {
-    const oldTips = watch(`feedback.${index}.tips`)
-
-    if (oldTips.includes(tip)) {
-      setValue(`feedback.${index}.tips`, [
-        ...oldTips.filter((item) => item !== tip),
-      ])
-
-      return
-    }
-
-    setValue(`feedback.${index}.tips`, [...oldTips, tip])
   }
 
   const isSelectedTip = (tip: string, index: number) => {
@@ -137,7 +137,7 @@ export default function Content() {
     return <></>
   }
 
-  console.log(watch(`feedback.${0}`))
+  console.log(errors)
 
   return (
     <>
@@ -285,12 +285,6 @@ export default function Content() {
                                   ],
                                 )
 
-                                console.log(
-                                  feedback[index].criterion.comment[
-                                    Number(value) - 1
-                                  ],
-                                )
-
                                 setValue(
                                   `feedback.${index}.criterion.selectedComment`,
                                   feedback[index].criterion.comment[
@@ -300,6 +294,11 @@ export default function Content() {
                               }}
                             >
                               <Select.Trigger
+                                error={
+                                  errors.feedback &&
+                                  errors?.feedback[index]?.criterion?.id
+                                    ?.message
+                                }
                                 disabled={
                                   feedback && !feedback[index]?.criterion.id
                                 }
@@ -495,7 +494,17 @@ export default function Content() {
           </Carousel.Root>
 
           <Button type="submit" className="w-full">
-            Concluir avaliação
+            {isSubmitting ? (
+              <ThreeDots
+                width={35}
+                height={35}
+                color="#fff"
+                visible
+                ariaLabel="three-dots-loading"
+              />
+            ) : (
+              'Concluir avaliação'
+            )}
           </Button>
         </form>
       </div>
