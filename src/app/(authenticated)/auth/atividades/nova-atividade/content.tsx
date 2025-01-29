@@ -166,6 +166,7 @@ export default function Content() {
           <div className="flex flex-col">
             <Label>Data de abertura</Label>
             <Input
+              error={errors.openingDate?.message}
               {...register('openingDate')}
               type="datetime-local"
               disabled={isSubmitting}
@@ -175,6 +176,7 @@ export default function Content() {
           <div className="flex flex-col">
             <Label>Data de fechamento</Label>
             <Input
+              error={errors.closingDate?.message}
               {...register('closingDate')}
               type="datetime-local"
               disabled={isSubmitting}

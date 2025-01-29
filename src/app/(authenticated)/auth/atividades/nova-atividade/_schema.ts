@@ -37,11 +37,17 @@ export const taskSchema = z.object({
     .min(1, 'Vincule a atividade a uma turma'),
   openingDate: z.preprocess(
     (value) => (typeof value === 'string' ? new Date(value) : value),
-    z.date(),
+    z.date({
+      invalid_type_error: 'A data de abertura deve ser uma data válida',
+      required_error: 'Insira a data de abertura',
+    }),
   ),
   closingDate: z.preprocess(
     (value) => (typeof value === 'string' ? new Date(value) : value),
-    z.date(),
+    z.date({
+      invalid_type_error: 'A data de fechamento deve ser uma data válida',
+      required_error: 'Insira a data de fechamento',
+    }),
   ),
 })
 
