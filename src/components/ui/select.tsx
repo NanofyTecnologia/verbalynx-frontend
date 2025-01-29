@@ -23,7 +23,7 @@ const Trigger = React.forwardRef<
     error?: string
   }
 >(({ className, children, error, ...props }, ref) => (
-  <div className="space-y-0.5">
+  <div className="w-full space-y-0.5">
     <SelectPrimitive.Trigger
       ref={ref}
       data-error={!!error}
