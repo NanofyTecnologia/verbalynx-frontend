@@ -32,6 +32,10 @@ export const authOptions: NextAuthOptions = {
           },
         })
 
+        if (!user) {
+          throw new Error('User Not Found')
+        }
+
         const result = await transport.sendMail({
           to: identifier,
           from: 'no-reply@nanofy.com.br',
@@ -41,7 +45,7 @@ export const authOptions: NextAuthOptions = {
             url,
             host,
             theme,
-            name: user?.name ?? 'Aluno / Estudante',
+            name: user?.name ?? 'Estudante',
           }),
         })
 
@@ -63,6 +67,7 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.id = user.id
         token.role = user.role
+        token.registrationCode = user.registrationCode
       }
 
       if (trigger === 'update') {
@@ -76,6 +81,7 @@ export const authOptions: NextAuthOptions = {
     session: async ({ session, token }) => {
       session.user.id = token.id
       session.user.role = token.role
+      session.user.registrationCode = token.registrationCode
 
       return session
     },

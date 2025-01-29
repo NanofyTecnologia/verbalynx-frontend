@@ -5,7 +5,7 @@ import { user } from '@/services/user'
 export function useCreateStudent() {
   const mutation = createMutation({
     mutationKey: ['create-student'],
-    mutationFn: user.create,
+    mutationFn: user.createStudents,
   })
 
   return mutation()

@@ -12,7 +12,11 @@ export const env = createEnv({
     NEXTAUTH_SECRET: z.string().min(1),
   },
   client: {
+    NEXT_PUBLIC_APP: z.string().min(1),
     NEXT_PUBLIC_API: z.string().min(1),
+    NEXT_PUBLIC_NODE_ENV: z
+      .enum(['development', 'test', 'production'])
+      .default('development'),
   },
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
@@ -20,6 +24,8 @@ export const env = createEnv({
     SMTP_USER: process.env.SMTP_USER,
     SMTP_PASS: process.env.SMTP_PASS,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
+    NEXT_PUBLIC_APP: process.env.NEXT_PUBLIC_APP,
     NEXT_PUBLIC_API: process.env.NEXT_PUBLIC_API,
+    NEXT_PUBLIC_NODE_ENV: process.env.NEXT_PUBLIC_NODE_ENV,
   },
 })

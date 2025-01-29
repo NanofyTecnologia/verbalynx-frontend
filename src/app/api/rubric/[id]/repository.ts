@@ -12,6 +12,7 @@ function findByTaskId(id: string) {
         select: {
           id: true,
           name: true,
+          comment: true,
           description: true,
           level: true,
           score: true,

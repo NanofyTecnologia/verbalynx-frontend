@@ -5,6 +5,7 @@ import type {
   CreateClassParams,
   GetClassByIdParams,
   GetStundentsByClassIdResponse,
+  DeleteStudentsParams,
 } from './types'
 
 export const team = {
@@ -32,6 +33,12 @@ export const team = {
     const { data } = await axios.get<GetStundentsByClassIdResponse>(
       '/class/students/' + params.id,
     )
+
+    return data
+  },
+
+  async delete(params: DeleteStudentsParams) {
+    const { data } = await axios.delete('/class/' + params.id)
 
     return data
   },

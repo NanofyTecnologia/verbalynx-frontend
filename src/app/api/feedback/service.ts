@@ -1,14 +1,27 @@
 import { HttpStatusCode } from 'axios'
 import { getServerSession } from 'next-auth'
-import { Feedback } from '@prisma/client'
 
 import { authOptions } from '@/lib/next-auth'
 import { HttpError } from '@/helpers/http-error'
 
-import { create, type CreateFeedbackData } from './repository'
+import {
+  create,
+  findFeedbackByIds,
+  findStudentTask,
+  updateIsCompleted,
+  type CreateFeedbackData,
+} from './repository'
+
+import { createRevaluation } from './[id]/repository'
 
 async function createFeedback(data: CreateFeedbackData) {
-  const { taskId, classId, studentId, ...restData } = data
+  const {
+    taskId,
+    classId,
+    studentId,
+    teacherId: bodyTeacherId,
+    feedbacks,
+  } = data
 
   const session = await getServerSession(authOptions)
 
@@ -16,9 +29,69 @@ async function createFeedback(data: CreateFeedbackData) {
     throw new HttpError('UNAUTHORIZED', HttpStatusCode.Unauthorized)
   }
 
-  const teacherId = session.user.id
+  const teacherId = session.user.id || bodyTeacherId
 
-  return create({ taskId, classId, studentId, teacherId }, { ...restData })
+  const hasFeedbackCreatedForStudent = await validateIsFeedbackHasCreated({
+    userId: studentId,
+    teamId: classId,
+    taskId,
+  })
+
+  await updateStudentTaskIsCompleted({ taskId, studentId })
+
+  if (!hasFeedbackCreatedForStudent) {
+    const createdFeedback = await create(
+      { taskId, classId, studentId, teacherId },
+      feedbacks,
+    )
+
+    return {
+      id: createdFeedback.id,
+    }
+  }
+
+  const feedbackId = hasFeedbackCreatedForStudent.id
+
+  for (const feedback of data.feedbacks) {
+    await createRevaluation(feedbackId, { ...feedback, feedbackId })
+  }
+
+  return {
+    id: feedbackId,
+  }
+}
+
+export async function updateStudentTaskIsCompleted({
+  taskId,
+  studentId,
+}: Pick<CreateFeedbackData, 'studentId' | 'taskId'>) {
+  const studentTask = await findStudentTask({ userId: studentId, taskId })
+
+  if (!studentTask) {
+    return
+  }
+
+  await updateIsCompleted(studentTask?.id)
+}
+
+type ValidateFeedbackParams = {
+  userId: string
+  teamId: string
+  taskId: string
+}
+
+async function validateIsFeedbackHasCreated({
+  userId,
+  teamId,
+  taskId,
+}: ValidateFeedbackParams) {
+  const feedbackHasCreated = await findFeedbackByIds({ userId, teamId, taskId })
+
+  if (feedbackHasCreated) {
+    return feedbackHasCreated
+  }
+
+  return false
 }
 
 export { createFeedback }

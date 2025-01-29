@@ -23,3 +23,7 @@ export type GetStundentsByClassIdResponse = {
   id: string
   name: string
 }[]
+
+export type DeleteStudentsParams = {
+  id: string
+}

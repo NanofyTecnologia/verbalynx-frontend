@@ -53,6 +53,12 @@ export default function Content() {
         <h3 className="font-semibold">Minhas turmas</h3>
 
         <div className="mt-2 space-y-4">
+          {filteredData?.length === 0 && (
+            <div className="text-center">
+              <p className="my-12 font-semibold">Nenhuma turma cadastrada</p>
+            </div>
+          )}
+
           {isLoading &&
             Array.from({ length: 8 }).map((_, item) => (
               <Fragment key={item}>

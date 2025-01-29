@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { ChevronLeft, Info } from 'lucide-react'
 import { ThreeDots } from 'react-loader-spinner'
@@ -16,7 +17,6 @@ import { Dialog } from '@/components/ui/dialog'
 
 import { ClassData, classSchema } from './schema'
 import { useCreateClass } from './_hooks/use-create-class'
-import { useState } from 'react'
 
 export default function Content() {
   const { back, replace } = useRouter()
@@ -26,21 +26,30 @@ export default function Content() {
     setValue,
     register,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { errors },
   } = useForm<ClassData>({
     resolver: zodResolver(classSchema),
   })
 
-  const { mutate: handleCreateClass } = useCreateClass()
   const [showDialog, setShowDialog] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const { mutate: handleCreateClass } = useCreateClass()
 
   const onSubmit: SubmitHandler<ClassData> = (data) => {
+    setIsSubmitting(true)
+
     handleCreateClass(
-      { ...data },
+      { ...data, isActive: true },
       {
         onSuccess: () => {
+          setIsSubmitting(false)
           toast.success('Turma adicionada com sucesso!')
           replace('/auth/turmas')
+        },
+        onError: () => {
+          setIsSubmitting(false)
+
+          toast.error('Ops! Houve algum problema ao cadastrar a nova turma.')
         },
       },
     )
@@ -70,7 +79,7 @@ export default function Content() {
 
           <div className="text-sm">
             Crie novas turmas e organize seu ambiente de ensino. Informe o nome
-            da turma, o período letivo e o nível de ensino.
+            da turma, o turno e o nível de ensino.
           </div>
 
           <Dialog.Footer>
@@ -86,20 +95,24 @@ export default function Content() {
           <Label>Nome</Label>
 
           <Input
+            error={errors.name?.message}
             {...register('name')}
-            placeholder="Ex: Turma 8ºB"
+            placeholder="Insira o nome da turma"
             disabled={isSubmitting}
           />
         </div>
 
         <div className="space-y-0.5">
-          <Label>Período</Label>
+          <Label>Turno</Label>
 
           <Select.Root
             value={period}
             onValueChange={(value) => setValue('period', value)}
           >
-            <Select.Trigger disabled={isSubmitting}>
+            <Select.Trigger
+              error={errors.period?.message}
+              disabled={isSubmitting}
+            >
               <Select.Value placeholder="Selecione o período" />
             </Select.Trigger>
             <Select.Content>
@@ -113,23 +126,24 @@ export default function Content() {
         </div>
 
         <div className="space-y-0.5">
-          <Label>Ensino </Label>
+          <Label>Nível de Ensino</Label>
 
           <Select.Root
             value={educationLevel}
             onValueChange={(value) => setValue('educationLevel', value)}
           >
-            <Select.Trigger disabled={isSubmitting}>
-              <Select.Value placeholder="Selecione o ensino" />
+            <Select.Trigger
+              error={errors.educationLevel?.message}
+              disabled={isSubmitting}
+            >
+              <Select.Value placeholder="Selecione o Nível de Ensino" />
             </Select.Trigger>
             <Select.Content>
-              <Select.Item value="Ensino Fundamental">
-                Ensino Fundamental
-              </Select.Item>
+              <Select.Item value="Fundamental">Ensino Fundamental</Select.Item>
+
+              <Select.Item value="Ensino Médio">Ensino Médio</Select.Item>
 
               <Select.Item value="Ensino Superior">Ensino Superior</Select.Item>
-
-              <Select.Item value="Ensino Médio">Ensino Fundamental</Select.Item>
 
               <Select.Item value="Outro">Outro</Select.Item>
             </Select.Content>
@@ -146,7 +160,7 @@ export default function Content() {
               ariaLabel="three-dots-loading"
             />
           ) : (
-            'Salvar'
+            'Criar turma'
           )}
         </Button>
       </form>

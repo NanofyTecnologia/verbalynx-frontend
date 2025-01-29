@@ -1,6 +1,6 @@
 'use client'
 
-import { type PropsWithChildren } from 'react'
+import { Suspense, type PropsWithChildren } from 'react'
 import { useForm, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
@@ -17,11 +17,12 @@ export default function Layout({ children }: PropsWithChildren) {
             id: '',
             description: '',
             score: [],
+            comment: [],
             level: 0,
             name: '',
           },
           criterionId: '',
-          level: 0,
+          level: -1,
           score: 0,
           tips: [],
         },
@@ -29,5 +30,9 @@ export default function Layout({ children }: PropsWithChildren) {
     },
   })
 
-  return <FormProvider {...methods}>{children}</FormProvider>
+  return (
+    <FormProvider {...methods}>
+      <Suspense>{children}</Suspense>
+    </FormProvider>
+  )
 }

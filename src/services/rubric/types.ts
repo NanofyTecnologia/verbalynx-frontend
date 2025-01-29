@@ -4,6 +4,7 @@ export type CreateRubricParams = {
     name: string
     description: string
     level: number
+    comment: string[]
     score: number[]
   }[]
 }
@@ -16,5 +17,6 @@ export type GetRubricByIdResponse = {
   name: string
   description: string
   level: number
+  comment: string[]
   score: number[]
 }[]

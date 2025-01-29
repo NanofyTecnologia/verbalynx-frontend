@@ -14,42 +14,23 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Dialog } from '@/components/ui/dialog'
 import { Select } from '@/components/ui/select'
+import { Textarea } from '@/components/ui/textarea'
 
 import { useGetClassesById } from '@/hooks/services/use-get-classes-by-id'
 
 import { TaskData, taskSchema } from './_schema'
 import { useCreateTask } from './_hooks/use-create-task'
-
-const points = [
-  '0',
-  '5',
-  '10',
-  '15',
-  '20',
-  '25',
-  '30',
-  '35',
-  '40',
-  '45',
-  '50',
-  '55',
-  '60',
-  '65',
-  '70',
-  '75',
-  '80',
-  '85',
-  '90',
-  '95',
-  '100',
-]
+import json from '@/data/points.json'
 
 interface Criterion {
   name: string
   description: string
   level: number
   score: number[]
+  comment: string[]
 }
+
+const points = json.points
 
 export default function Content() {
   const { back, replace } = useRouter()
@@ -59,7 +40,7 @@ export default function Content() {
     register,
     setValue,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = useForm<TaskData>({
     resolver: zodResolver(taskSchema),
   })
@@ -68,15 +49,14 @@ export default function Content() {
   const [showDialog, setShowDialog] = useState(false)
 
   const [criteria, setCriteria] = useState<Criterion[]>([
-    { name: '', description: '', level: 1, score: [] },
+    { name: '', description: '', level: 1, score: [], comment: [] },
   ])
-
-  console.log(criteria)
 
   const onSubmit: SubmitHandler<TaskData> = (data) => {
     handleCreateTask(
       {
         ...data,
+        isActive: true,
         rubric: {
           ...data.rubric,
           evaluation: criteria,
@@ -95,7 +75,7 @@ export default function Content() {
     if (criteria.length < 30) {
       setCriteria((prev) => [
         ...prev,
-        { name: '', description: '', level: 1, score: [] },
+        { name: '', description: '', level: 1, score: [], comment: [] },
       ])
     }
   }
@@ -107,7 +87,7 @@ export default function Content() {
   const updateCriterion = (
     index: number,
     key: keyof Criterion,
-    value: string | number | number[],
+    value: string | number | number[] | string[],
   ) => {
     setCriteria((prev) =>
       prev.map((criterion, i) =>
@@ -139,7 +119,7 @@ export default function Content() {
           <div className="text-sm">
             Crie atividades personalizadas para cada turma, escolhendo um nome
             que identifique a atividade, selecionando a rubrica de avaliação,
-            definindo os níveis de desempenho e descrevendo o objetivo geral da
+            definindo os níveis de qualidade e descrevendo o objetivo geral da
             aprendizagem.
           </div>
 
@@ -155,12 +135,12 @@ export default function Content() {
         <div className="space-y-0.5">
           <Label>Turma</Label>
 
-          <Select.Root
-            onValueChange={(value) => setValue('classId', value)}
-            disabled={isSubmitting}
-          >
-            <Select.Trigger>
-              <Select.Value placeholder="Seleciona a turma" />
+          <Select.Root onValueChange={(value) => setValue('classId', value)}>
+            <Select.Trigger
+              error={errors.classId?.message}
+              disabled={isSubmitting}
+            >
+              <Select.Value placeholder="Selecione a turma" />
             </Select.Trigger>
             <Select.Content>
               {teams?.map((team) => (
@@ -173,10 +153,11 @@ export default function Content() {
         </div>
 
         <div className="space-y-0.5">
-          <Label>Nome da Atividade</Label>
+          <Label>Nome da atividade</Label>
           <Input
             {...register('name')}
-            placeholder="Ex: Atividade Didática XX.X"
+            placeholder="Informe o nome da atividade"
+            error={errors.name?.message}
             disabled={isSubmitting}
           />
         </div>
@@ -185,6 +166,7 @@ export default function Content() {
           <div className="flex flex-col">
             <Label>Data de abertura</Label>
             <Input
+              error={errors.openingDate?.message}
               {...register('openingDate')}
               type="datetime-local"
               disabled={isSubmitting}
@@ -194,6 +176,7 @@ export default function Content() {
           <div className="flex flex-col">
             <Label>Data de fechamento</Label>
             <Input
+              error={errors.closingDate?.message}
               {...register('closingDate')}
               type="datetime-local"
               disabled={isSubmitting}
@@ -202,132 +185,161 @@ export default function Content() {
         </div>
 
         <div className="space-y-0.5">
-          <Label>Objetivo Geral da Atividade</Label>
-          <Input {...register('objective')} disabled={isSubmitting} />
+          <Label>Objetivo geral da atividade</Label>
+          <Textarea
+            {...register('objective')}
+            disabled={isSubmitting}
+            error={errors.objective?.message}
+            placeholder="Escreva o objetivo geral da atividade"
+          />
         </div>
 
         <div className="space-y-0.5">
-          <Label>Nome da Rubrica</Label>
+          <Label>Nome da rubrica</Label>
           <Input
             {...register('rubric.name')}
-            placeholder="Ex: Atividade Didática XX.X"
+            placeholder="Insira o nome da rubrica"
+            error={errors.rubric?.name?.message}
             disabled={isSubmitting}
           />
         </div>
 
-        <div className="space-y-6">
-          {/* Mapeamento da quantidade de critérios */}
+        <div className="space-y-6 border-t border-muted-foreground pt-4">
           {criteria.map((criterion, index) => (
-            <div key={index} className="relative space-y-4 border-b pb-4">
-              {/* Botão de Exclusão */}
-              {index > 0 && (
-                <Button
-                  onClick={() => removeCriterion(index)}
-                  disabled={isSubmitting}
-                >
-                  Excluir
-                </Button>
-              )}
+            <Fragment key={index}>
+              <div className="relative space-y-6 border-b border-muted-foreground pb-4">
+                {index > 0 && (
+                  <Button
+                    onClick={() => removeCriterion(index)}
+                    disabled={isSubmitting}
+                  >
+                    Excluir
+                  </Button>
+                )}
 
-              {/* Nome do Critério */}
-              <div className="space-y-0.5">
-                <Label>Critério {index + 1}</Label>
-                <Input
-                  placeholder="Insira um nome para o critério..."
-                  value={criterion.name}
-                  onChange={(e) =>
-                    updateCriterion(index, 'name', e.target.value)
-                  }
-                  disabled={isSubmitting}
-                />
-              </div>
+                <div className="space-y-0.5">
+                  <Label> Título do critério {index + 1}</Label>
+                  <Input
+                    placeholder="Insira o título do critério"
+                    value={criterion.name}
+                    onChange={(e) =>
+                      updateCriterion(index, 'name', e.target.value)
+                    }
+                    error={errors.rubric?.criterion?.title?.message}
+                    disabled={isSubmitting}
+                  />
+                </div>
 
-              <div className="space-y-0.5">
-                <Label>Descrição do Critério {index + 1}</Label>
-                <Input
-                  placeholder="Ex: Este critério tem por finalidade..."
-                  onChange={(e) =>
-                    updateCriterion(index, 'description', e.target.value)
-                  }
-                  disabled={isSubmitting}
-                />
-              </div>
+                <div className="space-y-0.5">
+                  <Label>Descrição do critério {index + 1}</Label>
+                  <Textarea
+                    placeholder="Descreva sobre o critério criado para a rubrica"
+                    onChange={(e) =>
+                      updateCriterion(index, 'description', e.target.value)
+                    }
+                    error={errors.rubric?.criterion?.description?.message}
+                    disabled={isSubmitting}
+                  />
+                </div>
 
-              {/* Seleção do Número de Níveis */}
-              <div className="space-y-0.5">
-                <Label>N° de níveis</Label>
-                <Select.Root
-                  onValueChange={(value) => {
-                    updateCriterion(index, 'level', Number(value))
-                  }}
-                  disabled={isSubmitting}
-                >
-                  <Select.Trigger>
-                    <Select.Value placeholder={`${criterion.level}`} />
-                  </Select.Trigger>
-                  <Select.Content>
-                    {['1', '2', '3', '4', '5', '6'].map((num) => (
-                      <Select.Item key={num} value={num}>
-                        {num}
-                      </Select.Item>
-                    ))}
-                  </Select.Content>
-                </Select.Root>
-              </div>
+                <div className="space-y-0.5">
+                  <Label>N° de níveis de qualidade</Label>
+                  <Select.Root
+                    onValueChange={(value) => {
+                      updateCriterion(index, 'level', Number(value))
+                    }}
+                  >
+                    <Select.Trigger disabled={isSubmitting}>
+                      <Select.Value placeholder={`${criterion.level}`} />
+                    </Select.Trigger>
+                    <Select.Content>
+                      {['1', '2', '3', '4', '5', '6'].map((num) => (
+                        <Fragment key={num}>
+                          <Select.Item value={num}>{num}</Select.Item>
+                        </Fragment>
+                      ))}
+                    </Select.Content>
+                  </Select.Root>
+                </div>
 
-              {/* Níveis e Pontuações */}
-              <div className="space-y-2">
-                {Array.from({ length: criterion.level }, (_, levelIndex) => (
-                  <div key={levelIndex} className="flex items-center gap-2">
-                    <Input
-                      type="text"
-                      placeholder={`Nível ${levelIndex + 1}`}
-                      disabled
-                    />
-                    <Select.Root
-                      onValueChange={(value) => {
-                        const updatedScores = [...criterion.score]
-                        updatedScores[levelIndex] = Number(value)
-                        updateCriterion(index, 'score', updatedScores)
-                      }}
-                      disabled={isSubmitting}
-                    >
-                      <Select.Trigger>
-                        <Select.Value
-                          placeholder={
-                            criterion.score[levelIndex]
-                              ? `${criterion.score[levelIndex]} pontos`
-                              : '0 pontos'
-                          }
+                <div className="space-y-6">
+                  {Array.from({ length: criterion.level }, (_, levelIndex) => (
+                    <Fragment key={levelIndex}>
+                      <div className="flex items-center gap-2">
+                        <Input
+                          type="text"
+                          placeholder={`Nível de Qualidade ${levelIndex + 1}`}
+                          disabled
                         />
-                      </Select.Trigger>
-                      <Select.Content>
-                        {points.map((num) => (
-                          <Select.Item key={num} value={num}>
-                            {num} pontos
-                          </Select.Item>
-                        ))}
-                      </Select.Content>
-                    </Select.Root>
-                  </div>
-                ))}
+
+                        <Select.Root
+                          onValueChange={(value) => {
+                            const updatedScores = [...criterion.score]
+                            updatedScores[levelIndex] = Number(value)
+                            updateCriterion(index, 'score', updatedScores)
+                          }}
+                        >
+                          <Select.Trigger
+                            error={errors.rubric?.criterion?.points?.message}
+                            disabled={isSubmitting}
+                          >
+                            <Select.Value
+                              placeholder={
+                                criterion.score[levelIndex]
+                                  ? `${criterion.score[levelIndex]} pontos`
+                                  : '0 pontos'
+                              }
+                            />
+                          </Select.Trigger>
+                          <Select.Content>
+                            {points.map((num) => (
+                              <Fragment key={num + new Date().toISOString()}>
+                                <Select.Item value={num}>
+                                  {num} pontos
+                                </Select.Item>
+                              </Fragment>
+                            ))}
+                          </Select.Content>
+                        </Select.Root>
+                      </div>
+
+                      <div className="space-y-0.5">
+                        <Label>
+                          Comentário do nível de qualidade {levelIndex + 1}
+                        </Label>
+                        <Textarea
+                          onChange={(prev) => {
+                            const updateComment = [...criterion.comment]
+                            updateComment[levelIndex] = String(
+                              prev.target.value,
+                            )
+                            updateCriterion(index, 'comment', updateComment)
+                          }}
+                          placeholder={`Faça um comentário acerca do nível de qualidade ${levelIndex + 1}`}
+                          error={errors.rubric?.criterion?.comment?.message}
+                          disabled={isSubmitting}
+                        />
+                      </div>
+                    </Fragment>
+                  ))}
+                </div>
               </div>
-            </div>
+            </Fragment>
           ))}
 
-          {/* Botão Adicionar Critério */}
           {criteria.length < 30 && (
-            <button
+            <Button
+              variant="outline"
               onClick={(e) => {
                 e.preventDefault()
                 addCriterion()
               }}
-              className="flex w-full items-center justify-center rounded-md border-2 border-dashed py-2 text-black/50"
+              className="mt-4 h-10 w-full"
               disabled={isSubmitting}
             >
-              <span>Adicionar Critério</span>
+              <span>Adicionar critério</span>
               <CirclePlus className="ml-1" size={20} />
-            </button>
+            </Button>
           )}
         </div>
 
