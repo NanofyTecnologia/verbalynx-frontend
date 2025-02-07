@@ -2,9 +2,9 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { useSession } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 
@@ -15,12 +15,14 @@ import { useGetUserById } from './_hooks/use-get-user-by-id'
 export default function Page() {
   const { replace } = useRouter()
 
-  const { update } = useSession()
+  const { update, data: session } = useSession()
   const { data: user } = useGetUserById()
 
   const [isLoading, setIsLoading] = useState(true)
 
-  useEffect(() => {
+  const handleSyncRole = useCallback(async () => {
+    console.log('Verificando status')
+
     if (user) {
       if (user.role === 'PENDING_APPROVAL') {
         setIsLoading(false)
@@ -30,7 +32,18 @@ export default function Page() {
       update({ role: user.role })
       replace('/auth')
     }
-  }, [user])
+  }, [user, update, replace])
+
+  useEffect(() => {
+    const interval = setInterval(handleSyncRole, 5000)
+    return () => clearInterval(interval)
+  }, [handleSyncRole])
+
+  useEffect(() => {
+    if (!session) {
+      replace('/')
+    }
+  }, [session, replace])
 
   return (
     <>
@@ -49,7 +62,12 @@ export default function Page() {
               Em breve o seu acesso completo será liberado pelo administrador!
             </p>
 
-            <Button size="lg" variant="link" className="w-full">
+            <Button
+              size="lg"
+              variant="link"
+              className="w-full"
+              onClick={() => signOut()}
+            >
               Desconectar
             </Button>
           </div>
