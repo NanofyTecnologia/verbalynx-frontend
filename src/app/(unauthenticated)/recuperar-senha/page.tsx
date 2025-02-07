@@ -6,7 +6,7 @@ import VerbalynxLogo from '@/assets/images/verbalynx-logo.png'
 
 import Form from './form'
 
-export const title: Metadata = {
+export const metadata: Metadata = {
   title: 'Recuperar senha',
 }
 
