@@ -1,6 +1,5 @@
 import { HttpStatusCode } from 'axios'
 import { getServerSession } from 'next-auth'
-import { customAlphabet } from 'nanoid'
 
 import { authOptions } from '@/lib/next-auth'
 import { HttpError } from '@/helpers/http-error'

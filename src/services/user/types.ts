@@ -73,3 +73,10 @@ export type SendStudentTask = {
   title: string
   description: string
 }
+
+export type SendEmailRecoverPasswordParams = Pick<User, 'email'>
+
+export type UpdatePasswordByToken = {
+  token: string
+  password: string
+}

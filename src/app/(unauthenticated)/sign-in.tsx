@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import { signIn, useSession } from 'next-auth/react'
 import { ThreeDots } from 'react-loader-spinner'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { AtSign } from 'lucide-react'
+import { AtSign, Dot, KeyRound } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
 
@@ -17,13 +17,14 @@ import { signInSchema, type SignInData } from './_schema'
 export default function SignIn() {
   const { data } = useSession()
   const { replace } = useRouter()
+
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isInvalidCredentials, setIsInvalidCredentials] = useState(false)
 
   const {
-    reset,
     register,
     handleSubmit,
-    formState: { isSubmitSuccessful },
+    formState: { errors },
   } = useForm<SignInData>({
     resolver: zodResolver(signInSchema),
   })
@@ -31,12 +32,15 @@ export default function SignIn() {
   const onSubmit: SubmitHandler<SignInData> = async (data) => {
     setIsSubmitting(true)
 
-    await signIn('email', {
+    const req = await signIn('credentials', {
       ...data,
       redirect: false,
     })
 
-    setIsSubmitting(false)
+    if (req?.status === 401) {
+      setIsSubmitting(false)
+      setIsInvalidCredentials(true)
+    }
   }
 
   useEffect(() => {
@@ -47,57 +51,62 @@ export default function SignIn() {
 
   return (
     <>
-      {isSubmitSuccessful && (
-        <div className="space-y-2">
-          <h1 className="text-xl font-semibold">E-mail enviado com sucesso!</h1>
-          <p className="text-sm font-medium text-zinc-500">
-            Confira sua caixa de entrada para encontrar o link de acesso à
-            plataforma.
+      <form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-4">
+        <Input
+          {...register('email')}
+          placeholder="E-mail"
+          className="h-10 ps-7"
+          disabled={isSubmitting}
+          error={errors.email?.message}
+          startIcon={<AtSign className="absolute left-2 z-50 size-4" />}
+        />
+
+        <Input
+          type="password"
+          {...register('password')}
+          placeholder="Senha"
+          className="h-10 ps-7"
+          disabled={isSubmitting}
+          error={errors.password?.message}
+          startIcon={<KeyRound className="absolute left-2 z-50 size-4" />}
+        />
+
+        {isInvalidCredentials && (
+          <p className="text-center text-sm font-medium text-destructive">
+            E-mail ou senha incorretos. Verifique suas credenciais e tente
+            novamente.
           </p>
+        )}
 
-          <div className="flex items-center justify-center">
-            <Button onClick={() => reset()} variant="link">
-              Enviar novamente
-            </Button>
-          </div>
-        </div>
-      )}
-
-      {!isSubmitSuccessful && (
-        <form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-4">
-          <div className="relative flex items-center">
-            <AtSign className="absolute left-2 size-4" />
-
-            <Input
-              {...register('email')}
-              placeholder="E-mail"
-              className="h-10 ps-7"
-              disabled={isSubmitting}
+        <Button
+          type="submit"
+          className="h-10 w-full text-white"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? (
+            <ThreeDots
+              width={35}
+              height={35}
+              color="#fff"
+              visible={true}
+              ariaLabel="three-dots-loading"
             />
-          </div>
+          ) : (
+            'Acessar'
+          )}
+        </Button>
+      </form>
 
-          <Button
-            type="submit"
-            className="h-10 w-full text-black"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? (
-              <ThreeDots
-                width={35}
-                height={35}
-                color="#fff"
-                visible={true}
-                ariaLabel="three-dots-loading"
-              />
-            ) : (
-              'Acessar'
-            )}
-          </Button>
-        </form>
-      )}
+      <div className="mt-6 flex items-center text-center">
+        <Link href="/recuperar-senha" className="block text-sm hover:underline">
+          Esqueceu a senha?
+        </Link>
 
-      <div className="mt-6">
-        <Link href="/cadastro">Criar uma conta</Link>
+        <Dot />
+
+        <Link href="/cadastro" className="block text-sm hover:underline">
+          Criar uma conta
+        </Link>
       </div>
     </>
   )

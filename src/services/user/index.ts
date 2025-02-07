@@ -16,6 +16,8 @@ import type {
   AdminUpdateParams,
   GetAllStudentsParams,
   DeleteUserTeamParams,
+  SendEmailRecoverPasswordParams,
+  UpdatePasswordByToken,
 } from './types'
 
 export const user = {
@@ -106,8 +108,20 @@ export const user = {
   },
 
   async sendTask(params: SendStudentTask) {
-    const { id, ...restParams } = params
+    const { id: _, ...restParams } = params
     const { data } = await axios.post(`/user/task/` + params.id, restParams)
+
+    return data
+  },
+
+  async sendEmailRecoverPassword(params: SendEmailRecoverPasswordParams) {
+    const { data } = await axios.post('/user/recover-password', params)
+
+    return data
+  },
+
+  async resetPassword(params: UpdatePasswordByToken) {
+    const { data } = await axios.post('/user/reset-password', params)
 
     return data
   },

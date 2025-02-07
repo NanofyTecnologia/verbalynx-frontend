@@ -2,6 +2,7 @@ import { Adapter } from 'next-auth/adapters'
 import { createTransport } from 'nodemailer'
 import { type NextAuthOptions, Theme } from 'next-auth'
 import EmailProvider from 'next-auth/providers/email'
+import CredentialsProvider from 'next-auth/providers/credentials'
 import { PrismaAdapter } from '@auth/prisma-adapter'
 
 import { prisma } from '@/config/prisma'
@@ -54,6 +55,29 @@ export const authOptions: NextAuthOptions = {
         if (failed.length) {
           throw new Error(`Email(s) (${failed.join(', ')}) could not be sent`)
         }
+      },
+    }),
+    CredentialsProvider({
+      credentials: {
+        email: { label: 'E-mail', placeholder: 'E-mail', type: 'text' },
+        password: { label: 'Senha', placeholder: 'Senha', type: 'password' },
+      },
+      async authorize(credentials, req) {
+        const url = new URL(req.headers?.origin)
+
+        const res = await fetch(url + '/api/auth/credentials', {
+          method: 'POST',
+          body: JSON.stringify(credentials),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+
+        if (res.status !== 200) {
+          return
+        }
+
+        return await res.json()
       },
     }),
   ],
