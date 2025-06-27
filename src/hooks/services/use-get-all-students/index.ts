@@ -4,11 +4,12 @@ import { keepPreviousData } from '@tanstack/react-query'
 import { user } from '@/services/user'
 
 type IProps = {
+  role?: string
   teamId: string | undefined
 }
 
 export function useGetAllStudents(props: IProps) {
-  const { teamId } = props
+  const { teamId, role } = props
 
   const query = createQuery({
     queryKey: ['get-all-students'],
@@ -16,7 +17,7 @@ export function useGetAllStudents(props: IProps) {
     placeholderData: keepPreviousData,
   })
 
-  const queryResponse = query({ variables: { teamId } })
+  const queryResponse = query({ variables: { teamId, role } })
 
   return {
     ...queryResponse,

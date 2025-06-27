@@ -23,6 +23,7 @@ export type CreateManyUsersParams = {
 export type UserPreview = User
 
 export type GetAllStudentsParams = {
+  role?: string
   teamId: string | undefined
 }
 export type GetAllStudentsResponse = UserPreview

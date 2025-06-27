@@ -1,6 +1,8 @@
 import { prisma } from '@/config/prisma'
+import { Role } from '@prisma/client'
 
 export type GetAllStudentsParams = {
+  role: Role
   teamId: string | null
 }
 
@@ -14,6 +16,7 @@ function findAll(params?: GetAllStudentsParams) {
           },
         },
       }),
+      role: params?.role ? params.role : undefined
     },
   })
 }

@@ -5,8 +5,10 @@ import { authOptions } from '@/lib/next-auth'
 import { HttpError } from '@/helpers/http-error'
 
 import { findAll } from './repository'
+import { Role } from '@prisma/client'
 
 type IParams = {
+  role: Role
   teamId: string | null
 }
 

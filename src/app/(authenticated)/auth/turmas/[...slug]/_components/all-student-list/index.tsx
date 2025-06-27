@@ -44,7 +44,7 @@ export default function AllStudentsList({
   const params = useParams<IParams>()
   const { id } = normalizeSlug(params.slug)
 
-  const { data: students } = useGetAllStudents({ teamId: id })
+  const { data: students } = useGetAllStudents({ teamId: id, role: 'STUDENT' })
   const { mutate: handleCreateStudentsInTeam } = useCreateStudentsInTeam()
 
   const [pagination, setPagination] = useState<PaginationState>({
